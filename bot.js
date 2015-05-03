@@ -500,6 +500,26 @@ function runBot(error, auth) {
         })[0];
 
         if (command && command.enabled) {
+            var cur_time = Date.now() / 1000;
+            var time_diff = cur_time - command.last_run;
+            var can_run_command = false;
+            if (data.from.role > 2) {
+                if (time_diff > command.cd_manager) {
+                    can_run_command = true;
+                } else {
+                    console.error(data.from.username + ' cannot run the command, cuz of antispam (manager+) ' + time_diff);
+                }
+            } else {
+                var time_diff_user = cur_time;
+                if (data.from.username in command.last_run_users) {
+                    time_diff_user -= command.last_run_users[data.from.username];
+                }
+                if (time_diff > command.cd_all && time_diff_user > command.cd_user) {
+                    can_run_command = true;
+                } else {
+                    console.error(data.from.username + ' cannot run the command, cuz of antispam ' + time_diff + ', ' + time_diff_user);
+                }
+            }
 
             if (config.verboseLogging) {
                 logger.info('[COMMAND]', JSON.stringify(data, null, 2));
@@ -508,9 +528,16 @@ function runBot(error, auth) {
             // Don't allow @mention to the bot - prevent loopback
             data.message = data.message.replace('@' + bot.getUser().username, '');
 
-            command.handler(data);
-        }
-        else if (!config.quietMode && data.message.indexOf('@' + bot.getUser().username) > -1) {
+            if (config.removeCommands) {
+                bot.moderateDeleteChat(data.id);
+            }
+
+            if (can_run_command) {
+                command.last_run = cur_time;
+                command.last_run_users[data.from.username] = cur_time;
+                command.handler(data);
+            }
+        } else if (config.cleverbot && data.message.indexOf('@' + bot.getUser().username) > -1) {
             mentionResponse(data);
         } else if (config.eventResponses && data.message.indexOf('.') === 0) {
             chatResponse(data);
@@ -589,7 +616,7 @@ function runBot(error, auth) {
 
             });
         }
-        else {
+        else if (config.eventResponses) {
             EventResponse.find({
                 where: Sequelize.and({event_type: 'mention', is_active: true}),
                 order: 'RAND()'

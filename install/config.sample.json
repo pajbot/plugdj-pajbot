@@ -68,5 +68,9 @@
     "verboseLogging": false,
     "quietMode": false,
     "chatRandomnessPercentage": 5,
-    "migrateOldPlugDatabase": false
+    "migrateOldPlugDatabase": false,
+    "removeCommands": true,
+    "autoSkip": false,
+    "lockdown": false,
+    "cleverbot": false
 }
