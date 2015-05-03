@@ -203,9 +203,12 @@ function runBot(error, auth) {
             clearTimeout(skipTimer);
             skipTimer = setTimeout(function () {
                 if (bot.getMedia().cid == data.media.cid) {
-                    bot.moderateForceSkip();
+                    if (config.autoSkip) {
+                        bot.moderateForceSkip();
+                        logger.info('[AUTOSKIP]', 'Song was autoskipped.');
+                    }
                 }
-            }, (data.media.duration + 5) * 1000);
+            }, (data.media.duration + 3) * 1000);
 
             // Write current song data to DB
             var songData = {
