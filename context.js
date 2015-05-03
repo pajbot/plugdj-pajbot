@@ -208,4 +208,14 @@ module.exports = function (options) {
             console.error('Unable to load command: ', e);
         }
     }
+
+    sec_to_str = function(sec) {
+        var minutes = Math.floor(sec / 60);
+        var seconds = sec % 60;
+
+        var str = '';
+        if (minutes > 0) { str += minutes + ' minutes '; }
+        if (seconds > 0) { str += seconds + ' seconds'; }
+        return str;
+    }
 };

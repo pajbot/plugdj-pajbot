@@ -1,14 +1,3 @@
-function sec_to_str(sec)
-{
-    var minutes = Math.floor(sec / 60);
-    var seconds = sec % 60;
-
-    var str = '';
-    if (minutes > 0) { str += minutes + 'm'; }
-    if (seconds > 0) { str += seconds + 's'; }
-    return str;
-}
-
 exports.names = ['.maxlength'];
 exports.hidden = false;
 exports.enabled = true;
