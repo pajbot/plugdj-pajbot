@@ -521,22 +521,7 @@ function runBot(error, auth) {
         bot.multiLine = true;
         bot.multiLineLimit = 5;
 
-        // Load commands
-        try {
-            fs.readdirSync(path.resolve(__dirname, 'commands')).forEach(function (file) {
-                var command = require(path.resolve(__dirname, 'commands/' + file));
-                commands.push({
-                    names: command.names,
-                    handler: command.handler,
-                    hidden: command.hidden,
-                    enabled: command.enabled,
-                    matchStart: command.matchStart
-                })
-            });
-        }
-        catch (e) {
-            console.error('Unable to load command: ', e);
-        }
+        loadCommands();
     }
 
     function handleCommand(data) {

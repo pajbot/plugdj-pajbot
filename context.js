@@ -192,5 +192,20 @@ module.exports = function (options) {
         });
     }
 
+    loadCommands = function() {
+        commands.length = 0;
+        commands = [];
 
+        // Load commands
+        try {
+            fs.readdirSync(path.resolve(__dirname, 'commands')).forEach(function (file) {
+                var command = require(path.resolve(__dirname, 'commands/' + file));
+                command.last_run = 0;
+                command.last_run_users = {};
+                commands.push(command);
+            });
+        } catch (e) {
+            console.error('Unable to load command: ', e);
+        }
+    }
 };
