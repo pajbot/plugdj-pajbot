@@ -24,7 +24,7 @@ exports.handler = function (data) {
                 if (row === null) {
                     bot.sendChat(usernameFormatted + ' was not found.');
                 } else {
-                    bot.sendChat(row.username + ' was last seen ' + timeSince(row.last_seen));
+                    bot.sendChat(row.username + ' was last seen ' + timeSince(row.last_seen) + '.');
                 }
             });
         }

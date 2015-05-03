@@ -12,6 +12,6 @@ exports.handler = function (data) {
     } else {
         var time_remaining = bot.getTimeRemaining();
         var time = ((pos + 1) * 4 * 60 + time_remaining);
-        bot.sendChat('/me @'+data.from.username+' you will reach the booth in approximately ' + sec_to_str(time));
+        bot.sendChat('/me @'+data.from.username+' you will reach the booth in approximately ' + sec_to_str(time) + '.');
     }
 };
