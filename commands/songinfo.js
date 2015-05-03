@@ -1,29 +1,31 @@
 exports.names = ['.songinfo'];
 exports.hidden = false;
-exports.enabled = false;
+exports.enabled = true;
 exports.matchStart = true;
+exports.cd_all = 30;
+exports.cd_user = 30;
+exports.cd_manager = 10;
 exports.handler = function (data) {
-    var songId;
-    media = bot.getMedia();
-    if (data.message.length > 10) {
-        songId = data.message.substring(10);
-    } else if (media != null) {
-        songId = media.id;
-    } else {
-        bot.sendChat('No song playing.');
-        return;
-    }
+    if (data.from.role > 2 || data.from.username == 'PAJLADA') {
+        var songId;
+        media = bot.getMedia();
+        if (media == null) {
+            bot.sendChat('No song playing.');
+            return;
+        }
 
-    //db.get('SELECT author, title FROM SONGS where id = ?', songId, function (err, row) {
-    //    if (row != null) {
-    //        bot.sendChat('Song ' + songId + ' has this metadata in the DB: Artist: "'
-    //        + row['author'] + '". Title: "' + row['title'] + '". Use .updateauthor or .updatetitle to change.');
-    //    } else if (songId == media.id) {
-    //        bot.sendChat('Song ' + songId + ' does not exist in the DB and will be added with'
-    //        + ' this metadata: Artist: "' + media.author + '". Title: "'
-    //        + media.title + '".');
-    //    } else {
-    //        bot.sendChat('Invalid song ID.');
-    //    }
-    //});
+        console.log('hello');
+        sequelize.query('SELECT `songs`.`created_at` FROM `songs` WHERE `format`=? AND `cid`=? ORDER BY `songs`.`created_at` DESC',
+                { replacements: [media.format, media.cid], type: Sequelize.QueryTypes.SELECT}
+                ).then(function(rows) {
+                    console.log(rows);
+                    var num_plays = rows.length;
+                    if (num_plays > 1) {
+                        bot.sendChat('/me [@'+data.from.username+'] This song has been played '+(num_plays-1)+' times in my lifetime, last time being ' + moment.utc(rows[1]['created_at']).calendar() + ' (' + moment.utc(rows[1]['created_at']).fromNow() + ')');
+                    } else {
+                        bot.sendChat('/me [@'+data.from.username+'] This song has not been played here in my lifetime.');
+                    }
+                }
+                );
+    }
 };

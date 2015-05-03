@@ -1,12 +1,9 @@
 exports.names = ['.ban', '.unban'];
-exports.hidden = true;
+exports.hidden = false;
 exports.enabled = false;
 exports.matchStart = true;
 exports.handler = function (data) {
-
-    // Only bouncers and above can call this
-    if (data.from.role > 1) {
-
+    if (data.from.role > 2 || data.from.username == 'PAJLADA' || data.from.username == 'Jeanny') {
         var input = data.message.split(' ');
         var command = _.first(input);
         var params = _.rest(input);
@@ -31,6 +28,8 @@ exports.handler = function (data) {
         if (data.from.role == 2) {
             duration = 'HOUR';
         }
+
+        bot.moderateBanUser()
 
         switch (duration) {
             case 'DAY':
