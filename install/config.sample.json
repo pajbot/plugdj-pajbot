@@ -59,8 +59,6 @@
     "autoSuggestCorrections": false,
     "welcomeUsers": "ALL",
     "wootSongs": "NONE",
-    "requireWootInLine": false,
-    "prohibitMehInLine": true,
     "activeDJTimeoutMins": 60,
     "maxSongLengthSecs": 420,
     "verboseLogging": false,

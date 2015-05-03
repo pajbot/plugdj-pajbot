@@ -133,15 +133,12 @@ function runBot(error, auth) {
 
     bot.on('vote', function (data) {
         var user = _.findWhere(bot.getUsers(), {id: data.i});
-        if (config.verboseLogging && user) {
-            logger.info('[VOTE]', user.username + ': ' + data.v);
-        }
-
-        if (config.prohibitMehInLine && data.v === -1 && bot.getWaitListPosition(data.i) > 0) {
-            bot.sendChat('@' + user.username + ', voting MEH while in line is prohibited. Please woot or leave the wait list.');
-            setTimeout(function () {
-                removeIfMehing(user.username);
-            }, 10 * 1000);
+        if (user && data.v === -1) {
+            logger.info('[MEH]', user.username);
+        } else if (user && data.v === 1) {
+            logger.info('[WOOT]', user.username);
+        } else if (user) {
+            logger.info('[VOTE]', user.username + ': ' + data.v + ' ???? XXX');
         }
     });
 
@@ -351,10 +348,6 @@ function runBot(error, auth) {
         saveWaitList(false);
     });
 
-    if (config.requireWootInLine || config.activeDJTimeoutMins > 0) {
-        setInterval(monitorDJList, 5000);
-    }
-
     bot.on('close', reconnect);
     bot.on('error', reconnect);
 
@@ -467,29 +460,6 @@ function runBot(error, auth) {
 
     function reconnect() {
         bot.connect(config.roomName);
-    }
-
-    function monitorDJList() {
-
-    }
-
-    function removeIfMehing(mehUsername) {
-        var mehWaitList = bot.getWaitList();
-        var mehUser = _.findWhere(mehWaitList, {username: mehUsername});
-        if (mehUser !== undefined && mehUser.vote === -1) {
-            logger.warning('[REMOVE] Removed ' + mehUser.username + ' from wait list for mehing');
-            var position = bot.getWaitListPosition(mehUser.id);
-            bot.moderateRemoveDJ(mehUser.id);
-            bot.sendChat('@' + mehUser.username + ', voting MEH/Chato/:thumbsdown: while in line is prohibited. Check .rules.');
-            var userData = {
-                type: 'remove',
-                details: 'Removed from position ' + position + ' for mehing',
-                user_id: mehUser.id,
-                mod_user_id: bot.getUser().id
-            };
-            Karma.create(userData);
-            User.update({waitlist_position: -1}, {where: {id: mehUser.id}});
-        }
     }
 
     function initializeModules(auth) {
