@@ -228,24 +228,26 @@ function runBot(error, auth) {
                 bot.woot();
             }
 
-            SongResponse.find({
-                where: Sequelize.or(
-                    Sequelize.and({media_type: 'author', trigger: {like: data.media.author}, is_active: true}),
-                    Sequelize.and({media_type: 'title', trigger: {like: data.media.title}, is_active: true})
-                )
-            }).on('success', function (row) {
-                if (row !== null) {
-                    if (row.response != '') {
-                        bot.sendChat(row.response);
+            if (config.songResponses) {
+                SongResponse.find({
+                    where: Sequelize.or(
+                               Sequelize.and({media_type: 'author', trigger: {like: data.media.author}, is_active: true}),
+                               Sequelize.and({media_type: 'title', trigger: {like: data.media.title}, is_active: true})
+                               )
+                }).on('success', function (row) {
+                    if (row !== null) {
+                        if (row.response != '') {
+                            bot.sendChat(row.response);
+                        }
+                        if (row.rate === 1) {
+                            bot.woot();
+                        }
+                        else if (row.rate === -1) {
+                            bot.meh();
+                        }
                     }
-                    if (row.rate === 1) {
-                        bot.woot();
-                    }
-                    else if (row.rate === -1) {
-                        bot.meh();
-                    }
-                }
-            });
+                });
+            }
 
             var maxIdleTime = config.activeDJTimeoutMins * 60;
             var idleDJs = [];
