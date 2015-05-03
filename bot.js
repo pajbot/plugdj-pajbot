@@ -48,6 +48,9 @@ function runBot(error, auth) {
             //else {
             //    handleCommand(data);
             //}
+            if (config.lockdown && data.from.role === 0) {
+                bot.moderateDeleteChat(data.id);
+            }
             handleCommand(data);
             User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
         }
