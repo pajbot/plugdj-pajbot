@@ -512,9 +512,7 @@ function runBot(error, auth) {
         }
         else if (!config.quietMode && data.message.indexOf('@' + bot.getUser().username) > -1) {
             mentionResponse(data);
-        }
-        else if (!config.quietMode && data.message.indexOf('.') === 0) {
-            // @TODO - Build the list of possible commands on init() instead of querying every time
+        } else if (config.eventResponses && data.message.indexOf('.') === 0) {
             chatResponse(data);
         }
     }
