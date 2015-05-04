@@ -7,6 +7,7 @@ runBot(false, config.auth);
 
 var roomHasActiveMods = false;
 var skipTimer;
+var motd_i = 0
 
 function runBot(error, auth) {
     if (error) {
@@ -177,6 +178,8 @@ function runBot(error, auth) {
         if (config.verboseLogging) {
             logger.success('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
         }
+
+        motd_advance();
 
         saveWaitList(true);
 
@@ -678,5 +681,17 @@ function runBot(error, auth) {
                 }
 
             });
+    }
+
+    function motd_advance()
+    {
+        if ('motd' in settings && 'motd_interval' in settings && settings['motd'].length > 0) {
+            motd_i ++;
+
+            if (motd_i >= settings['motd_interval']) {
+                motd_i = 0;
+                bot.sendChat('/me ' + settings['motd']);
+            }
+        }
     }
 }
