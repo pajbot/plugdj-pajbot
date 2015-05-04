@@ -33,13 +33,7 @@ exports.handler = function (data) {
             sequelize.query('SELECT `songs`.`created_at` FROM `songs` WHERE `format`=? AND `cid`=? ORDER BY `songs`.`created_at` DESC',
                     { replacements: [media.format, media.cid], type: Sequelize.QueryTypes.SELECT}
                     ).then(function(rows) {
-                        console.log(rows);
                         num_plays += rows.length;
-                        if (num_plays > 1) {
-                            bot.sendChat('/me [@'+data.from.username+'] This song has been played '+(num_plays-1)+' times in my lifetime, last time being ' + moment.utc(rows[1]['created_at']).calendar() + ' (' + moment.utc(rows[1]['created_at']).fromNow() + ')');
-                        } else {
-                            bot.sendChat('/me [@'+data.from.username+'] This song has not been played here in my lifetime.');
-                        }
                     }
                     )
                     .then(function() {
@@ -52,7 +46,7 @@ exports.handler = function (data) {
                     })
                     .then(function() {
                         if (num_plays > 1) {
-                            bot.sendChat('/me [@'+data.from.username+'] This song has been played '+(num_plays-1)+' times in my lifetime, last time being ' + moment.utc(rows[1]['created_at']).calendar() + ' (' + moment.utc(rows[1]['created_at']).fromNow() + ')');
+                            bot.sendChat('/me [@'+data.from.username+'] This song has been played '+(num_plays-1)+' times in my lifetime.');
                         } else {
                             bot.sendChat('/me [@'+data.from.username+'] This song has not been played here in my lifetime.');
                         }
