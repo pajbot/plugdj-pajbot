@@ -80,7 +80,7 @@ function runBot(error, auth) {
         if (config.verboseLogging) {
             logger.info('[CHAT]', JSON.stringify(data, null, 2));
         } else if (data.from !== undefined && data.from !== null) {
-            logger.info('[CHAT]', data.from.username + ': ' + data.message);
+            logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
         }
 
         if (data.from !== undefined && data.from !== null) {
