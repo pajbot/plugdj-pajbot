@@ -29,7 +29,16 @@ function runBot(error, auth) {
         bot.getUsers().forEach(function (user) {
             updateDbUser(user);
         });
+    });
 
+    bot.on('chatDelete', function(data) {
+        console.error('chat delete');
+        console.error(data);
+    });
+
+    bot.on('modBan', function(data) {
+        console.error('ban');
+        console.error(data);
     });
 
     bot.on('chat', function (data) {
