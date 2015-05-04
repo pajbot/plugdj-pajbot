@@ -688,7 +688,7 @@ function runBot(error, auth) {
         if ('motd' in settings && 'motd_interval' in settings && settings['motd'].length > 0) {
             motd_i ++;
 
-            if (motd_i >= settings['motd_interval']) {
+            if (motd_i > settings['motd_interval']) {
                 motd_i = 0;
                 bot.sendChat('/me ' + settings['motd']);
             }
