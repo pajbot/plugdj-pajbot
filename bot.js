@@ -55,13 +55,25 @@ function runBot(error, auth) {
     });
 
     bot.on('chatDelete', function(data) {
-        console.error('chat delete');
-        console.error(data);
+        var username = 'PAJBOT';
+        if (data.mi === 6281653) {
+            logger.info('[CHATD]', 'PAJBOT deleted ' + data.c);
+        } else {
+            User.find(data.mi).on('success', function (db_user) {
+                logger.info('[CHATD]', db_user.username + ' deleted ' + data.c);
+            });
+        }
     });
 
     bot.on('modBan', function(data) {
-        console.error('ban');
-        console.error(data);
+        var duration;
+        switch (data.d) {
+            case 'h': duration = '1 hour'; break;
+            case 'd': duration = '24 hour'; break;
+            case 'p': duration = 'permanently'; break;
+            default: duration = '?? ('+data.d+')'; break;
+        }
+        logger.info('[BAN]', data.m + ' ' + duration + ' banned ' + data.t);
     });
 
     bot.on('chat', function (data) {
