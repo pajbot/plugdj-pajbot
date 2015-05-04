@@ -562,7 +562,7 @@ function runBot(error, auth) {
             // Don't allow @mention to the bot - prevent loopback
             data.message = data.message.replace('@' + bot.getUser().username, '');
 
-            if (config.removeCommands) {
+            if (config.removeCommands && command.remove_command !== false) {
                 bot.moderateDeleteChat(data.id);
             }
 
