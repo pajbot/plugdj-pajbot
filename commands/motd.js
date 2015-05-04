@@ -50,7 +50,11 @@ exports.handler = function (data) {
                         bot.sendChat('/me [@'+data.from.username+'] MotD interval changed to: ' + settings['motd_interval']);
                     }
                 } else {
-                    bot.sendChat('/me MotD interval: ' + settings['motd_interval']);
+                    if (settings['motd_interval'] === 0) {
+                        bot.sendChat('/me MotD interval: ' + settings['motd_interval'] + ' (disabled)');
+                    } else {
+                        bot.sendChat('/me MotD interval: ' + settings['motd_interval']);
+                    }
                 }
             }
             break;
