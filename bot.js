@@ -646,7 +646,7 @@ function runBot(error, auth) {
                 if (config.verboseLogging) {
                     logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
                 }
-                bot.sendChat('@' + data.from.username + ': ' + response.message);
+                bot.sendChat('@' + data.from.username + ' ' + response.message);
 
             });
         }
