@@ -210,12 +210,16 @@ module.exports = function (options) {
     }
 
     sec_to_str = function(sec) {
-        var minutes = Math.floor(sec / 60);
+        var hours = Math.floor(sec / 3600);
+        var minutes = Math.floor(sec / 60) % 60;
         var seconds = sec % 60;
 
-        var str = '';
-        if (minutes > 0) { str += minutes + ' minutes '; }
-        if (seconds > 0) { str += seconds + ' seconds'; }
-        return str;
+        var str_array = [];
+
+        if (hours > 0) { str_array.push(hours + ' hours'); }
+        if (minutes > 0) { str_array.push(minutes + ' minutes'); }
+        if (seconds > 0) { str_array.push(seconds + ' seconds'); }
+
+        return _.first(str_array, 2).join(', ');
     }
 };
