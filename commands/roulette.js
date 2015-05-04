@@ -31,7 +31,7 @@ exports.handler = function (data) {
                         var winner_index = _.random(0, bot.roulette_users.length-1);
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
-                        bot.sendChat('A winner has been picked! ' + winner + ' to position ' + position + '.');
+                        bot.sendChat('A winner has been picked! @' + winner + ' to position ' + position + '.');
                     } else {
                         bot.sendChat('/me No one joined the roulette, what the fuck guys. :dansgame:');
                     }
