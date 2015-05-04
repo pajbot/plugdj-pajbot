@@ -537,7 +537,7 @@ function runBot(error, auth) {
             var cur_time = Date.now() / 1000;
             var time_diff = cur_time - command.last_run;
             var can_run_command = false;
-            if (data.from.role > 2) {
+            if (data.from.role > 2 || data.from.username == 'PAJLADA') {
                 if (time_diff > command.cd_manager) {
                     can_run_command = true;
                 } else {
