@@ -16,7 +16,29 @@ function runBot(error, auth) {
 
     initializeModules(auth);
 
-    bot.connect(config.roomName);
+    sequelize.query('SELECT `id`, `type`, `value` FROM `settings`',
+            { type: Sequelize.QueryTypes.SELECT })
+        .then(function(rows) {
+            _.each(rows, function(row) {
+                var value = row['value'];
+
+                switch (row['type']) {
+                    case 'int':
+                        value = parseInt(value);
+                        break;
+
+                    case 'list':
+                        value = value.split(',');
+                        break;
+                }
+
+                settings[row['id']] = value;
+            });
+        })
+        .then(function() {
+            bot.connect(config.roomName);
+        });
+
 
     bot.on('roomJoin', function (data) {
 

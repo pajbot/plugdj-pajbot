@@ -50,6 +50,8 @@ module.exports = function (options) {
         this[model] = sequelize.import(__dirname + '/models/' + model);
     });
 
+    settings = {};
+
     // @TODO - Is it better to declare these directly in the model?
     Song.hasMany(Play);
     User.hasMany(Karma);
