@@ -537,14 +537,16 @@ function runBot(error, auth) {
         data.message = data.message.replace(/&lt;/gi, '\<');
         data.message = data.message.replace(/&gt;/gi, '\>');
 
+        var lowercase_msg = data.message.toLowerCase();
+        var cmd_msg = _.first(lowercase_msg.split(' '));
+
         var command = commands.filter(function (cmd) {
-            var found = false;
             for (i = 0; i < cmd.names.length; i++) {
-                if (!found) {
-                    found = (cmd.names[i] == data.message.toLowerCase() || (cmd.matchStart && data.message.toLowerCase().indexOf(cmd.names[i]) == 0));
+                if (cmd.names[i] == cmd_msg) {
+                    return true;
                 }
             }
-            return found;
+            return false;
         })[0];
 
         if (command && command.enabled) {
