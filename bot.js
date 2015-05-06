@@ -277,11 +277,13 @@ function runBot(error, auth) {
                 SongResponse.find({
                     where: Sequelize.or(
                                Sequelize.and({media_type: 'author', trigger: {like: data.media.author}, is_active: true}),
-                               Sequelize.and({media_type: 'title', trigger: {like: data.media.title}, is_active: true})
+                               Sequelize.and({media_type: 'title', trigger: {like: data.media.title}, is_active: true}),
+                               Sequelize.and({media_type: 'cid', trigger: data.media.format + '-' + data.media.cid, is_active: true})
                                )
                 }).on('success', function (row) {
                     if (row !== null) {
                         if (row.response != '') {
+                            logger.info('[SONGRESPONSE]', 'Sending response: ' + row.response);
                             bot.sendChat(row.response);
                         }
                         if (row.rate === 1) {
