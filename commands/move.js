@@ -2,9 +2,11 @@ exports.names = ['.move', '.mv'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;
+exports.cd_all = 5;
+exports.cd_user = 10;
+exports.cd_manager = 0;
 exports.handler = function (data) {
-    if (data.from.role > 1) {
-        //bot.moderateDeleteChat(data.id);
+    if (data.from.role > 2 || data.from.username == 'RosenMVP' || data.from.username == 'PAJLADA') {
         var input = data.message.split(' ');
         if (input.length >= 3) {
             var username = _.rest(input, 1);
@@ -21,11 +23,10 @@ exports.handler = function (data) {
                             bot.moderateMoveDJ(user.id, position);
                         }
                     });
-                }
-                else if (currentPosition > 0 && currentPosition !== position) {
+                } else if (currentPosition > 0 && currentPosition !== position) {
                     bot.moderateMoveDJ(user.id, position);
                 }
-                logger.info('Moving ' + usernameFormatted + ' to position: ' + position);
+                bot.sendChat('/me [@' + data.from.username + '] Moving ' + usernameFormatted + ' to position ' + position + '.');
             }
         }
     }
