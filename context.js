@@ -1,5 +1,6 @@
 module.exports = function (options) {
     var PlugAPI = require('plugapi');
+    var FixedArray = require("fixed-array");
 
     Sequelize = require('sequelize');
     Promise = require('bluebird');
@@ -51,6 +52,7 @@ module.exports = function (options) {
     });
 
     settings = {};
+    message_history = FixedArray(900);
 
     // @TODO - Is it better to declare these directly in the model?
     Song.hasMany(Play);

@@ -97,6 +97,8 @@ function runBot(error, auth) {
             handleCommand(data);
             User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
         }
+
+        message_history.push(data.id);
     });
 
     bot.on('userJoin', function (data) {
