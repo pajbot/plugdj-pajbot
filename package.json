@@ -26,7 +26,8 @@
         "bluebird": "*",
         "moment": "*",
         "cleverbot-node": "*",
-        "node-datatable": "git://github.com/jpravetz/node-datatable.git"
+        "node-datatable": "git://github.com/jpravetz/node-datatable.git",
+        "fixed-array": "*"
     },
     "devDependencies": {
         "sequelize-fixtures": "*"
