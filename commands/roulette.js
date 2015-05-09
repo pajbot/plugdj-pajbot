@@ -21,7 +21,7 @@ exports.handler = function (data) {
             }
         } else {
             if (bot.running_roulette !== true) {
-                bot.sendChat('/me [@' + data.from.username + ']The roulette is now open! Type .join to participate!');
+                bot.sendChat('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate!');
                 bot.running_roulette = true;
                 bot.roulette_users = [];
 
