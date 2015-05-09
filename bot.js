@@ -178,9 +178,9 @@ function runBot(error, auth) {
     bot.on('vote', function (data) {
         var user = _.findWhere(bot.getUsers(), {id: data.i});
         if (user && data.v === -1) {
-            logger.info('[MEH]', user.username);
+            //logger.info('[MEH]', user.username);
         } else if (user && data.v === 1) {
-            logger.info('[WOOT]', user.username);
+            //logger.info('[WOOT]', user.username);
         } else if (user) {
             logger.info('[VOTE]', user.username + ': ' + data.v + ' ???? XXX');
         }
@@ -217,6 +217,11 @@ function runBot(error, auth) {
                 }
             );
         }
+
+        Promise.map(bot.getWaitList(), function (dj) {
+            var position = bot.getWaitListPosition(dj.id);
+            logger.info('[WLIST]', position + ' - ' + dj.username);
+        });
 
         // Write previous play data to DB
         if (data.lastPlay.media !== null && data.lastPlay.dj !== null) {
@@ -403,7 +408,6 @@ function runBot(error, auth) {
 
     bot.on('close', reconnect);
     bot.on('error', reconnect);
-
 
     if (config.telnet.listenOnIp && config.telnet.listenOnPort) {
         bot.tcpListen(config.telnet.listenOnPort, config.telnet.listenOnIp);
@@ -703,10 +707,14 @@ function runBot(error, auth) {
     {
         if ('motd' in settings && 'motd_interval' in settings && settings['motd'].length > 0) {
             motd_i ++;
+            logger.info('[MOTD]', 'motd_i = ' + motd_i);
 
             if (motd_i == settings['motd_interval']) {
+                logger.info('[MOTD]', 'run motd');
                 motd_i = 0;
                 bot.sendChat('/me ' + settings['motd']);
+            } else {
+                logger.info('[MOTD]', 'motd is supposed to be run every ' + settings['motd_interval'] + ' song.');
             }
         }
     }
