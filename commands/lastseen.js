@@ -6,7 +6,7 @@ exports.cd_all = 5;
 exports.cd_user = 10;
 exports.cd_manager = 5;
 exports.handler = function (data) {
-    if (data.from.role > 2 || data.from.username == 'PAJLADA') {
+    if (data.from.role > 1) {
         var params = _.rest(data.message.split(' '), 1);
         if (params.length < 1) {
             bot.sendChat('/me usage: .lastseen username');
