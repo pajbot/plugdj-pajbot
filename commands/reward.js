@@ -8,7 +8,7 @@ exports.cd_all = 15;
 exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {
-    if (data.from.role > 2 || data.from.username == 'PAJLADA' || data.from.username == 'Jeanny') {
+    if (data.from.role > 1) {
         var params = _.rest(data.message.split(' '), 1);
         var username = '';
         if (params.length < 1) {
