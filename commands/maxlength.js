@@ -1,4 +1,4 @@
-exports.names = ['.maxlength'];
+exports.names = ['.maxlength', '.max'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
