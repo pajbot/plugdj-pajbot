@@ -17,9 +17,11 @@ function runBot(error, auth) {
 
     initializeModules(auth);
 
+    logger.info('Getting settings...');
     sequelize.query('SELECT `id`, `type`, `value` FROM `settings`',
             { type: Sequelize.QueryTypes.SELECT })
         .then(function(rows) {
+            logger.info('got settings!');
             _.each(rows, function(row) {
                 var value = row['value'];
 
@@ -37,7 +39,9 @@ function runBot(error, auth) {
             });
         })
         .then(function() {
+            logger.info('running bot connect');
             bot.connect(config.roomName);
+            logger.info('ran it!');
         });
 
 
