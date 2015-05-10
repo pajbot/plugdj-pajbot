@@ -16,16 +16,7 @@ exports.handler = function (data) {
             users = bot.getUsers();
             var user = _.findWhere(users, {username: usernameFormatted});
             if (user !== undefined) {
-                var currentPosition = bot.getWaitListPosition(user.id);
-                if (currentPosition === -1) {
-                    bot.moderateAddDJ(user.id, function () {
-                        if (position <= bot.getWaitList().length) {
-                            bot.moderateMoveDJ(user.id, position);
-                        }
-                    });
-                } else if (currentPosition > 0 && currentPosition !== position) {
-                    bot.moderateMoveDJ(user.id, position);
-                }
+                move_user(user.id, position);
                 bot.sendChat('/me [@' + data.from.username + '] Moving ' + usernameFormatted + ' to position ' + position + '.');
             }
         }
