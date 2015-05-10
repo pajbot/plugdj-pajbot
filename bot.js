@@ -30,6 +30,10 @@ function runBot(error, auth) {
                         value = parseInt(value);
                         break;
 
+                    case 'bool':
+                        value = (parseInt(value) !== 0);
+                        break;
+
                     case 'list':
                         value = value.split(',');
                         break;
@@ -266,7 +270,7 @@ function runBot(error, auth) {
             clearTimeout(skipTimer);
             skipTimer = setTimeout(function () {
                 if (bot.getMedia().cid == data.media.cid) {
-                    if (config.autoSkip) {
+                    if (settings['autoskip']) {
                         bot.moderateForceSkip();
                         logger.info('[AUTOSKIP]', 'Song was autoskipped.');
                     }

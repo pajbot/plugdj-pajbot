@@ -51,7 +51,16 @@ module.exports = function (options) {
         this[model] = sequelize.import(__dirname + '/models/' + model);
     });
 
-    settings = {};
+    settings = {
+        'autoskip': false,
+        'motd': 'u wot m8?',
+        'motd_interval': 10
+    };
+    setting_names = {
+        'autoskip': 'Autoskip',
+        'motd': 'MotD',
+        'motd_interval': 'MotD interval'
+    };
     message_history = FixedArray(900);
     move_queue = [];
 
@@ -278,6 +287,150 @@ module.exports = function (options) {
                     bot.moderateLockBooth(false);
                 }
             });
+        }
+    }
+
+    modMessage = function(data, message) {
+        bot.sendChat('/me [@' + data.from.username + '] ' + message);
+    }
+
+    setting_value = function(id) {
+        if (id in settings) {
+            var type = typeof settings[id];
+
+            switch (type) {
+                case 'boolean':
+                    if (settings[id]) {
+                        return 'enabled';
+                    } else {
+                        return 'disabled';
+                    }
+                    break;
+
+                default:
+                    return settings[id];
+                    //logger.error('setting_value is not implemented for ' + type);
+                    break;
+            }
+        }
+    }
+
+    set_setting = function(id, value, data) {
+        if (id in settings) {
+            var old_value = settings[id];
+            settings[id] = value;
+
+            var type = typeof settings[id];
+
+            if (type === 'boolean') {
+                if (value) {
+                    value = '1';
+                } else {
+                    value = '0';
+                }
+                if (old_value) {
+                    old_value = '1';
+                } else {
+                    old_value = '0';
+                }
+            }
+
+            sequelize.query('UPDATE `settings` SET `value`=? WHERE `id`=?',
+                    { replacements: [value, id] });
+
+            var userData = {
+                type: 'setting_change',
+                details: 'Setting ' + id + ' changed from ' + old_value + ' to ' + value + ' by ' + data.from.username,
+                user_id: data.from.id,
+                mod_user_id: data.from.id
+            };
+            Karma.create(userData);
+        }
+    }
+
+    /**
+     * This handles all setting changes from user commands.
+     *
+     * setting_handle('autoskip', data) will be called on .autoskip
+     * The function will then read all additional parameters and make sure the
+     * setting is properly updated in the database if it is changed.
+     **/
+    setting_handle = function(id, data) {
+        if (id in settings) {
+            var params = _.rest(data.message.split(' '), 1);
+            var name = id;
+            if (id in setting_names) {
+                name = setting_names[id];
+            }
+
+            var type = typeof settings[id];
+
+            if (params.length < 1) {
+                switch (type) {
+                    case 'boolean':
+                        set_setting(id, !settings[id], data);
+                        modMessage(data, name + ' is now ' + setting_value(id) + '.');
+                        break;
+
+                    default:
+                        modMessage(data, name + ': ' + setting_value(id));
+                        break;
+                }
+            } else {
+                var msg = params.join(' ').trim();
+                switch (type) {
+                    case 'boolean':
+                        switch (msg.toLowerCase()) {
+                            case 'on':
+                            case '1':
+                                if (settings[id] === true) {
+                                    modMessage(data, name + ' is already ' + setting_value(id) + '.');
+                                } else {
+                                    set_setting(id, true, data);
+                                    modMessage(data, name + ' is now ' + setting_value(id) + '.');
+                                }
+                                break;
+
+                            case 'off':
+                            case '0':
+                                if (settings[id] === false) {
+                                    modMessage(data, name + ' is already ' + setting_value(id) + '.');
+                                } else {
+                                    set_setting(id, false, data);
+                                    modMessage(data, name + ' is now ' + setting_value(id) + '.');
+                                }
+                                break;
+
+                            case 'status':
+                                modMessage(data, name + ' is currently ' + setting_value(id) + '.');
+                                break;
+
+                            default:
+                                set_setting(id, !settings[id], data);
+                                modMessage(data, name + ' is now ' + setting_value(id) + '.');
+                                break;
+                        }
+                        break;
+
+                    case 'string':
+                        if (msg.length > 0) {
+                            set_setting(id, msg, data);
+                            modMessage(data, name + ' changed to: ' + setting_value(id));
+                        }
+                        break;
+
+                    case 'number':
+                        set_setting(id, parseInt(msg), data);
+                        modMessage(data, name + ' changed to: ' + setting_value(id));
+                        break;
+
+                    default:
+                        logger.error('Unhandled type: ' + type);
+                        break;
+                }
+            }
+        } else {
+            logger.error(id + ' is not a valid key in settings.');
         }
     }
 };

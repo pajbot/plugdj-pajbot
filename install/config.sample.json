@@ -70,7 +70,6 @@
     "chatRandomnessPercentage": 5,
     "migrateOldPlugDatabase": false,
     "removeCommands": true,
-    "autoSkip": false,
     "lockdown": false,
     "cleverbot": false
 }
