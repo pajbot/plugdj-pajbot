@@ -52,6 +52,8 @@ function runBot(error, auth) {
         bot.getUsers().forEach(function (user) {
             updateDbUser(user);
         });
+
+        setInterval(process_move_queue, 1000);
     });
 
     bot.on('chatDelete', function(data) {
@@ -188,12 +190,17 @@ function runBot(error, auth) {
         }
     });
 
+    bot.on('djListUpdate', function(data) {
+        //process_move_queue();
+    });
+
     bot.on('advance', function (data) {
         if (config.verboseLogging) {
             logger.success('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
         }
 
         motd_advance();
+        //process_move_queue();
 
         saveWaitList(true);
 
@@ -717,6 +724,62 @@ function runBot(error, auth) {
                 bot.sendChat('/me ' + settings['motd']);
             } else {
                 logger.info('[MOTD]', 'motd is supposed to be run every ' + settings['motd_interval'] + ' song.');
+            }
+        }
+    }
+
+    /**
+     * The wait list is locked when the first person is moved into the queue.
+     * The wait list is unlocked when the last person in the queue has been successfully inserted.
+     **/
+    function process_move_queue()
+    {
+        if (move_queue.length > 0) {
+            logger.info('[MQUEUE]', 'There\'s someone in the move queue!');
+
+            /* Fetch the first user from the queue */
+            var md = move_queue[0];
+            var current_position = bot.getWaitListPosition(md.user_id);
+            var new_position = md.position;
+            var room_length = bot.getWaitList().length;
+
+            if (current_position === new_position) {
+                move_queue.shift();
+                return false;
+            }
+
+            if (current_position === -1) {
+                /* The user is not in queue, for us to move this person,
+                 * we need to have a free spot in the wait list. */
+                if (room_length !== 50) {
+                    bot.moderateAddDJ(md.user_id, function () {
+                        logger.info('[MQUEUE]', 'Added someone into the queue...');
+                        var room_length = bot.getWaitList().length;
+                        if (new_position > room_length) {
+                            new_position = room_length;
+                        }
+
+                        bot.moderateMoveDJ(md.user_id, new_position, function() {
+                            move_queue.shift();
+                            logger.info('[MQUEUE]', 'Successfully moved someone in the queue!!');
+
+                            if (move_queue.length == 0) {
+                                /* The queue is empty, we can unlock the waitlist! */
+                                bot.moderateLockBooth(false);
+                            }
+                        });
+                    });
+                }
+            } else {
+                move_queue.shift();
+                bot.moderateMoveDJ(md.user_id, new_position, function() {
+                    logger.info('[MQUEUE]', 'Successfully moved someone in the queue!!');
+
+                    if (move_queue.length == 0) {
+                        /* The queue is empty, we can unlock the waitlist! */
+                        bot.moderateLockBooth(false);
+                    }
+                });
             }
         }
     }

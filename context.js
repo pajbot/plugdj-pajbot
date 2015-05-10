@@ -53,6 +53,7 @@ module.exports = function (options) {
 
     settings = {};
     message_history = FixedArray(900);
+    move_queue = [];
 
     // @TODO - Is it better to declare these directly in the model?
     Song.hasMany(Play);
@@ -225,5 +226,58 @@ module.exports = function (options) {
         if (seconds > 0) { str_array.push(seconds + ' seconds'); }
 
         return _.first(str_array, 2).join(', ');
+    }
+
+    move_user = function(user_id, position) {
+        var md = {'user_id': user_id, 'position': position};
+        var room_length = bot.getWaitList().length;
+        var current_position = bot.getWaitListPosition(md.user_id);
+
+        logger.info('[MQUEUE1]', 'Adding ' + user_id + ' to the move queue, position ' + position + '. (' + room_length + ')');
+
+        if (position === -1) {
+            /* If the requested position is -1 we assume
+             * the person should be removed from the wait list. */
+            bot.moderateRemoveDJ(user_id);
+        } else if (current_position === -1 && room_length === 50) {
+            logger.info('[MQUEUE1]', 'Added ' + user_id + ' to the move queue, position ' + position + '.');
+            move_queue.push(md);
+            bot.moderateLockBooth(true);
+
+            var user = bot.getUser(md.user_id);
+            bot.sendChat('/me Added ' + user.username + ' to the queue. Queue length: ' + move_queue.length);
+        } else if (current_position === -1 && room_length < 50) {
+             logger.info('[MQUEUE1]', 'The waitlist isn\'t even full, just move add and move!');
+
+            //move_queue.push(md);
+            bot.moderateAddDJ(md.user_id, function () {
+                logger.info('[MQUEUE1]', 'Added someone into the waitlist...');
+                var room_length = bot.getWaitList().length;
+                if (position > room_length) {
+                    position = room_length;
+                }
+
+                bot.moderateMoveDJ(md.user_id, position, function() {
+                    logger.info('[MQUEUE1]', 'Successfully moved someone in the waitlist!!');
+
+                    if (move_queue.length == 0) {
+                        /* The queue is empty, we can unlock the waitlist! */
+                        bot.moderateLockBooth(false);
+                    }
+                });
+            });
+       } else {
+            logger.info('[MQUEUE1]', 'just move!');
+
+            //move_queue.push(md);
+            bot.moderateMoveDJ(md.user_id, position, function() {
+                logger.info('[MQUEUE1]', 'Successfully moved someone in the waitlist!!');
+
+                if (move_queue.length == 0) {
+                    /* The queue is empty, we can unlock the waitlist! */
+                    bot.moderateLockBooth(false);
+                }
+            });
+        }
     }
 };
