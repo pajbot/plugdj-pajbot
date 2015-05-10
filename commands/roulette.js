@@ -32,6 +32,14 @@ exports.handler = function (data) {
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
                         bot.sendChat('A winner has been picked! @' + winner + ' to position ' + position + '.');
+
+                        var users = bot.getUsers();
+                        var user = _.findWhere(users, {username: winner});
+                        if (user !== undefined) {
+                            move_user(user.id, position);
+                        } else {
+                            bot.sendChat('/me user who won roulette isn\'t even here :4head:');
+                        }
                     } else {
                         bot.sendChat('/me No one joined the roulette, what the fuck guys. :dansgame:');
                     }
