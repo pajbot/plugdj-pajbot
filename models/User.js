@@ -16,7 +16,8 @@ module.exports = function (sequelize, Sequelize) {
         birthday: {type: Sequelize.DATE},
         waitlist_position: {type: Sequelize.INTEGER, defaultValue: -1},
         last_seen: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
-        last_active: {type: Sequelize.DATE, defaultValue: Sequelize.NOW}
+        last_active: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
+        last_leave: {type: Sequelize.DATE, defaultValue: Sequelize.NOW}
     }, {
         underscored: true,
         tableName: 'users',
