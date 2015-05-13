@@ -2,9 +2,11 @@ exports.names = ['.skip'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
+exports.cd_all = 3;
+exports.cd_user = 3;
+exports.cd_manager = 3;
 exports.handler = function (data) {
-    if (data.from.role > 1 || data.from.id == bot.getDJ().id || (config.allowRDJSkip && data.from.role == 1)) {
-
+    if (data.from.role > 1 || data.from.id == bot.getDJ().id) {
         media = bot.getMedia();
 
         logger.warning('[SKIP] ' + data.from.username + ' skipped ' + bot.getDJ().username);
@@ -20,7 +22,7 @@ exports.handler = function (data) {
         }
 
         bot.moderateForceSkip();
-        //bot.moderateDeleteChat(data.id);
+        modMessage(data, 'Skipped the current song.');
     }
 };
 
