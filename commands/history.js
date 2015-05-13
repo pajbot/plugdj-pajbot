@@ -1,4 +1,4 @@
-exports.names = ['.history', '.link'];
+exports.names = ['.history'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
