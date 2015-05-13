@@ -61,7 +61,7 @@ function runBot(error, auth) {
             updateDbUser(user);
         });
 
-        setInterval(process_move_queue, 1000);
+        setInterval(process_move_queue, 2500);
     });
 
     bot.on('chatDelete', function(data) {
@@ -171,7 +171,8 @@ function runBot(error, auth) {
 
     bot.on('userLeave', function (data) {
         logger.info('[LEAVE]', 'User left: ' + data.username);
-        User.update({last_seen: new Date()}, {where: {id: data.id}});
+        var position = bot.getWaitListPosition(data.id);
+        User.update({last_seen: new Date(), last_leave: new Date()}, {where: {id: data.id}});
     });
 
     bot.on('userUpdate', function (data) {
@@ -465,7 +466,13 @@ function runBot(error, auth) {
             var position = bot.getWaitListPosition(user.id);
             // user last seen in 900 seconds
             if (position > 0) {
-                User.update({waitlist_position: position, last_seen: moment.utc().toDate()}, {where: {id: user.id}});
+                User.find(user.id).on('success', function (dbUser) {
+                    if (dbUser.waitlist_position > position) {
+                        User.update({last_seen: moment.utc().toDate()}, {where: {id: user.id}});
+                    } else {
+                        User.update({waitlist_position: position, last_seen: moment.utc().toDate()}, {where: {id: user.id}});
+                    }
+                });
             }
             else {
                 User.update({waitlist_position: -1}, {where: {id: user.id}});
@@ -477,11 +484,9 @@ function runBot(error, auth) {
         });
         User.update({waitlist_position: -1}, {
             where: {
-                last_seen: {lte: moment.utc().subtract(15, 'minutes').toDate()},
-                last_active: {lte: moment.utc().subtract(15, 'minutes').toDate()}
+                last_leave: {lte: moment.utc().subtract(settings['dctimer'], 'seconds').toDate()}
             }
         });
-
     }
 
     function updateDbUser(user) {
@@ -768,6 +773,7 @@ function runBot(error, auth) {
                         }
 
                         bot.moderateMoveDJ(md.user_id, new_position, function() {
+                            User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
                             move_queue.shift();
                             logger.info('[MQUEUE]', 'Successfully moved someone in the queue!!');
 
@@ -779,8 +785,9 @@ function runBot(error, auth) {
                     });
                 }
             } else {
-                move_queue.shift();
                 bot.moderateMoveDJ(md.user_id, new_position, function() {
+                    move_queue.shift();
+                    User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
                     logger.info('[MQUEUE]', 'Successfully moved someone in the queue!!');
 
                     if (move_queue.length == 0) {

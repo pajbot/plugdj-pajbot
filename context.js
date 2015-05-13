@@ -55,13 +55,15 @@ module.exports = function (options) {
         'autoskip': false,
         'timeguard': false,
         'motd': 'u wot m8?',
-        'motd_interval': 10
+        'motd_interval': 10,
+        'dctimer': 20 * 60
     };
     setting_names = {
         'autoskip': 'Autoskip',
         'timeguard': 'Timeguard',
         'motd': 'MotD',
-        'motd_interval': 'MotD interval'
+        'motd_interval': 'MotD interval',
+        'dctimer': 'DC timer'
     };
     message_history = FixedArray(900);
     move_queue = [];
@@ -270,6 +272,7 @@ module.exports = function (options) {
 
                 bot.moderateMoveDJ(md.user_id, position, function() {
                     logger.info('[MQUEUE1]', 'Successfully moved someone in the waitlist!!');
+                    User.update({waitlist_position: position}, {where: {id: md.user_id}});
 
                     if (move_queue.length == 0) {
                         /* The queue is empty, we can unlock the waitlist! */
@@ -283,6 +286,11 @@ module.exports = function (options) {
             //move_queue.push(md);
             bot.moderateMoveDJ(md.user_id, position, function() {
                 logger.info('[MQUEUE1]', 'Successfully moved someone in the waitlist!!');
+                User.update({waitlist_position: position}, {where: {id: md.user_id}});
+                var room_length = bot.getWaitList().length;
+                if (position > room_length) {
+                    position = room_length;
+                }
 
                 if (move_queue.length == 0) {
                     /* The queue is empty, we can unlock the waitlist! */
