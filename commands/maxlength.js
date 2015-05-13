@@ -1,4 +1,4 @@
-exports.names = ['.maxlength', '.max'];
+exports.names = ['.maxlength', '.max', '.setmaxlength'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
@@ -11,12 +11,12 @@ exports.handler = function (data) {
         var command = _.first(input);
         var params = _.rest(input);
         if (params.length < 1) {
-            bot.sendChat('/me [@'+data.from.username+'] Current max song length: ' + sec_to_str(config.maxSongLengthSecs) + '.');
+            modMessage(data, 'Current max song length: ' + sec_to_str(settings['maxlength']) + '.');
         } else {
             var new_length = parseFloat(params);
             if (!isNaN(new_length)) {
-                config.maxSongLengthSecs = Math.floor(new_length * 60);
-                bot.sendChat('/me [@'+data.from.username+'] Max song length set to ' + sec_to_str(config.maxSongLengthSecs) + '.');
+                set_setting('maxlength', Math.floor(new_length * 60), data);
+                modMessage(data, 'Max song length set to ' + sec_to_str(settings['maxlength']) + '.');
             }
         }
     }

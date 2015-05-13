@@ -53,11 +53,13 @@ module.exports = function (options) {
 
     settings = {
         'autoskip': false,
+        'timeguard': false,
         'motd': 'u wot m8?',
         'motd_interval': 10
     };
     setting_names = {
         'autoskip': 'Autoskip',
+        'timeguard': 'Timeguard',
         'motd': 'MotD',
         'motd_interval': 'MotD interval'
     };

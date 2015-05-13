@@ -399,13 +399,13 @@ function runBot(error, auth) {
              */
 
             // Only police this if there aren't any mods around
-            if (config.timeGuard && config.maxSongLengthSecs > 0 && data.media.duration > config.maxSongLengthSecs) {
+            if (settings['timeguard'] && data.media.duration > settings['maxlength']) {
                 logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
-                bot.sendChat('Sorry @' + data.currentDJ.username + ', this song is over our maximum room length of ' + (config.maxSongLengthSecs / 60) + ' minutes.');
+                bot.sendChat('Sorry @' + data.currentDJ.username + ', this song is over our maximum room length of ' + sec_to_str(settings['maxlength']) + '.');
                 bot.moderateForceSkip();
                 var userData = {
                     type: 'skip',
-                    details: 'Skipped for playing a song of ' + data.media.duration + ' (room configured for max of ' + config.maxSongLengthSecs + ')',
+                    details: 'Skipped for playing a song of ' + data.media.duration + ' (room configured for max of ' + sec_to_str(settings['maxlength']) + ')',
                     user_id: data.currentDJ.id,
                     mod_user_id: bot.getUser().id
                 };
