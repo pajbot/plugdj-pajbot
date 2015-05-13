@@ -34,7 +34,9 @@ exports.handler = function (data) {
                         logger.info(user_1.id + ' to position ' + position_2);
                         logger.info(user_2.id + ' to position ' + position_1);
                         move_user(user_1.id, position_2);
-                        move_user(user_2.id, position_1);
+                        setTimeout(function() {
+                            move_user(user_2.id, position_1);
+                        }, 500);
                     }
                 }
             } else {
