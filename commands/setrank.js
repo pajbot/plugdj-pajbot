@@ -15,12 +15,23 @@ exports.handler = function (data) {
 
         if (params.length >= 2) {
             username = _.initial(params).join(' ').trim();
-            rank = parseInt(_.last(params).toUpperCase());
+            var rank_tmp = _.last(params).toUpperCase();
+            switch (rank_tmp) {
+                case 'PLEB':
+                    rank_tmp = '0';
+                    break;
+                case 'DISCPLEB':
+                    rank_tmp = '1';
+                    break;
+                case 'NAZI':
+                    rank_tmp = '2';
+                    break;
+            }
+            rank = parseInt(rank_tmp);
         } else {
-            bot.sendChat('/me Usage: .setrank username (0|1|2)');
+            bot.sendChat('/me Usage: .setrank username (Pleb|DiscPleb|Nazi)');
             return;
         }
-
 
         if (rank >= 0 && rank <= 2) {
             var usernameFormatted = S(username).chompLeft('@').s;
@@ -29,6 +40,11 @@ exports.handler = function (data) {
                 if (row === null) {
                     bot.sendChat('/me No user named ' + usernameFormatted + ' was not found.');
                 } else {
+                    /*
+                    if (data.from.username == 'Jeanny' && row.username == 'PAJLADA') {
+                        return false;
+                    }
+                    */
                     bot.moderateSetRole(row.id, rank, function() {
                         modMessage(data, row.username + ' was set to rank ' + rank);
                         logger.info('[SETRANK] ' + row.username + ' was set to rank ' + rank + ' by ' + data.from.username);
@@ -39,7 +55,7 @@ exports.handler = function (data) {
             users = bot.getUsers();
             var user = _.findWhere(users, {username: usernameFormatted});
         } else {
-            bot.sendChat('/me Usage: .setrank username (0|1|2)');
+            bot.sendChat('/me Usage: .setrank username (Pleb|DiscPleb|Nazi)');
             return;
         }
     }
