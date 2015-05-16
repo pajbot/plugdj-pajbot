@@ -581,7 +581,7 @@ function runBot(error, auth) {
                 if (time_diff > command.cd_manager) {
                     can_run_command = true;
                 } else {
-                    console.error(data.from.username + ' cannot run the command, cuz of antispam (manager+) ' + time_diff);
+                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (manager+) ' + time_diff);
                 }
             } else {
                 var time_diff_user = cur_time;
@@ -591,7 +591,7 @@ function runBot(error, auth) {
                 if (time_diff > command.cd_all && time_diff_user > command.cd_user) {
                     can_run_command = true;
                 } else {
-                    console.error(data.from.username + ' cannot run the command, cuz of antispam ' + time_diff + ', ' + time_diff_user);
+                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam ' + time_diff);
                 }
             }
 
