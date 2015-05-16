@@ -729,7 +729,7 @@ function runBot(error, auth) {
             motd_i ++;
             logger.info('[MOTD]', 'motd_i = ' + motd_i);
 
-            if (motd_i == settings['motd_interval']) {
+            if (motd_i >= settings['motd_interval'] && settings['motd_interval'] != 0) {
                 logger.info('[MOTD]', 'run motd');
                 motd_i = 0;
                 bot.sendChat('/me ' + settings['motd']);
