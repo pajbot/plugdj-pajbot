@@ -11,7 +11,6 @@ exports.handler = function (data) {
     if (data.from.role > 2 || data.from.username == 'PAJLADA') {
         var rest = _.rest(data.message.split(' '), 1).join(' ').trim().toLowerCase();
 
-        console.error('"' + rest + '"');
         if (rest === 'stop') {
             if (bot.running_roulette === true) {
                 bot.sendChat('/me The roulette has been cancelled. :sadness:');
@@ -20,14 +19,21 @@ exports.handler = function (data) {
                 bot.running_roulette = false;
             }
         } else {
+            var roulette_length_arg = parseInt(rest);
             if (bot.running_roulette !== true) {
-                bot.sendChat('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate!');
+                var roulette_length = roulette_timer * 1000;
+                if (!isNaN(roulette_length_arg)) {
+                    roulette_length = roulette_length_arg * 1000;
+                }
+                bot.sendChat('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
                 bot.running_roulette = true;
                 bot.roulette_users = [];
+
 
                 roulette_timer = setTimeout(function () {
                     bot.running_roulette = false;
                     if (bot.roulette_users.length > 0) {
+                        logger.info(bot.roulette_users);
                         var winner_index = _.random(0, bot.roulette_users.length-1);
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
@@ -43,7 +49,7 @@ exports.handler = function (data) {
                     } else {
                         bot.sendChat('/me No one joined the roulette, what the fuck guys. :dansgame:');
                     }
-                }, roulette_duration * 1000);
+                }, roulette_length);
             } else {
                 bot.sendChat('/me [@' + data.from.username + '] The roulette is already running.');
             }

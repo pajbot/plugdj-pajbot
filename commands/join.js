@@ -15,7 +15,7 @@ exports.handler = function (data) {
             case '.join':
             case '!join':
                 {
-                    if (!(data.from.username in bot.roulette_users)) {
+                    if (bot.roulette_users.indexOf(data.from.username) == -1) {
                         bot.sendChat('/me ' + data.from.username + ' joined the roulette! (.leave if you regret it.)', 2);
                         bot.roulette_users.push(data.from.username);
                     }
