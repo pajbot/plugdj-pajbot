@@ -51,7 +51,7 @@ function runBot(error, auth) {
 
     bot.on('roomJoin', function (data) {
 
-        logger.success('[INIT] Joined room:' + data);
+        logger.success('[INIT] Joined room: ' + data);
 
         if (config.responses.botConnect !== "") {
             bot.sendChat(config.responses.botConnect);
@@ -140,10 +140,10 @@ function runBot(error, auth) {
                 RoomEvent.find({where: {starts_at: {lte: new Date()}, ends_at: {gte: new Date()}}}).on('success', function (row) {
                     if (row !== null) {
                         if (row.type == 'event') {
-                            message += ' ** SPECIAL EVENT ** ' + row.title + ' - .event for details!';
+                            message += ' :star: SPECIAL EVENT :star: ' + row.title + ' (.event for details)';
                         }
                         else if (row.type == 'theme') {
-                            message += ' Theme: ' + row.title + ' - .theme for details!';
+                            message += ' Theme: ' + row.title + ' (.theme for details)';
                         }
                     }
                 });
@@ -165,7 +165,7 @@ function runBot(error, auth) {
                     }
                 }
             });
-            updateDbUser(data);
+            updateDbUser(bot.getUser(data.id));
         }
     })
 
@@ -271,7 +271,7 @@ function runBot(error, auth) {
             // Auto skip for "stuck" songs
             clearTimeout(skipTimer);
             skipTimer = setTimeout(function () {
-                if (bot.getMedia().cid == data.media.cid) {
+                if (bot.getMedia() && bot.getMedia().cid == data.media.cid) {
                     if (settings['autoskip']) {
                         bot.moderateForceSkip();
                         logger.info('[AUTOSKIP]', 'Song was autoskipped.');
@@ -485,7 +485,6 @@ function runBot(error, auth) {
         var userData = {
             id: user.id,
             username: user.username,
-            slug: user.slug,
             language: user.language,
             avatar_id: user.avatarID,
             badge: user.badge,
@@ -494,8 +493,13 @@ function runBot(error, auth) {
             role: user.role,
             level: user.level,
             joined: user.joined,
-            last_seen: new Date()
+            last_seen: new Date(),
         };
+
+        // This only gets passed some of the time
+        if (user.slug !== undefined) {
+            userData.slug = user.slug;
+        }
 
         User.findOrCreate({where: {id: user.id}, defaults: userData}).spread(function (dbUser) {
             // Reset the user's AFK timer if they've been gone for long enough (so we don't reset on disconnects)

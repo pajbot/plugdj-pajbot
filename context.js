@@ -182,9 +182,15 @@ module.exports = function (options) {
         return message;
     };
 
-    timeUntil = function (timestamp) {
+    timeUntil = function (timestamp, prefixMessage) {
         var message = moment.utc(timestamp).fromNow();
-        return '(Starting ' + message + ')';
+        if(prefixMessage !== undefined) {
+            return '(' + prefixMessage + ' ' + message + ')';
+        }
+        else {
+            return '(' + message + ')';
+        }
+
     };
 
     secondsSince = function (timestamp) {
@@ -203,7 +209,7 @@ module.exports = function (options) {
             return User.find({where: {id: dj.id}}).on('success', function (dbUser) {
                 if (dbUser !== null && dbUser.id !== bot.getUser().id) {
                     if (secondsSince(dbUser.last_active) <= (maxIdleMins * 60)) {
-                        activeUsers.push(dbUser.username);
+                        activeUsers.push(dbUser.id);
                     }
                 }
             });

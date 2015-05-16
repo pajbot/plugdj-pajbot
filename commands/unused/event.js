@@ -6,15 +6,29 @@ exports.handler = function (data) {
 
     var input = data.message.split(' ');
 
-    RoomEvent.find({where: {type: 'event', starts_at: {lte: moment.utc().add(1, 'month').toDate()}, ends_at: {gte: new Date()}}}).on('success', function (row) {
-        if (row === null) {
+    RoomEvent.findAll({
+        where: {type: 'event', starts_at: {lte: moment.utc().add(1, 'month').toDate()}, ends_at: {gte: new Date()}},
+        order: [['starts_at', 'ASC']],
+        limit: 3
+    }).on('success', function (rows) {
+        if (rows.length === 0) {
             bot.sendChat('/me No events currently scheduled.');
         } else {
-            if (row.starts_at >= moment.utc().toDate()) {
-                row.title = timeUntil(row.starts_at) + ' ' + row.title;
-            }
-            bot.sendChat('/me ' + row.title + ' - ' + row.details);
+            bot.sendChat('/me ' + rows.map(function (row) {
+                    var message = row.title;
+                    if (row.details !== null) {
+                        message += ' - ' + row.details;
+                    }
+
+                    if (row.starts_at > moment.utc().toDate()) {
+                        message += ' ' + timeUntil(row.starts_at, 'starting');
+                    }
+                    else if (row.starts_at <= moment.utc().toDate()) {
+                        message += ' ' + timeUntil(row.ends_at, 'ending');
+                    }
+
+                    return message;
+                }).join(' • '));
         }
     });
-
 };

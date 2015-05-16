@@ -6,15 +6,29 @@ exports.handler = function (data) {
 
     var input = data.message.split(' ');
 
-    RoomEvent.find({where: {type: 'theme', starts_at: {lte: moment.utc().add(1, 'day').toDate()}, ends_at: {gte: new Date()}}}).on('success', function (row) {
-        if (row === null) {
+    RoomEvent.findAll({
+        where: {type: 'theme', starts_at: {lte: moment.utc().add(1, 'day').toDate()}, ends_at: {gte: new Date()}},
+        order: [['starts_at', 'ASC']],
+        limit: 3
+    }).on('success', function (rows) {
+        if (rows.length === 0) {
             bot.sendChat('/me ' + config.responses.theme);
         } else {
-            if (row.starts_at >= moment.utc().toDate()) {
-                row.details = timeUntil(row.starts_at) + ' ' + row.details;
-            }
-            bot.sendChat('/me ' + row.title + ' - ' + row.details);
+            bot.sendChat('/me ' + rows.map(function (row) {
+                    var message = row.title;
+                    if (row.details !== null) {
+                        message += ' - ' + row.details;
+                    }
+
+                    if (row.starts_at > moment.utc().toDate()) {
+                        message += ' ' + timeUntil(row.starts_at, 'starting');
+                    }
+                    else if (row.starts_at <= moment.utc().toDate()) {
+                        message += ' ' + timeUntil(row.ends_at, 'ending');
+                    }
+
+                    return message;
+                }).join(' • '));
         }
     });
-
-};
+}
