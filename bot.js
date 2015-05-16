@@ -260,6 +260,7 @@ function runBot(error, auth) {
                 logger.success('********************************************************************');
                 logger.success('[UPTIME]', 'Bot online ' + timeSince(startupTimestamp, true));
                 logger.success('[SONG]', data.currentDJ.username + ' played: ' + data.media.author + ' - ' + data.media.title);
+                User.update({waitlist_position: -1}, {where: {id: data.currentDJ.id}});
             }
 
             // Perform automatic song metadata correction
@@ -467,24 +468,14 @@ function runBot(error, auth) {
             // user last seen in 900 seconds
             if (position > 0) {
                 User.find(user.id).on('success', function (dbUser) {
-                    if (dbUser.waitlist_position > position) {
-                        User.update({last_seen: moment.utc().toDate()}, {where: {id: user.id}});
-                    } else {
+                    if (position < dbUser.waitlist_position || dbUser.waitlist_position === -1) {
                         User.update({waitlist_position: position, last_seen: moment.utc().toDate()}, {where: {id: user.id}});
+                    } else {
+                        User.update({last_seen: moment.utc().toDate()}, {where: {id: user.id}});
                     }
                 });
-            }
-            else {
-                User.update({waitlist_position: -1}, {where: {id: user.id}});
-            }
-            if (config.verboseLogging) {
-                logger.info('Wait List Update', user.username + ' => ' + position);
-            }
-
-        });
-        User.update({waitlist_position: -1}, {
-            where: {
-                last_leave: {lte: moment.utc().subtract(settings['dctimer'], 'seconds').toDate()}
+            } else if (position == 0) {
+                User.update({waitlist_position: -1, last_seen: moment.utc().toDate()}, {where: {id: user.id}});
             }
         });
     }
@@ -507,12 +498,15 @@ function runBot(error, auth) {
         };
 
         User.findOrCreate({where: {id: user.id}, defaults: userData}).spread(function (dbUser) {
-
             // Reset the user's AFK timer if they've been gone for long enough (so we don't reset on disconnects)
-            if (secondsSince(dbUser.last_seen) >= 900) {
+            if (secondsSince(dbUser.last_leave) >= settings['dctimer']) {
                 userData.last_active = new Date();
-                userData.waitlist_position = bot.getWaitListPosition(user.id)
+                userData.waitlist_position = bot.getWaitListPosition(user.id);
+                if (userData.waitlist_position == 0) {
+                    userData.waitlist_position = -1;
+                }
             }
+
             dbUser.updateAttributes(userData);
         }).catch(function (err) {
             logger.error('Error occurred', err);
