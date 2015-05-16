@@ -1,4 +1,4 @@
-exports.names = ['.reload'];
+exports.names = ['.reload', '!reload'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;

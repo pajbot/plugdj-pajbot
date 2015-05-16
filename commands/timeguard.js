@@ -1,4 +1,4 @@
-exports.names = ['.timeguard'];
+exports.names = ['.timeguard', '!timeguard'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

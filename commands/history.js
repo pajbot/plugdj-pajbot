@@ -1,4 +1,4 @@
-exports.names = ['.history'];
+exports.names = ['.history', '!history'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

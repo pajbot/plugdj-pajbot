@@ -1,4 +1,4 @@
-exports.names = ['.skip'];
+exports.names = ['.skip', '!skip'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

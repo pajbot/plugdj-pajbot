@@ -1,4 +1,4 @@
-exports.names = ['.dctime', '.dctimer'];
+exports.names = ['.dctime', '.dctimer', '!dctime', '!dctimer'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

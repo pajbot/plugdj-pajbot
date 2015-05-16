@@ -1,4 +1,4 @@
-exports.names = ['.snf', '.snufu'];
+exports.names = ['.snf', '.snufu', '!snf', '!snufu'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

@@ -1,4 +1,4 @@
-exports.names = ['.songinfo'];
+exports.names = ['.songinfo', '!songinfo'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

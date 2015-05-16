@@ -1,4 +1,4 @@
-exports.names = ['.tp', '.tastyplug'];
+exports.names = ['.tp', '.tastyplug', '!tp', '!tastyplug'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

@@ -1,4 +1,4 @@
-exports.names = ['.setrank', '.setrole'];
+exports.names = ['.setrank', '.setrole', '!setrank', '!setrole'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

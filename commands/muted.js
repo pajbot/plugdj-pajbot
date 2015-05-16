@@ -1,4 +1,4 @@
-exports.names = ['.muted'];
+exports.names = ['.muted', '!muted'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

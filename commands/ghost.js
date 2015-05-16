@@ -1,4 +1,4 @@
-exports.names = ['.ghost'];
+exports.names = ['.ghost', '!ghost'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;

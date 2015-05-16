@@ -1,4 +1,4 @@
-exports.names = ['.newfag', '.newfeg'];
+exports.names = ['.newfag', '.newfeg', '!newfag', '!newfeg'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

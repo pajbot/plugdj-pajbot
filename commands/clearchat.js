@@ -1,4 +1,4 @@
-exports.names = ['.clearchat'];
+exports.names = ['.clearchat', '!clearchat'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

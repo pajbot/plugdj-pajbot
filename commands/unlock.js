@@ -1,4 +1,4 @@
-exports.names = ['.unlock'];
+exports.names = ['.unlock', '!unlock'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

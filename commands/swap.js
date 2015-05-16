@@ -1,4 +1,4 @@
-exports.names = ['.swap'];
+exports.names = ['.swap', '!swap'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;

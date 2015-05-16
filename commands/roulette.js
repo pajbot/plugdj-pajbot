@@ -1,4 +1,4 @@
-exports.names = ['.roulette'];
+exports.names = ['.roulette', '!roulette'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

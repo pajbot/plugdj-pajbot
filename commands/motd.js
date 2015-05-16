@@ -1,4 +1,4 @@
-exports.names = ['.motd', '.motdi', '.motdinterval', '.motdfreq', '.motdfrequency'];
+exports.names = ['.motd', '.motdi', '.motdinterval', '!motd', '!motdi', '!motdinterval'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;
@@ -15,6 +15,7 @@ exports.handler = function (data) {
 
     switch (command) {
         case '.motd':
+        case '!motd':
             if (data.from.role > 1) {
                 setting_handle('motd', data);
             } else {
@@ -24,8 +25,8 @@ exports.handler = function (data) {
 
         case '.motdi':
         case '.motdinterval':
-        case '.motdfreq':
-        case '.motdfrequency':
+        case '!motdi':
+        case '!motdinterval':
             if (data.from.role > 1) {
                 setting_handle('motd_interval', data);
             }

@@ -1,4 +1,4 @@
-exports.names = ['.clever', '.cleverbot'];
+exports.names = ['.clever', '.cleverbot', '!clever', '!cleverbot'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

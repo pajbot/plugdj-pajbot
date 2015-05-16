@@ -1,4 +1,4 @@
-exports.names = ['.lock'];
+exports.names = ['.lock', '!lock'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

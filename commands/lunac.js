@@ -1,4 +1,4 @@
-exports.names = ['.lunac'];
+exports.names = ['.lunac', '!lunac'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

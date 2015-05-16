@@ -1,4 +1,4 @@
-exports.names = ['.join', '.leave'];
+exports.names = ['.join', '.leave', '!join', '!leave'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
@@ -13,6 +13,7 @@ exports.handler = function (data) {
 
         switch (command) {
             case '.join':
+            case '!join':
                 {
                     if (!(data.from.username in bot.roulette_users)) {
                         bot.sendChat('/me ' + data.from.username + ' joined the roulette! (.leave if you regret it.)', 2);
@@ -22,6 +23,7 @@ exports.handler = function (data) {
                 break;
 
             case '.leave':
+            case '!leave':
                 {
                     var i = bot.roulette_users.indexOf(data.from.username);
                     if (i !== -1) {

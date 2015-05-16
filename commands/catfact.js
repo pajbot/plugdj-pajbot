@@ -1,4 +1,4 @@
-exports.names = ['.catfact'];
+exports.names = ['.catfact', '!catfact'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

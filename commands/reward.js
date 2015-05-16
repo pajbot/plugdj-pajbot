@@ -1,4 +1,4 @@
-exports.names = ['.reward'];
+exports.names = ['.reward', '!reward'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

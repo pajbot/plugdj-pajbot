@@ -1,4 +1,4 @@
-exports.names = ['.dc'];
+exports.names = ['.dc', '!dc'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

@@ -1,4 +1,4 @@
-exports.names = ['.lockdown'];
+exports.names = ['.lockdown', '!lockdown'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

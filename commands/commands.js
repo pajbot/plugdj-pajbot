@@ -1,4 +1,4 @@
-exports.names = ['.commands'];
+exports.names = ['.commands', '!commands'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = false;

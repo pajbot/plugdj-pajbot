@@ -1,4 +1,4 @@
-exports.names = ['.bely'];
+exports.names = ['.bely', '!bely'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

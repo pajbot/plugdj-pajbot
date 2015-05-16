@@ -1,4 +1,4 @@
-exports.names = ['.eta'];
+exports.names = ['.eta', '!eta'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
