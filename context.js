@@ -56,14 +56,16 @@ module.exports = function (options) {
         'timeguard': false,
         'motd': 'u wot m8?',
         'motd_interval': 10,
-        'dctimer': 20 * 60
+        'dctimer': 20 * 60,
+        'maxlength': 330
     };
     setting_names = {
         'autoskip': 'Autoskip',
         'timeguard': 'Timeguard',
         'motd': 'MotD',
         'motd_interval': 'MotD interval',
-        'dctimer': 'DC timer'
+        'dctimer': 'DC timer',
+        'maxlength': 'Max length'
     };
     message_history = FixedArray(900);
     move_queue = [];
@@ -302,6 +304,23 @@ module.exports = function (options) {
 
     modMessage = function(data, message) {
         bot.sendChat('/me [@' + data.from.username + '] ' + message);
+    }
+
+    setting_value_verbose = function(id) {
+        if (id in settings) {
+            switch (id) {
+                case 'maxlength':
+                case 'dctimer':
+                    return sec_to_str(setting_value(id));
+                    break;
+
+                default:
+                    return setting_value(id);
+                    break;
+            }
+        }
+
+        return '?';
     }
 
     setting_value = function(id) {
