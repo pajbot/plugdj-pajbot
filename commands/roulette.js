@@ -19,11 +19,13 @@ exports.handler = function (data) {
                 bot.running_roulette = false;
             }
         } else {
-            var roulette_length_arg = parseInt(rest);
             if (bot.running_roulette !== true) {
-                var roulette_length = roulette_timer * 1000;
-                if (!isNaN(roulette_length_arg)) {
-                    roulette_length = roulette_length_arg * 1000;
+                var roulette_length = roulette_duration * 1000;
+                if (rest.length > 0) {
+                    var roulette_length_arg = parseInt(rest);
+                    if (!isNaN(roulette_length_arg) && roulette_length_arg > 0) {
+                        roulette_length = roulette_length_arg * 1000;
+                    }
                 }
                 bot.sendChat('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
                 bot.running_roulette = true;
