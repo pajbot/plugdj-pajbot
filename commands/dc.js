@@ -1,4 +1,4 @@
-exports.names = ['.dc', '!dc'];
+exports.names = ['.dc', '!dc', '.dclookup', '!dclookup'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
