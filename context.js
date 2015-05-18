@@ -253,8 +253,23 @@ module.exports = function (options) {
         var md = {'user_id': user_id, 'position': position};
         var room_length = bot.getWaitList().length;
         var current_position = bot.getWaitListPosition(md.user_id);
+        var in_queue = false;
 
         logger.info('[MQUEUE1]', 'Adding ' + user_id + ' to the move queue, position ' + position + '. (' + room_length + ')');
+
+        _.each(move_queue, function(_md) {
+            if (_md.user_id === user_id) {
+                in_queue = true;
+                _md.position = position;
+            }
+        });
+
+        if (in_queue) {
+            var user = bot.getUser(user_id);
+            logger.info('[MQUEUE1]', user.username + ' is in the queue already, changing desired position to ' + position + '.');
+            bot.sendChat('/me ' + user.username + ' is already in the queue, changing desired position to ' + position + '.');
+            return;
+        }
 
         if (position === -1) {
             /* If the requested position is -1 we assume
