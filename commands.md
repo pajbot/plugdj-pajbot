@@ -3,7 +3,8 @@ Commands:
 
 X specifies a number  
 Arguments between ( ) are optional  
-Arguments between [ ] are required
+Arguments between [ ] are required  
+Arguments listed between | are the various choices you have to use
 
 Manager
 -------
