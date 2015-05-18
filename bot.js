@@ -101,7 +101,7 @@ function runBot(error, auth) {
             //else {
             //    handleCommand(data);
             //}
-            if (config.lockdown && data.from.role === 0) {
+            if (settings['lockdown'] && data.from.role === 0) {
                 bot.moderateDeleteChat(data.id);
             }
             handleCommand(data);
@@ -611,7 +611,7 @@ function runBot(error, auth) {
                 command.last_run_users[data.from.username] = cur_time;
                 command.handler(data);
             }
-        } else if (config.cleverbot && data.message.indexOf('@' + bot.getUser().username) > -1) {
+        } else if (settings['cleverbot'] && data.message.indexOf('@' + bot.getUser().username) > -1) {
             mentionResponse(data);
         } else if (config.eventResponses && data.message.indexOf('.') === 0) {
             chatResponse(data);

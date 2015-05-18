@@ -57,7 +57,9 @@ module.exports = function (options) {
         'motd': 'u wot m8?',
         'motd_interval': 10,
         'dctimer': 20 * 60,
-        'maxlength': 330
+        'maxlength': 330,
+        'lockdown': false,
+        'cleverbot': false
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -65,7 +67,9 @@ module.exports = function (options) {
         'motd': 'MotD',
         'motd_interval': 'MotD interval',
         'dctimer': 'DC timer',
-        'maxlength': 'Max length'
+        'maxlength': 'Max length',
+        'lockdown': 'Lockdown',
+        'cleverbot': 'Cleverbot'
     };
     message_history = FixedArray(900);
     move_queue = [];
