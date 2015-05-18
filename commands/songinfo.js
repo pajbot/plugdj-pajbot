@@ -6,7 +6,7 @@ exports.cd_all = 30;
 exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {
-    if (data.from.role > 2 || data.from.username == 'PAJLADA') {
+    if (data.from.role > 1 || data.from.username == 'PAJLADA') {
         var songId;
         media = bot.getMedia();
         if (media == null) {
