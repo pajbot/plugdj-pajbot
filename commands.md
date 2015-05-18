@@ -35,6 +35,7 @@ Bouncer
 |.catfact |  | Prints a random fact about cats! |
 |.history | X | Prints information about the song that was played X songs ago. |
 |.lastseen | @username | Prints the last time `@username` was in the room. |
+|.lastplay | @username | Prints the last song played by `@username`. |
 |.status | | Prints out a bunch of mod-related status information. |
 |.songinfo | | Prints information about the current song, like whether it's been played before or not. |
 |.movequeue | | Prints a list of the current movement queue. |
