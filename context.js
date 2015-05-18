@@ -483,4 +483,23 @@ module.exports = function (options) {
             logger.error(id + ' is not a valid key in settings.');
         }
     }
+
+    /**
+     * Returns false if no username is found.
+     * Otherwise, returns the username without the @.
+     **/
+    get_param_username = function(input) {
+        var space_pos = input.indexOf(' ');
+        if (space_pos === -1 || input.length == space_pos) {
+            return false;
+        }
+
+        var username = input.substr(space_pos + 1, input.length);
+
+        if (username.length > 1 && username.indexOf(' ') == 0) {
+            username = username.substr(1);
+        }
+
+        return username;
+    }
 };

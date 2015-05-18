@@ -13,7 +13,14 @@ exports.handler = function (data) {
             return;
         }
 
-        username = params.join(' ').trim()
+        logger.info('"' + get_param_username(data.message) + '"');
+
+        username = params.join(' ');
+        logger.info('"' + username + '"');
+        logger.info(params);
+        logger.info(S(username));
+        logger.info(S(username).chompLeft('@'));
+        logger.info(S(username).chompLeft('@').s);
         usernameFormatted = S(username).chompLeft('@').s;
 
         user = _.findWhere(bot.getUsers(), {username: usernameFormatted});
