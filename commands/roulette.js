@@ -31,7 +31,6 @@ exports.handler = function (data) {
                 bot.running_roulette = true;
                 bot.roulette_users = [];
 
-
                 roulette_timer = setTimeout(function () {
                     bot.running_roulette = false;
                     if (bot.roulette_users.length > 0) {
@@ -39,7 +38,7 @@ exports.handler = function (data) {
                         var winner_index = _.random(0, bot.roulette_users.length-1);
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
-                        bot.sendChat('A winner has been picked! @' + winner + ' to position ' + position + '.');
+                        bot.sendChat('A winner has been picked (' + bot.roulette_users.length + ' participants)! @' + winner + ' to position ' + position + '.');
 
                         var users = bot.getUsers();
                         var user = _.findWhere(users, {username: winner});
