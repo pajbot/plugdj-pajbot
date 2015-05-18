@@ -8,34 +8,32 @@ exports.cd_all = 15;
 exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {
-    if (data.from.role > 1) {
-        var params = _.rest(data.message.split(' '), 1);
-        var username = '';
-        if (params.length < 1) {
-            var users = bot.getUsers();
-            var randomUserIndex = _.random(1, users.length);
-            username = '@' + users[(randomUserIndex - 1)].username;
+    var params = _.rest(data.message.split(' '), 1);
+    var username = '';
+    if (params.length < 1) {
+        var users = bot.getUsers();
+        var randomUserIndex = _.random(1, users.length);
+        username = '@' + users[(randomUserIndex - 1)].username;
+    } else {
+        console.log(params.join(' '));
+        username_uf = params.join(' ').trim();
+        username = username_uf.replace('@', '');
+        console.log(username);
+        var user = _.findWhere(bot.getUsers(), {username: username});
+        if (user) {
+            username = '@' + user.username;
         } else {
-            console.log(params.join(' '));
-            username_uf = params.join(' ').trim();
-            username = username_uf.replace('@', '');
-            console.log(username);
-            var user = _.findWhere(bot.getUsers(), {username: username});
-            if (user) {
-                username = '@' + user.username;
-            } else {
-                bot.sendChat(username + ' is not here :biblethump:');
-                return;
-            }
+            bot.sendChat(username + ' is not here :biblethump:');
+            return;
         }
+    }
 
-        var random_sentence = _.random(0, 10);
-        var random_cookie = _.random(0, cookies.length - 1);
-        var random_taco = _.random(0, tacos.length - 1);
-        if (random_sentence <= 9) {
-            bot.sendChat(username + ', ' + data.from.username + ' has rewarded you with ' + cookies[random_cookie] + '. Enjoy! :minik:');
-        } else {
-            bot.sendChat(username + ', ' + data.from.username + ' has rewarded you with ' + tacos[random_taco] + '. Enjoy! :minik:');
-        }
+    var random_sentence = _.random(0, 10);
+    var random_cookie = _.random(0, cookies.length - 1);
+    var random_taco = _.random(0, tacos.length - 1);
+    if (random_sentence <= 9) {
+        bot.sendChat(username + ', ' + data.from.username + ' has rewarded you with ' + cookies[random_cookie] + '. Enjoy! :minik:');
+    } else {
+        bot.sendChat(username + ', ' + data.from.username + ' has rewarded you with ' + tacos[random_taco] + '. Enjoy! :minik:');
     }
 };
