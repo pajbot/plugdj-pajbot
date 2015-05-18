@@ -69,7 +69,5 @@
     "quietMode": false,
     "chatRandomnessPercentage": 5,
     "migrateOldPlugDatabase": false,
-    "removeCommands": true,
-    "lockdown": false,
-    "cleverbot": false
+    "removeCommands": true
 }
