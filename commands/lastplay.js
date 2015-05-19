@@ -20,7 +20,11 @@ exports.handler = function (data) {
             if (dbUser === null) {
                 modMessage(data, usernameFormatted + ' was not found.');
             } else {
-                Play.find({where: {user_id: dbUser['id']}}).on('success', function(dbPlay) {
+                Play.find({
+                    where: {user_id: dbUser['id']},
+                    order: 'created_at DESC',
+                    limit: 1
+                }).on('success', function(dbPlay) {
                     if (dbPlay === null) {
                         modMessage(data, usernameFormatted + ' has not played a song in this room.');
                     } else {
@@ -37,6 +41,7 @@ exports.handler = function (data) {
                                     request('https://api.soundcloud.com/tracks/'+dbSong['cid']+'.json?client_id='+client_id, function (error, response, body) {
                                         var json_data = JSON.parse(body);
                                         song_link = json_data.permalink_url;
+                                        modMessage(data, usernameFormatted + ' last played ' + dbSong['author'] + ' - ' + dbSong['title'] + ' (' + song_link + ') ' + moment.utc(dbPlay['created_at']).calendar() + ' (' + moment.utc(dbPlay['created_at']).fromNow() + ')');
                                         });
                                 }
                             }
