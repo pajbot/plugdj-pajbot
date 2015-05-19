@@ -4,7 +4,7 @@ exports.enabled = true;
 exports.matchStart = true;
 exports.cd_all = 15;
 exports.cd_user = 30;
-exports.cd_manager = 5;
+exports.cd_manager = 2;
 exports.handler = function (data) {
     if (data.from.role > 1) {
         var input = data.message.split(' ');
