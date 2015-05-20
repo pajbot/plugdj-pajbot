@@ -34,7 +34,9 @@ exports.handler = function (data) {
                     if (rows && rows.length > 0) {
                         var num_plays = rows.length;
 
-                        modMessage(data, 'This song has been played '+(num_plays-1)+' times in my lifetime, last time being ' + moment.utc(rows[1]['updated_at']).calendar() + ' (' + moment.utc(rows[1]['updated_at']).fromNow() + ')');
+                        logger.info(rows);
+
+                        modMessage(data, 'This song has been played '+(num_plays-1)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
                     }
                 });
             } else {
