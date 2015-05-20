@@ -33,10 +33,18 @@ exports.handler = function (data) {
 
                         logger.info(user_1.id + ' to position ' + position_2);
                         logger.info(user_2.id + ' to position ' + position_1);
-                        move_user(user_1.id, position_2);
-                        setTimeout(function() {
+
+                        if (position_2 === -1) {
                             move_user(user_2.id, position_1);
-                        }, 500);
+                            setTimeout(function() {
+                                move_user(user_1.id, position_2);
+                            }, 500);
+                        } else {
+                            move_user(user_1.id, position_2);
+                            setTimeout(function() {
+                                move_user(user_2.id, position_1);
+                            }, 500);
+                        }
                     }
                 }
             } else {
