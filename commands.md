@@ -51,7 +51,7 @@ User
 |.commands |  | Links to this page! |
 |.dc | (@username) | Puts you back in queue if you disconnected a short time ago. Only bouncers+ can use .dc for others. |
 |.ping | | Prints the current uptime of the bot. |
-|.eta | | Prints your approximate time left before you can play your song. |
+|.eta | (@username) | Prints your approximate time left before you can play your song. Only bouncers+ can use .eta for others. |
 |.join | | Joins the current roulette if one is active. |
 |.leave | | Leaves the current roulette, if you joined. |
 |.tp | | Links to the TastyPlug extension. |
