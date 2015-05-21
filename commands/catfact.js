@@ -8,7 +8,7 @@ exports.cd_manager = 10;
 exports.handler = function (data) {
     if (data.from.role > 1 || data.from.username == 'PAJLADA' || data.from.username == 'makalkin' || data.from.username == '-DARKSBANE') {
         request('http://catfacts-api.appspot.com/api/facts', function (error, response, body) {
-            bot.sendChat(JSON.parse(body).facts[0] + ' :smartcat:');
+            chatMessage(JSON.parse(body).facts[0] + ' :smartcat:');
         });
     }
 };

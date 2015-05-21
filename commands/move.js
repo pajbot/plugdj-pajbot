@@ -17,7 +17,7 @@ exports.handler = function (data) {
             var user = _.findWhere(users, {username: usernameFormatted});
             if (user !== undefined) {
                 move_user(user.id, position);
-                bot.sendChat('/me [@' + data.from.username + '] Moving ' + usernameFormatted + ' to position ' + position + '.');
+                chatMessage('/me [@' + data.from.username + '] Moving ' + usernameFormatted + ' to position ' + position + '.');
             }
         }
     }

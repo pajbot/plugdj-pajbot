@@ -16,7 +16,7 @@ exports.handler = function (data) {
             case '!join':
                 {
                     if (bot.roulette_users.indexOf(data.from.username) == -1) {
-                        bot.sendChat('/me ' + data.from.username + ' joined the roulette! (.leave if you regret it.)', 2);
+                        chatMessage('/me ' + data.from.username + ' joined the roulette! (.leave if you regret it.)', 2);
                         bot.roulette_users.push(data.from.username);
                     }
                 }
@@ -28,7 +28,7 @@ exports.handler = function (data) {
                     var i = bot.roulette_users.indexOf(data.from.username);
                     if (i !== -1) {
                         bot.roulette_users.splice(i, 1);
-                        bot.sendChat('/me ' + data.from.username + ' has left the roulette.', 2);
+                        chatMessage('/me ' + data.from.username + ' has left the roulette.', 2);
                     }
                 }
                 break;

@@ -20,6 +20,6 @@ exports.handler = function (data) {
                 username = '@' + user.username;
             }
         }
-        bot.sendChat('/me ' + username + ' No asking for skips. You have been muted for 15 minutes.');
+        chatMessage('/me ' + username + ' No asking for skips. You have been muted for 15 minutes.');
     }
 };

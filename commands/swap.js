@@ -29,7 +29,7 @@ exports.handler = function (data) {
                     logger.info(position_2);
 
                     if (position_1 !== -1 || position_2 !== -1) {
-                        bot.sendChat('/me [@' + data.from.username + '] Swapping ' + username_1 + ' with ' + username_2 + '.');
+                        chatMessage('/me [@' + data.from.username + '] Swapping ' + username_1 + ' with ' + username_2 + '.');
 
                         logger.info(user_1.id + ' to position ' + position_2);
                         logger.info(user_2.id + ' to position ' + position_1);
@@ -48,7 +48,7 @@ exports.handler = function (data) {
                     }
                 }
             } else {
-                bot.sendChat('/me [@' + data.from.username + '] Usage: .swap @USER1 @USER2');
+                chatMessage('/me [@' + data.from.username + '] Usage: .swap @USER1 @USER2');
             }
         }
     }

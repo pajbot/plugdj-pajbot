@@ -9,7 +9,7 @@ exports.handler = function (data) {
     if (data.from.role > 2 || data.from.username == 'PAJLADA' || data.from.username == 'RosenMVP') {
         var params = _.rest(data.message.split(' '), 1);
         if (params.length < 1) {
-            bot.sendChat('/me Usage: .unban username');
+            chatMessage('/me Usage: .unban username');
             return;
         }
 
@@ -18,10 +18,10 @@ exports.handler = function (data) {
 
         User.find({where: {username: usernameFormatted}}).on('success', function (row) {
             if (row === null) {
-                bot.sendChat('/me No user named ' + usernameFormatted + ' was not found.');
+                chatMessage('/me No user named ' + usernameFormatted + ' was not found.');
             } else {
                 bot.moderateUnbanUser(row.id, function() {
-                    bot.sendChat('/me [@'+data.from.username+'] Unbanned ' + row.username + '.');
+                    chatMessage('/me [@'+data.from.username+'] Unbanned ' + row.username + '.');
                     logger.info('[UNBAN] ' + row.username + ' was unbanned by ' + data.from.username);
                     var userData = {
                         type: 'unban',

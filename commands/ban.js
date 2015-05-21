@@ -19,7 +19,7 @@ exports.handler = function (data) {
             username = params.join(' ').trim();
             var duration = 'HOUR';
         } else {
-            bot.sendChat('/me Usage: .ban username [PERMA|DAY|HOUR]');
+            chatMessage('/me Usage: .ban username [PERMA|DAY|HOUR]');
             return;
         }
 
@@ -57,12 +57,12 @@ exports.handler = function (data) {
                     break;
 
                 default:
-                    bot.sendChat('/me Usage: .ban username [PERMA|DAY|HOUR]');
+                    chatMessage('/me Usage: .ban username [PERMA|DAY|HOUR]');
                     return;
             }
 
             var r = bot.moderateBanUser(user.id, null, real_dur, function() {
-                bot.sendChat('/me [@' + data.from.username + '] Banned ' + usernameFormatted + ' ' + duration_string + '.');
+                chatMessage('/me [@' + data.from.username + '] Banned ' + usernameFormatted + ' ' + duration_string + '.');
                 logger.info('[BAN] ' + usernameFormatted + ' was banned by ' + data.from.username + ' ' + duration_string);
                 var userData = {
                     type: 'ban',
@@ -74,7 +74,7 @@ exports.handler = function (data) {
             });
 
             if (r === false) {
-                bot.sendChat('/me [@' + data.from.userame + '] Couldn\'t ban ' + usernameFormatted + ' for some reason.');
+                chatMessage('/me [@' + data.from.userame + '] Couldn\'t ban ' + usernameFormatted + ' for some reason.');
             }
         }
     }

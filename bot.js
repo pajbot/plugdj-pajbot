@@ -54,7 +54,7 @@ function runBot(error, auth) {
         logger.success('[INIT] Joined room: ' + data);
 
         if (config.responses.botConnect !== "") {
-            bot.sendChat(config.responses.botConnect);
+            chatMessage(config.responses.botConnect);
         }
 
         bot.getUsers().forEach(function (user) {
@@ -155,12 +155,12 @@ function runBot(error, auth) {
                 if (message && (config.welcomeUsers == "NEW" || config.welcomeUsers == "ALL")) {
                     if (newUser) {
                         setTimeout(function () {
-                            bot.sendChat(message)
+                            chatMessage(message)
                         }, 5000);
                     }
                     else if (config.welcomeUsers == "ALL" && secondsSince(dbUser.last_active) >= 900 && secondsSince(dbUser.last_seen) >= 900) {
                         setTimeout(function () {
-                            bot.sendChat(message)
+                            chatMessage(message)
                         }, 5000);
                     }
                 }
@@ -308,7 +308,7 @@ function runBot(error, auth) {
                     if (row !== null) {
                         if (row.response != '') {
                             logger.info('[SONGRESPONSE]', 'Sending response: ' + row.response);
-                            bot.sendChat(row.response);
+                            chatMessage(row.response);
                         }
                         if (row.rate === 1) {
                             bot.woot();
@@ -346,7 +346,7 @@ function runBot(error, auth) {
                             if (dbUser.Karmas.length > 0) {
                                 logger.warning('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
                                 bot.moderateRemoveDJ(dj.id);
-                                bot.sendChat('@' + dbUser.username + ' ' + config.responses.activeDJRemoveMessage);
+                                chatMessage('@' + dbUser.username + ' ' + config.responses.activeDJRemoveMessage);
                                 var userData = {
                                     type: 'remove',
                                     details: 'Removed from position ' + position + ': AFK for ' + timeSince(dbUser.last_active, true),
@@ -378,7 +378,7 @@ function runBot(error, auth) {
             }).then(function () {
                 if (idleDJs.length > 0) {
                     var idleDJsList = idleDJs.join(' @');
-                    bot.sendChat('@' + idleDJsList + ' ' + config.responses.activeDJReminder);
+                    chatMessage('@' + idleDJsList + ' ' + config.responses.activeDJReminder);
                 }
             });
             }
@@ -388,7 +388,7 @@ function runBot(error, auth) {
              Song.find({where: {id: data.media.id, cid: data.media.cid, is_banned: true}}).on('success', function (row) {
              // need to only do this if results!
              logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
-             bot.sendChat('Sorry @' + data.currentDJ.username + ', this song has been blacklisted (NSFW video or Out of Range) in our song database.');
+             chatMessage('Sorry @' + data.currentDJ.username + ', this song has been blacklisted (NSFW video or Out of Range) in our song database.');
              bot.moderateForceSkip();
              var userData = {
              type: 'skip',
@@ -403,7 +403,7 @@ function runBot(error, auth) {
             // Only police this if there aren't any mods around
             if (settings['timeguard'] && data.media.duration > settings['maxlength']) {
                 logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
-                bot.sendChat('Sorry @' + data.currentDJ.username + ', this song is over our maximum room length of ' + sec_to_str(settings['maxlength']) + '.');
+                chatMessage('Sorry @' + data.currentDJ.username + ', this song is over our maximum room length of ' + sec_to_str(settings['maxlength']) + '.');
                 bot.moderateForceSkip();
                 var userData = {
                     type: 'skip',
@@ -449,7 +449,7 @@ function runBot(error, auth) {
                 handleCommand(data);
             }
             else {
-                bot.sendChat(msg);
+                chatMessage(msg);
             }
         }
     });
@@ -652,7 +652,7 @@ function runBot(error, auth) {
         //request('http://developer.echonest.com/api/v4/song/search?api_key=' + config.apiKeys.echoNest + '&format=json&results=1&combined=' + S(valueToCorrect).escapeHTML().stripPunctuation().s, function (error, response, body) {
         //    logger.info('echonest body', body);
         //    if (error) {
-        //        bot.sendChat('An error occurred while connecting to EchoNest.');
+        //        chatMessage('An error occurred while connecting to EchoNest.');
         //        bot.error('EchoNest error', error);
         //    } else {
         //        response = JSON.parse(body).response;
@@ -666,7 +666,7 @@ function runBot(error, auth) {
         //        logger.info('[EchoNest] Original: "' + media.author + '" - "' + media.title + '". Suggestion: "' + room.media.suggested.author + '" - "' + room.media.suggested.title);
         //
         //        if (media.author != room.media.suggested.author || media.title != room.media.suggested.title) {
-        //            bot.sendChat('Hey, the metadata for this song looks wrong! Suggested Artist: "' + room.media.suggested.author + '". Title: "' + room.media.suggested.title + '". Type ".fixsong yes" to use the suggested tags.');
+        //            chatMessage('Hey, the metadata for this song looks wrong! Suggested Artist: "' + room.media.suggested.author + '". Title: "' + room.media.suggested.title + '". Type ".fixsong yes" to use the suggested tags.');
         //        }
         //    }
         //});
@@ -686,7 +686,7 @@ function runBot(error, auth) {
                 if (config.verboseLogging) {
                     logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
                 }
-                bot.sendChat('@' + data.from.username + ' ' + response.message);
+                chatMessage('@' + data.from.username + ' ' + response.message);
 
             });
         }
@@ -700,7 +700,7 @@ function runBot(error, auth) {
                         return;
                     }
                     else {
-                        bot.sendChat(row.response.replace('{sender}', data.from.username));
+                        chatMessage(row.response.replace('{sender}', data.from.username));
                     }
 
                 });
@@ -717,7 +717,7 @@ function runBot(error, auth) {
                     return;
                 }
                 else {
-                    bot.sendChat(row.response.replace('{sender}', data.from.username));
+                    chatMessage(row.response.replace('{sender}', data.from.username));
                 }
 
             });
@@ -732,7 +732,7 @@ function runBot(error, auth) {
             if (motd_i >= settings['motd_interval'] && settings['motd_interval'] != 0) {
                 logger.info('[MOTD]', 'run motd');
                 motd_i = 0;
-                bot.sendChat('/me ' + settings['motd']);
+                chatMessage('/me ' + settings['motd']);
             } else {
                 logger.info('[MOTD]', 'motd is supposed to be run every ' + settings['motd_interval'] + ' song.');
             }

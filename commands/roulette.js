@@ -13,7 +13,7 @@ exports.handler = function (data) {
 
         if (rest === 'stop') {
             if (bot.running_roulette === true) {
-                bot.sendChat('/me The roulette has been cancelled. :sadness:');
+                chatMessage('/me The roulette has been cancelled. :sadness:');
                 clearTimeout(roulette_timer);
                 roulette_timer = false;
                 bot.running_roulette = false;
@@ -27,7 +27,7 @@ exports.handler = function (data) {
                         roulette_length = roulette_length_arg * 1000;
                     }
                 }
-                bot.sendChat('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
+                chatMessage('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
                 bot.running_roulette = true;
                 bot.roulette_users = [];
 
@@ -38,7 +38,7 @@ exports.handler = function (data) {
                         var winner_index = _.random(0, bot.roulette_users.length-1);
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
-                        bot.sendChat('A winner has been picked (' + bot.roulette_users.length + ' participants)! @' + winner + ' to position ' + position + '.');
+                        chatMessage('A winner has been picked (' + bot.roulette_users.length + ' participants)! @' + winner + ' to position ' + position + '.');
                         logger.info('[ROULETTE]', 'Roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' to position ' + position + '.');
 
                         var users = bot.getUsers();
@@ -46,14 +46,14 @@ exports.handler = function (data) {
                         if (user !== undefined) {
                             move_user(user.id, position);
                         } else {
-                            bot.sendChat('/me user who won roulette isn\'t even here :4head:');
+                            chatMessage('/me user who won roulette isn\'t even here :4head:');
                         }
                     } else {
-                        bot.sendChat('/me No one joined the roulette, what the fuck guys. :dansgame:');
+                        chatMessage('/me No one joined the roulette, what the fuck guys. :dansgame:');
                     }
                 }, roulette_length);
             } else {
-                bot.sendChat('/me [@' + data.from.username + '] The roulette is already running.');
+                chatMessage('/me [@' + data.from.username + '] The roulette is already running.');
             }
         }
     }

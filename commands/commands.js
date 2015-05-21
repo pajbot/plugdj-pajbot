@@ -6,5 +6,5 @@ exports.cd_all = 15;
 exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {
-    bot.sendChat('/me Commands: http://git.io/vTObv');
+    chatMessage('/me Commands: http://git.io/vTObv');
 };

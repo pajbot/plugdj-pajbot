@@ -7,5 +7,5 @@ exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.remove_command = false;
 exports.handler = function (data) {
-    bot.sendChat('Hodor!');
+    chatMessage('Hodor!');
 };

@@ -9,7 +9,7 @@ exports.handler = function (data) {
     if (data.from.role > 1) {
         var params = _.rest(data.message.split(' '), 1);
         if (params.length < 1) {
-            bot.sendChat('/me usage: .lastplay username');
+            chatMessage('/me usage: .lastplay username');
             return;
         }
 

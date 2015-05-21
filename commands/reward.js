@@ -23,7 +23,7 @@ exports.handler = function (data) {
         if (user) {
             username = '@' + user.username;
         } else {
-            bot.sendChat(username + ' is not here :biblethump:');
+            chatMessage(username + ' is not here :biblethump:');
             return;
         }
     }
@@ -32,8 +32,8 @@ exports.handler = function (data) {
     var random_cookie = _.random(0, cookies.length - 1);
     var random_taco = _.random(0, tacos.length - 1);
     if (random_sentence <= 9) {
-        bot.sendChat(username + ', ' + data.from.username + ' has rewarded you with ' + cookies[random_cookie] + '. Enjoy! :minik:');
+        chatMessage(username + ', ' + data.from.username + ' has rewarded you with ' + cookies[random_cookie] + '. Enjoy! :minik:');
     } else {
-        bot.sendChat(username + ', ' + data.from.username + ' has rewarded you with ' + tacos[random_taco] + '. Enjoy! :minik:');
+        chatMessage(username + ', ' + data.from.username + ' has rewarded you with ' + tacos[random_taco] + '. Enjoy! :minik:');
     }
 };

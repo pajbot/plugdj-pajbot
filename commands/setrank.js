@@ -29,7 +29,7 @@ exports.handler = function (data) {
             }
             rank = parseInt(rank_tmp);
         } else {
-            bot.sendChat('/me Usage: .setrank username (Pleb|DiscPleb|Nazi)');
+            chatMessage('/me Usage: .setrank username (Pleb|DiscPleb|Nazi)');
             return;
         }
 
@@ -38,7 +38,7 @@ exports.handler = function (data) {
 
             User.find({where: {username: usernameFormatted}}).on('success', function (row) {
                 if (row === null) {
-                    bot.sendChat('/me No user named ' + usernameFormatted + ' was not found.');
+                    chatMessage('/me No user named ' + usernameFormatted + ' was not found.');
                 } else {
                     /*
                     if (data.from.username == 'Jeanny' && row.username == 'PAJLADA') {
@@ -55,7 +55,7 @@ exports.handler = function (data) {
             users = bot.getUsers();
             var user = _.findWhere(users, {username: usernameFormatted});
         } else {
-            bot.sendChat('/me Usage: .setrank username (Pleb|DiscPleb|Nazi)');
+            chatMessage('/me Usage: .setrank username (Pleb|DiscPleb|Nazi)');
             return;
         }
     }

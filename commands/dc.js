@@ -18,7 +18,7 @@ exports.handler = function (data) {
         if (_user) {
             user = _user;
         } else {
-            bot.sendChat(username + ' is not here :dansgame:');
+            chatMessage(username + ' is not here :dansgame:');
             return;
         }
     }
@@ -38,19 +38,19 @@ exports.handler = function (data) {
         }
 
         if (isNaN(secondsSince(dbUser.last_leave))) {
-            bot.sendChat('/me ' + dbUser.username + ' has not disconnected in my presence.');
+            chatMessage('/me ' + dbUser.username + ' has not disconnected in my presence.');
             return;
         }
         if (secondsSince(dbUser.last_leave) > settings['dctimer']) {
-            bot.sendChat('/me ' + dbUser.username + '\'s last disconnect (DC or leave) was too long ago: ' + sec_to_str(secondsSince(dbUser.last_leave)));
+            chatMessage('/me ' + dbUser.username + '\'s last disconnect (DC or leave) was too long ago: ' + sec_to_str(secondsSince(dbUser.last_leave)));
             return;
         }
         if (dbUser.waitlist_position > -1 && secondsSince(dbUser.last_leave) <= settings['dctimer'] && (position === -1 || (position > -1 && position > dbUser.waitlist_position))) {
-            bot.sendChat('/me ' + dbUser.username + ' disconnected ' + timeSince(dbUser.last_leave, true) + ' and should be at position ' + dbUser.waitlist_position);
+            chatMessage('/me ' + dbUser.username + ' disconnected ' + timeSince(dbUser.last_leave, true) + ' and should be at position ' + dbUser.waitlist_position);
             move_user(user.id, dbUser.waitlist_position);
             //User.update({last_leave: null}, {where: {id: dbUser.id}});
         } else {
-            bot.sendChat('/me ' + dbUser.username + ' should not be moved.');
+            chatMessage('/me ' + dbUser.username + ' should not be moved.');
         }
     });
 };

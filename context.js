@@ -271,7 +271,7 @@ module.exports = function (options) {
         if (in_queue) {
             var user = bot.getUser(user_id);
             logger.info('[MQUEUE1]', user.username + ' is in the queue already, changing desired position to ' + position + '.');
-            bot.sendChat('/me ' + user.username + ' is already in the queue, changing desired position to ' + position + '.');
+            chatMessage('/me ' + user.username + ' is already in the queue, changing desired position to ' + position + '.');
             return;
         }
 
@@ -285,7 +285,7 @@ module.exports = function (options) {
             bot.moderateLockBooth(true);
 
             var user = bot.getUser(md.user_id);
-            bot.sendChat('/me Added ' + user.username + ' to the queue. Queue length: ' + move_queue.length);
+            chatMessage('/me Added ' + user.username + ' to the queue. Queue length: ' + move_queue.length);
         } else if (current_position === -1 && room_length < 50) {
              logger.info('[MQUEUE1]', 'The waitlist isn\'t even full, just move add and move!');
 
@@ -327,8 +327,51 @@ module.exports = function (options) {
         }
     }
 
+    message_out_history = [];
+    message_queue = [];
+
+    chatMessage = function(message, timeout, add_to_queue) {
+        if (timeout === undefined) {
+            timeout = 0;
+        }
+        if (add_to_queue === undefined) {
+            add_to_queue = true;
+        }
+        if (message_out_history.length < 4) {
+            logger.info('[MSG]', 'Sending chat message: ' + message);
+            bot.sendChat(message, timeout);
+
+            message_out_history.push(1);
+
+            setTimeout(function() {
+                message_out_history.shift();
+            }, 3000);
+
+            return true;
+        } else if (add_to_queue === true) {
+            logger.info('[MSG]', 'Chat history is full, queueing up ' + message);
+            message_queue.push({'message': message, 'timeout': timeout});
+        } else {
+
+        }
+
+        return false;
+    }
+
+    setInterval(function() {
+        if (message_queue.length > 0) {
+            logger.info('[MSG]', 'There\'s a message in the queue. (' + message_queue.length + ')');
+            var msg = message_queue[0];
+
+            if (chatMessage(msg.message, msg.timeout, false) === true) {
+                message_queue.shift();
+                logger.info('[MSG]', 'Sent message from queue! New queue length: ' + message_queue.length);
+            }
+        }
+    }, 250);
+
     modMessage = function(data, message) {
-        bot.sendChat('/me [@' + data.from.username + '] ' + message);
+        chatMessage('/me [@' + data.from.username + '] ' + message);
     }
 
     setting_value_verbose = function(id) {

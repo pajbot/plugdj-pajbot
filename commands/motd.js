@@ -19,7 +19,7 @@ exports.handler = function (data) {
             if (data.from.role > 1) {
                 setting_handle('motd', data);
             } else {
-                bot.sendChat('/me MotD: ' + settings['motd']);
+                chatMessage('/me MotD: ' + settings['motd']);
             }
             break;
 

@@ -19,7 +19,7 @@ exports.handler = function (data) {
         if (_user) {
             user = _user;
         } else {
-            bot.sendChat(username + ' is not here :dansgame:');
+            chatMessage(username + ' is not here :dansgame:');
             return;
         }
     }
