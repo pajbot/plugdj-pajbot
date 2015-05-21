@@ -39,6 +39,7 @@ exports.handler = function (data) {
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
                         bot.sendChat('A winner has been picked (' + bot.roulette_users.length + ' participants)! @' + winner + ' to position ' + position + '.');
+                        logger.info('[ROULETTE]', 'Roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' to position ' + position + '.');
 
                         var users = bot.getUsers();
                         var user = _.findWhere(users, {username: winner});
