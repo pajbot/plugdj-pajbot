@@ -7,14 +7,12 @@ exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {
     if (data.from.role > 1 || data.from.username == 'PAJLADA') {
-        var songId;
-        media = bot.getMedia();
+        var media = bot.getMedia();
         if (media == null) {
-            bot.sendChat('No song playing.');
+            modMessage(data, 'No song playing. :wutface:');
             return;
         }
 
-        var song_ids = [];
         Song.findAll({
             where: {
                 format: media.format,
@@ -23,6 +21,7 @@ exports.handler = function (data) {
             order: 'updated_at DESC'
         }).on('success', function (rows) {
             if (rows && rows.length > 0) {
+                var song_ids = [];
                 _.each(rows, function (row) {
                     song_ids.push(row.id);
                 });
@@ -32,11 +31,7 @@ exports.handler = function (data) {
                     order: 'updated_at DESC'
                 }).on('success', function (rows) {
                     if (rows && rows.length > 0) {
-                        var num_plays = rows.length;
-
-                        logger.info(rows);
-
-                        modMessage(data, 'This song has been played '+(num_plays-1)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
+                        modMessage(data, 'This song has been played '+(rows.length)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
                     }
                 });
             } else {
