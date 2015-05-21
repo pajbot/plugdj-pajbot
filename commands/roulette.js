@@ -39,12 +39,13 @@ exports.handler = function (data) {
                         var winner = bot.roulette_users[winner_index];
                         var position = _.random(1, bot.getWaitList().length);
                         chatMessage('A winner has been picked (' + bot.roulette_users.length + ' participants)! @' + winner + ' to position ' + position + '.');
-                        logger.info('[ROULETTE]', 'Roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' to position ' + position + '.');
 
                         var users = bot.getUsers();
                         var user = _.findWhere(users, {username: winner});
                         if (user !== undefined) {
                             move_user(user.id, position);
+                            var current_position = bot.getWaitListPosition(user.id);
+                            logger.info('[ROULETTE]', data.from.username + ' roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
                         } else {
                             chatMessage('/me user who won roulette isn\'t even here :4head:');
                         }
