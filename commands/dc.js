@@ -7,7 +7,6 @@ exports.cd_user = 30;
 exports.cd_manager = 0;
 exports.handler = function (data) {
     var params = _.rest(data.message.split(' '), 1);
-    console.log(params);
     var user;
     if (params.length < 1 || data.from.role < 2) {
         user = data.from;
