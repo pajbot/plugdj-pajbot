@@ -25,13 +25,13 @@ exports.handler = function (data) {
 
         user = _.findWhere(bot.getUsers(), {username: usernameFormatted});
         if (user) {
-            bot.sendChat(usernameFormatted + ' is in the room!');
+            modMessage(data, usernameFormatted + ' is in the room!');
         } else {
             User.find({where: {username: usernameFormatted}}).on('success', function (row) {
                 if (row === null) {
-                    bot.sendChat(usernameFormatted + ' was not found.');
+                    modMessage(data, usernameFormatted + ' was not found.');
                 } else {
-                    bot.sendChat(row.username + ' was last seen ' + timeSince(row.last_seen) + '.');
+                    modMessage(data, row.username + ' was last seen ' + timeSince(row.last_seen) + '.');
                 }
             });
         }
