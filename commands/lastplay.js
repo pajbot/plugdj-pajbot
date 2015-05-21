@@ -22,7 +22,7 @@ exports.handler = function (data) {
             } else {
                 Play.find({
                     where: {user_id: dbUser['id']},
-                    order: 'created_at DESC',
+                    order: 'updated_at DESC',
                     limit: 1
                 }).on('success', function(dbPlay) {
                     if (dbPlay === null) {
@@ -35,13 +35,13 @@ exports.handler = function (data) {
                                 var song_link = null;
                                 if (dbSong['format'] == 1) {
                                     song_link = 'https://youtu.be/' + dbSong['cid'];
-                                    modMessage(data, usernameFormatted + ' last played ' + dbSong['author'] + ' - ' + dbSong['title'] + ' (' + song_link + ') ' + moment.utc(dbPlay['created_at']).calendar() + ' (' + moment.utc(dbPlay['created_at']).fromNow() + ')');
+                                    modMessage(data, usernameFormatted + ' last played ' + dbSong['author'] + ' - ' + dbSong['title'] + ' (' + song_link + ') ' + moment.utc(dbPlay['updated_at']).calendar() + ' (' + moment.utc(dbPlay['updated_at']).fromNow() + ')');
                                 } else {
                                     var client_id = '73401fe4eb06e6ad2b23368567ed1bae';
                                     request('https://api.soundcloud.com/tracks/'+dbSong['cid']+'.json?client_id='+client_id, function (error, response, body) {
                                         var json_data = JSON.parse(body);
                                         song_link = json_data.permalink_url;
-                                        modMessage(data, usernameFormatted + ' last played ' + dbSong['author'] + ' - ' + dbSong['title'] + ' (' + song_link + ') ' + moment.utc(dbPlay['created_at']).calendar() + ' (' + moment.utc(dbPlay['created_at']).fromNow() + ')');
+                                        modMessage(data, usernameFormatted + ' last played ' + dbSong['author'] + ' - ' + dbSong['title'] + ' (' + song_link + ') ' + moment.utc(dbPlay['updated_at']).calendar() + ' (' + moment.utc(dbPlay['updated_at']).fromNow() + ')');
                                         });
                                 }
                             }
