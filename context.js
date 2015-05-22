@@ -240,12 +240,14 @@ module.exports = function (options) {
     }
 
     sec_to_str = function(sec) {
+        var days = Math.floor(sec / 86400);
         var hours = Math.floor(sec / 3600);
         var minutes = Math.floor(sec / 60) % 60;
         var seconds = sec % 60;
 
         var str_array = [];
 
+        if (days > 0) { str_array.push(days + ' days'); }
         if (hours > 0) { str_array.push(hours + ' hours'); }
         if (minutes > 0) { str_array.push(minutes + ' minutes'); }
         if (seconds > 0) { str_array.push(seconds + ' seconds'); }
