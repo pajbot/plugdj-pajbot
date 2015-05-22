@@ -755,6 +755,12 @@ function runBot(error, auth) {
             var room_length = bot.getWaitList().length;
             var user = bot.getUser(md.user_id);
 
+            if (!user) {
+                chatMessage('/me Removing ' + md.user_id + ' from movement queue, because he\'s not here.');
+                move_queue.shift();
+                return;
+            }
+
             if (new_position > room_length) {
                 new_position = room_length;
             }
