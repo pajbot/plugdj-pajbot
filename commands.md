@@ -26,6 +26,7 @@ Manager
 |.swap | @userA @userB | Swaps the position of `@userA` and `@userB`. At least one of the users must be in the waitlist. |
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
 |.move | @username X | Moves `@username` to position **X**. |
+|.kill | | Kills the bot. |
 
 Bouncer
 -------
