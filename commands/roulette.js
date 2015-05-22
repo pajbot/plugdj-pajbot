@@ -13,7 +13,7 @@ exports.handler = function (data) {
 
         if (rest === 'stop') {
             if (bot.running_roulette === true) {
-                chatMessage('/me The roulette has been cancelled. :sadness:');
+                modMessage('The roulette has been cancelled. :sadness:');
                 clearTimeout(roulette_timer);
                 roulette_timer = false;
                 bot.running_roulette = false;
@@ -27,7 +27,7 @@ exports.handler = function (data) {
                         roulette_length = roulette_length_arg * 1000;
                     }
                 }
-                chatMessage('/me [@' + data.from.username + '] The roulette is now open! Type .join to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
+                modMessage(data, 'The roulette is now open! Type .join to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
                 bot.running_roulette = true;
                 bot.roulette_users = [];
 
@@ -54,7 +54,7 @@ exports.handler = function (data) {
                     }
                 }, roulette_length);
             } else {
-                chatMessage('/me [@' + data.from.username + '] The roulette is already running.');
+                modMessage(data, 'The roulette is already running.');
             }
         }
     }

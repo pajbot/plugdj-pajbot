@@ -6,5 +6,5 @@ exports.cd_all = 10;
 exports.cd_user = 30;
 exports.cd_manager = 5;
 exports.handler = function (data) {
-    chatMessage('Current time: ' + moment.utc().format('HH:mm:ss') + ' UTC');
+    modMessage(data, 'Current time: ' + moment.utc().format('HH:mm:ss') + ' UTC');
 };

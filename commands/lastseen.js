@@ -9,7 +9,7 @@ exports.handler = function (data) {
     if (data.from.role > 1) {
         var params = _.rest(data.message.split(' '), 1);
         if (params.length < 1) {
-            chatMessage('/me usage: .lastseen username');
+            modMessage(data, 'Usage: .lastseen username');
             return;
         }
 

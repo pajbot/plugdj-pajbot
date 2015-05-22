@@ -14,6 +14,6 @@ exports.handler = function (data) {
 
         message_history.array.length = 0;
 
-        chatMessage('/me [@' + data.from.username + '] Clearing chat.');
+        modMessage(data, 'Clearing chat.');
     }
 };

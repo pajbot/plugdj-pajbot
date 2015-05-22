@@ -32,7 +32,6 @@ exports.handler = function (data) {
                             modMessage(data, row['author'] + ' - ' + row['title'] + ' (' + song_url + ') played ' + (offset+1) + ' songs ago.');
                         });
                     }
-
                 }
             });
     }
