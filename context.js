@@ -241,7 +241,7 @@ module.exports = function (options) {
 
     sec_to_str = function(sec) {
         var days = Math.floor(sec / 86400);
-        var hours = Math.floor(sec / 3600);
+        var hours = Math.floor(sec / 3600) % 24;
         var minutes = Math.floor(sec / 60) % 60;
         var seconds = sec % 60;
 
