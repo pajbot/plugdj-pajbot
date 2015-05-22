@@ -13,7 +13,7 @@ exports.handler = function (data) {
 
         if (rest === 'stop') {
             if (bot.running_roulette === true) {
-                modMessage('The roulette has been cancelled. :sadness:');
+                modMessage(data, 'The roulette has been cancelled. :sadness:');
                 clearTimeout(roulette_timer);
                 roulette_timer = false;
                 bot.running_roulette = false;
