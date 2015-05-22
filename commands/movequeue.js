@@ -1,4 +1,4 @@
-exports.names = ['.movequeue', '!movequeue', '.showqueue', '!showqueue'];
+exports.names = ['.movequeue', '!movequeue', '.showqueue', '!showqueue', '.queue', '!queue', '!dcqueue', '.dcqueue'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
