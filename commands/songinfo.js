@@ -32,6 +32,8 @@ exports.handler = function (data) {
                 }).on('success', function (rows) {
                     if (rows && rows.length > 0) {
                         modMessage(data, 'This song has been played '+(rows.length)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
+                    } else {
+                        modMessage(data, 'This song has not been played here in my lifetime.');
                     }
                 });
             } else {
