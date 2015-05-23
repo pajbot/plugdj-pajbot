@@ -59,7 +59,8 @@ module.exports = function (options) {
         'dctimer': 20 * 60,
         'maxlength': 330,
         'lockdown': false,
-        'cleverbot': false
+        'cleverbot': false,
+        'lockskippos': 3
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -69,7 +70,8 @@ module.exports = function (options) {
         'dctimer': 'DC timer',
         'maxlength': 'Max length',
         'lockdown': 'Lockdown',
-        'cleverbot': 'Cleverbot'
+        'cleverbot': 'Cleverbot',
+        'lockskippos': 'Lock skip position'
     };
     message_history = FixedArray(900);
     move_queue = [];
