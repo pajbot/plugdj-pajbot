@@ -6,8 +6,8 @@ exports.cd_all = 5;
 exports.cd_user = 10;
 exports.cd_manager = 0;
 exports.handler = function (data) {
-    if (data.from.role > 2 || data.from.username == 'PAJLADA' || data.from.username == 'RosenMVP') {
-        modMessage(data, 'sudoku :biblethump:');
+    if (data.from.role > 2 || data.from.username == 'PAJLADA') {
+        modMessage(data, 'Restarting... :tfw:');
         setTimeout(function() {
             process.kill(process.pid, 'SIGTERM');
         }, 500);
