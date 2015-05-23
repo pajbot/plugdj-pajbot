@@ -767,6 +767,13 @@ function runBot(error, auth) {
 
             if (current_position === new_position) {
                 move_queue.shift();
+                if (move_queue.length == 0) {
+                    /* The queue is empty, we can unlock the waitlist! */
+                    logger.info('[MQUEUE]', 'Unlocking booth. (3)');
+                    bot.moderateLockBooth(false, false, function() {
+                        logger.info('[MQUEUE]', 'Successfully unlocked booth. (3)');
+                    });
+                }
                 return false;
             }
 
