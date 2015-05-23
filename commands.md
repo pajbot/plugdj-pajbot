@@ -27,6 +27,7 @@ Manager
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
 |.move | @username X | Moves `@username` to position **X**. |
 |.kill | | Kills the bot. |
+|.cycle | [on|off] | Sets the current DJ cycle status. |
 
 Bouncer
 -------
