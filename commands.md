@@ -11,24 +11,30 @@ Manager
 
 |Command | Arguments |  Description |
 |:------:|:---------:|:--------------------------------------:|
-|.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 |.autoskip | (on\|off\|status) | Toggles the autoskip setting. This helps prevent songs from endlessly spinning. |
 |.ban | @username [perma\|day\|**hour**] | Bans `@username` for the specified duration.  |
 |.unban | @username | Unbans `@username` from the room.  |
-|.lock | | Locks the waitlist. |
-|.unlock | | Unlocks the waitlist. |
 |.clearchat | | Clears the chat. (max 1000 messages from bots last connect) |
 |.dctime | (X) | Sets the allowed elapsed time before .dc is unavailable. Prints the current DC time if no argument is passwewd |
 |.lockdown | (on\|off\|status) | Toggles the Lockdown effect. Lockdown means no grayplebs can type in the chat. |
-|.cleverbot | (on\|off\|status) | Toggles the Cleverbot setting. |
-|.timeguard | (on\|off\|status) | Toggles the Timeguard setting. |
-|.maxlength | (X) | Sets the max song length to **X** minutes (so 5.5 is 5 minutes 30 seconds). |
-|.swap | @userA @userB | Swaps the position of `@userA` and `@userB`. At least one of the users must be in the waitlist. |
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
-|.move | @username X | Moves `@username` to position **X**. |
-|.kill | | Kills the bot. |
 |.cycle | [on|off] | Sets the current DJ cycle status. |
 |.lockskippos | (X) | Sets the current lock skip position to **X**. |
+
+Bouncer+
+-------
+
+|Command | Arguments |  Description |
+|:------:|:---------:|:--------------------------------------:|
+|.cleverbot | (on\|off\|status) | Toggles the Cleverbot setting. |
+|.timeguard | (on\|off\|status) | Toggles the Timeguard setting. |
+|.kill | | Kills the bot. |
+|.lock | | Locks the waitlist. |
+|.unlock | | Unlocks the waitlist. |
+|.swap | @userA @userB | Swaps the position of `@userA` and `@userB`. At least one of the users must be in the waitlist. |
+|.move | @username X | Moves `@username` to position **X**. |
+|.maxlength | (X) | Sets the max song length to **X** minutes (so 5.5 is 5 minutes 30 seconds). |
+|.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 
 Bouncer
 -------

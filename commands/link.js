@@ -1,10 +1,11 @@
-exports.names = ['.link', '!link'];
+exports.names = ['link'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
 exports.cd_all = 5;
 exports.cd_user = 15;
 exports.cd_manager = 5;
+exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
     var media = bot.getMedia();
     if (media.format == 1) {

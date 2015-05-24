@@ -5,8 +5,7 @@ exports.matchStart = true;
 exports.cd_all = 0;
 exports.cd_user = 0;
 exports.cd_manager = 0;
+exports.min_role = PERMISSIONS.MANAGER;
 exports.handler = function (data) {
-    if (data.from.role > 2 || data.from.username == config.superAdmin) {
-        setting_handle('lockdown', data);
-    }
+    setting_handle('lockdown', data);
 };

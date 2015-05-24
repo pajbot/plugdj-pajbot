@@ -1,14 +1,15 @@
-exports.names = ['.dc', '!dc', '.dclookup', '!dclookup'];
+exports.names = ['dc', 'dclookup'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
 exports.cd_all = 2;
 exports.cd_user = 30;
 exports.cd_manager = 0;
+exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
     var params = _.rest(data.message.split(' '), 1);
     var user;
-    if (params.length < 1 || data.from.role < 2) {
+    if (params.length < 1 || data.from.role < PlugAPI.ROOM_ROLE.BOUNCER) {
         user = data.from;
     } else {
         username_uf = params.join(' ').trim();

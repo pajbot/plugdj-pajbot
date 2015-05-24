@@ -51,6 +51,16 @@ module.exports = function (options) {
         this[model] = sequelize.import(__dirname + '/models/' + model);
     });
 
+    PERMISSIONS = {
+        NONE: 0,
+        RDJ: 1,
+        BOUNCER: 2,
+        BOUNCER_PLUS: 2.5,
+        MANAGER: 3,
+        COHOST: 4,
+        HOST: 5
+    }
+
     settings = {
         'autoskip': false,
         'timeguard': false,
@@ -60,7 +70,8 @@ module.exports = function (options) {
         'maxlength': 330,
         'lockdown': false,
         'cleverbot': false,
-        'lockskippos': 3
+        'lockskippos': 3,
+        'bouncerplus': false
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -71,7 +82,8 @@ module.exports = function (options) {
         'maxlength': 'Max length',
         'lockdown': 'Lockdown',
         'cleverbot': 'Cleverbot',
-        'lockskippos': 'Lock skip position'
+        'lockskippos': 'Lock skip position',
+        'bouncerplus': 'Bouncer+'
     };
     message_history = FixedArray(900);
     move_queue = [];
@@ -224,6 +236,14 @@ module.exports = function (options) {
         });
     }
 
+    hasAccess = function(user, min_role) {
+        if (user.role == PlugAPI.ROOM_ROLE.BOUNCER) {
+            return (user.role >= min_role || (min_role == PERMISSIONS.BOUNCER_PLUS && settings['bouncerplus']));
+        }
+
+        return user.role >= min_role;
+    }
+
     loadCommands = function() {
         commands.length = 0;
         commands = [];
@@ -248,6 +268,10 @@ module.exports = function (options) {
                 command.names = new_names;
                 command.last_run = 0;
                 command.last_run_users = {};
+
+                if (command.min_role === undefined) {
+                    command.min_role = PERMISSIONS.NONE;
+                }
                 commands.push(command);
             });
         } catch (e) {

@@ -1,4 +1,4 @@
-exports.names = ['.ping', '.uptime', '!ping', '!uptime'];
+exports.names = ['ping', 'uptime'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;

@@ -5,8 +5,7 @@ exports.matchStart = true;
 exports.cd_all = 0;
 exports.cd_user = 0;
 exports.cd_manager = 0;
+exports.min_role = PERMISSIONS.MANAGER;
 exports.handler = function (data) {
-    if (data.from.role > 2 || data.from.username == 'PAJLADA' || data.from.username == '-DARKSBANE') {
-        setting_handle('autoskip', data);
-    }
+    setting_handle('autoskip', data);
 };
