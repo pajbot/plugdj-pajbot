@@ -232,6 +232,20 @@ module.exports = function (options) {
         try {
             fs.readdirSync(path.resolve(__dirname, 'commands')).forEach(function (file) {
                 var command = require(path.resolve(__dirname, 'commands/' + file));
+
+                var new_names = [];
+
+                _.each(command.names, function(alias) {
+                    var first_char = alias.charAt(0);
+                    if (first_char !== '.' && first_char !== '!') {
+                        new_names.push('.' + alias);
+                        new_names.push('!' + alias);
+                    } else {
+                        new_names.push(alias);
+                    }
+                });
+
+                command.names = new_names;
                 command.last_run = 0;
                 command.last_run_users = {};
                 commands.push(command);
