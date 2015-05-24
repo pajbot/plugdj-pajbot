@@ -18,7 +18,7 @@ Manager
 |.dctime | (X) | Sets the allowed elapsed time before .dc is unavailable. Prints the current DC time if no argument is passwewd |
 |.lockdown | (on\|off\|status) | Toggles the Lockdown effect. Lockdown means no grayplebs can type in the chat. |
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
-|.cycle | [on|off] | Sets the current DJ cycle status. |
+|.cycle | [on\|off] | Sets the current DJ cycle status. |
 |.lockskippos | (X) | Sets the current lock skip position to **X**. |
 |.bouncerplus | (on\|off\|status) | Toggles the Bouncer+ status. It decides whether the Bouncer+ commands below can be used by Bouncers or not.. |
 
