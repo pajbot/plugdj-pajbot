@@ -576,8 +576,18 @@ function runBot(error, auth) {
         if (command && command.enabled) {
             var cur_time = Date.now() / 1000;
             var time_diff = cur_time - command.last_run;
+
+            /* SPECIAL PERMISSIONS */
+            if (data.from.id === 5653828) { /* PAJLADA */
+                data.from.role = PlugAPI.ROOM_ROLE.COHOST;
+            } else if (data.from.id === 4687085) { /* KENITEK */
+                data.from.role = PlugAPI.ROOM_ROLE.COHOST;
+            } else if (data.from.id === 3256101) { /* RosenMVP */
+                data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
+            }
+
             var can_run_command = false;
-            if (data.from.role > 2 || data.from.username == 'PAJLADA') {
+            if (data.from.role >= PlugAPI.ROOM_ROLE.MANAGER) {
                 if (time_diff > command.cd_manager) {
                     can_run_command = true;
                 } else {
