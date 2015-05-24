@@ -44,6 +44,7 @@ Bouncer
 |.movequeue | | Prints a list of the current movement queue. |
 |.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
 |.lockskip | | Skips the current DJ and moves the DJ to the current lock skip position. |
+|.gtfm | query | Links to lmgtfy.com with the query string attached. |
 
 
 
