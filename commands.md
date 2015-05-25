@@ -53,6 +53,7 @@ Bouncer
 |.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
 |.lockskip | | Skips the current DJ and moves the DJ to the current lock skip position. |
 |.gtfm | query | Links to lmgtfy.com with the query string attached. |
+|.whois | @username | Prints some information about `@username`. |
 
 
 
