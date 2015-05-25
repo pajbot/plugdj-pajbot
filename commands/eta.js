@@ -33,7 +33,7 @@ exports.handler = function (data) {
         }
     } else {
         var time_remaining = bot.getTimeRemaining();
-        var time = ((pos - 1) * 3.368 * 60 + time_remaining);
+        var time = Math.round(((pos - 1) * 3.368 * 60 + time_remaining));
         if (user.id == data.from.id) {
             modMessage(data, 'You will reach the booth in approximately ' + sec_to_str(time) + '.');
         } else {
