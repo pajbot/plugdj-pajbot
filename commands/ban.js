@@ -30,7 +30,7 @@ exports.handler = function (data) {
 
     if (user !== undefined) {
         // Don't let bouncers get too feisty (API should prohibit this, but just making sure!
-        if (data.from.role <= PlugAPI.ROOM_ROLE.BOUNCER) {
+        if (data.from.role <= ROOM_ROLE.BOUNCER) {
             duration = 'HOUR';
         }
 

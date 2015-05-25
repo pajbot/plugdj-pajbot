@@ -9,7 +9,7 @@ exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
     var params = _.rest(data.message.split(' '), 1);
     var user;
-    if (params.length < 1 || data.from.role < PlugAPI.ROOM_ROLE.BOUNCER) {
+    if (params.length < 1 || data.from.role < ROOM_ROLE.BOUNCER) {
         user = data.from;
     } else {
         username_uf = params.join(' ').trim();

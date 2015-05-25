@@ -51,6 +51,15 @@ module.exports = function (options) {
         this[model] = sequelize.import(__dirname + '/models/' + model);
     });
 
+    ROOM_ROLE = {
+        NONE: 0,
+        RESIDENTDJ: 1,
+        BOUNCER: 2,
+        MANAGER: 3,
+        COHOST: 4,
+        HOST: 5
+    };
+
     PERMISSIONS = {
         NONE: 0,
         RDJ: 1,
