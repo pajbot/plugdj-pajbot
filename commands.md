@@ -5,6 +5,7 @@ X specifies a number
 Arguments between ( ) are optional  
 Arguments between [ ] are required  
 Arguments listed between | are the various choices you have to use
+Arguments marked in **bold** are the default actions
 
 Manager
 -------
@@ -12,7 +13,7 @@ Manager
 |Command | Arguments |  Description |
 |:------:|:---------:|:--------------------------------------:|
 |.autoskip | (on\|off\|status) | Toggles the autoskip setting. This helps prevent songs from endlessly spinning. |
-|.ban | @username [perma\|day\|**hour**] | Bans `@username` for the specified duration.  |
+|.ban | @username (perma\|day\|**hour**) | Bans `@username` for the specified duration.  |
 |.unban | @username | Unbans `@username` from the room.  |
 |.clearchat | | Clears the chat. (max 1000 messages from bots last connect) |
 |.dctime | (X) | Sets the allowed elapsed time before .dc is unavailable. Prints the current DC time if no argument is passwewd |
@@ -52,6 +53,7 @@ Bouncer
 |.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
 |.lockskip | | Skips the current DJ and moves the DJ to the current lock skip position. |
 |.gtfm | query | Links to lmgtfy.com with the query string attached. |
+|.whois | @username | Prints some information about `@username`. |
 
 
 

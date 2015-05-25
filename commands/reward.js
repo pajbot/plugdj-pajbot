@@ -1,9 +1,34 @@
-exports.names = ['.reward', '!reward'];
+var tacos = [ /* Rare (1/10) */
+    "a blunt :snoop:",
+    "a leather mask :forsenddk:",
+    "a trimmed mithril armor"
+    ];
+var cookies = [ /* Common (9/10) */
+    "a chocolate chip cookie",
+    "a sugar cookie",
+    "an oatmeal raisin cookie :dansgame:",
+    "a 'special' brownie",
+    "an animal cracker",
+    "a scooby snack",
+    "a blueberry muffin",
+    "a cupcake",
+    "Strawberry Sunday",
+    "Chocolate Chip Icecream Cone",
+    "Cookie Dough Triple Scoop",
+    "Mint Chocolate Chip Icecream Cone",
+    "Chocolate Icecream Sunday",
+    "Banana Split with Whipped Cream",
+    "Vanilla Icecream Cone with Sprinkles",
+    "Bubblegum Flavored Popcicle",
+    "en bröllopstårta",
+    "a burger :celeopie::dssclap::anneburger:",
+    "kladdkaka"
+    ];
+
+exports.names = ['reward'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
-var tacos = ["a blunt :snoop:", "a leather mask :forsenddk:", "a trimmed mithril armor"];
-var cookies = ["a chocolate chip cookie", "a sugar cookie", "an oatmeal raisin cookie", "a 'special' brownie", "an animal cracker", "a scooby snack", "a blueberry muffin", "a cupcake", "Strawberry Sunday", "Chocolate Chip Icecream Cone", "Cookie Dough Triple Scoop ", "Mint Chocolate Chip Icecream Cone", "Chocolate Icecream Sunday", "Banana Split with Whipped Cream", "Vanilla Icecream Cone with Sprinkles ", "Bubblegum Flavored Popcicle", "en bröllopstårta", "kladdkaka"];
 exports.cd_all = 15;
 exports.cd_user = 30;
 exports.cd_manager = 10;
