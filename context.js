@@ -341,19 +341,6 @@ module.exports = function (options) {
         process_move_event(md);
     }
 
-    move_queue_shift = function() {
-        var md = move_queue.shift();
-
-        if (move_queue.length == 0) {
-            logger.info('[MQUEUE]', 'Unlocking booth. (move_queue_shift)');
-            bot.moderateLockBooth(false, false, function() {
-                logger.info('[MQUEUE]', 'Successfully unlocked booth. (move_queue_shift)');
-            });
-        }
-
-        return md;
-    }
-
     move_queue_push = function(md) {
         move_queue.push(md);
         bot.moderateLockBooth(true);
@@ -396,7 +383,7 @@ module.exports = function (options) {
         /* We're trying to move the user to the same position, just assume we're done! */
         if (current_position === new_position) {
             logger.info('[MQUEUE]', 'Trying to move ' + user.username + ' from ' + current_position + ' to ' + new_position + ', skipping.');
-            move_queue_shift();
+            move_queue_remove(md);
             return false;
         }
 
