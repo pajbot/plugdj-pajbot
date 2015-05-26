@@ -354,7 +354,7 @@ module.exports = function (options) {
     }
 
     move_queue_remove = function(md) {
-        move_queue = _.without(move_queue, md.user_id);
+        move_queue = _.without(move_queue, md);
 
         if (move_queue.length == 0) {
             logger.info('[MQUEUE]', 'Unlocking booth. (move_queue_remove)');
