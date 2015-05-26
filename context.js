@@ -80,7 +80,8 @@ module.exports = function (options) {
         'lockdown': false,
         'cleverbot': false,
         'lockskippos': 3,
-        'bouncerplus': false
+        'bouncerplus': false,
+        'rdjtest': false
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -92,10 +93,13 @@ module.exports = function (options) {
         'lockdown': 'Lockdown',
         'cleverbot': 'Cleverbot',
         'lockskippos': 'Lock skip position',
-        'bouncerplus': 'Bouncer+'
+        'bouncerplus': 'Bouncer+',
+        'rdjtest': 'RDJ test'
     };
     message_history = FixedArray(900);
     move_queue = [];
+    add_to_waitlist_history = {};
+    room_locked = false; /* XXX: Is there a way for us to get the room locked status on connect? */
 
     // @TODO - Is it better to declare these directly in the model?
     Song.hasMany(Play);
@@ -304,76 +308,158 @@ module.exports = function (options) {
         return _.first(str_array, 2).join(', ');
     }
 
-    move_user = function(user_id, position) {
-        var md = {'user_id': user_id, 'position': position};
+    move_user = function(user_id, new_position) {
+        var md = {'user_id': user_id, 'position': new_position};
         var room_length = bot.getWaitList().length;
         var current_position = bot.getWaitListPosition(md.user_id);
         var in_queue = false;
 
-        logger.info('[MQUEUE1]', 'Adding ' + user_id + ' to the move queue, position ' + position + '. (' + room_length + ')');
+        logger.info('[MQUEUE1]', 'Adding ' + user_id + ' to the move queue, position ' + new_position + '. (' + room_length + ')');
 
         _.each(move_queue, function(_md) {
             if (_md.user_id === user_id) {
                 in_queue = true;
-                _md.position = position;
+                _md.position = new_position;
             }
         });
 
         if (in_queue) {
             var user = bot.getUser(user_id);
-            logger.info('[MQUEUE1]', user.username + ' is in the queue already, changing desired position to ' + position + '.');
-            chatMessage('/me ' + user.username + ' is already in the queue, changing desired position to ' + position + '.');
+            logger.info('[MQUEUE1]', user.username + ' is in the queue already, changing desired position to ' + new_position + '.');
+            chatMessage('/me ' + user.username + ' is already in the queue, changing desired position to ' + new_position + '.');
             return;
         }
 
-        if (position === -1) {
-            /* If the requested position is -1 we assume
-             * the person should be removed from the wait list. */
-            bot.moderateRemoveDJ(user_id);
-        } else if (current_position === -1 && room_length === 50) {
-            logger.info('[MQUEUE1]', 'Added ' + user_id + ' to the move queue, position ' + position + '.');
-            move_queue.push(md);
-            bot.moderateLockBooth(true);
+        /* If the user is out of the waitlist, and the waitlist is full (50 or more)
+         * we add the user to the move queue instead. */
+        if (current_position === 0 || (current_position === -1 && room_length >= 50)) {
+            logger.info('[MQUEUE1]', 'Added ' + user_id + ' to the move queue, position ' + new_position + '.');
+            move_queue_push(md);
+            return;
+        }
 
-            var user = bot.getUser(md.user_id);
-            chatMessage('/me Added ' + user.username + ' to the queue. Queue length: ' + move_queue.length);
-        } else if (current_position === -1 && room_length < 50) {
-             logger.info('[MQUEUE1]', 'The waitlist isn\'t even full, just move add and move!');
+        process_move_event(md);
+    }
 
-            //move_queue.push(md);
-            bot.moderateAddDJ(md.user_id, function () {
-                logger.info('[MQUEUE1]', 'Added someone into the waitlist...');
-                var room_length = bot.getWaitList().length;
-                if (position > room_length) {
-                    position = room_length;
-                }
+    move_queue_shift = function() {
+        var md = move_queue.shift();
 
-                bot.moderateMoveDJ(md.user_id, position, function() {
-                    logger.info('[MQUEUE1]', 'Successfully moved someone in the waitlist!!');
-                    User.update({waitlist_position: position}, {where: {id: md.user_id}});
-
-                    if (move_queue.length == 0) {
-                        /* The queue is empty, we can unlock the waitlist! */
-                        bot.moderateLockBooth(false);
-                    }
-                });
+        if (move_queue.length == 0) {
+            logger.info('[MQUEUE]', 'Unlocking booth. (move_queue_shift)');
+            bot.moderateLockBooth(false, false, function() {
+                logger.info('[MQUEUE]', 'Successfully unlocked booth. (move_queue_shift)');
             });
-       } else {
-            logger.info('[MQUEUE1]', 'just move!');
+        }
 
-            //move_queue.push(md);
-            bot.moderateMoveDJ(md.user_id, position, function() {
-                logger.info('[MQUEUE1]', 'Successfully moved someone in the waitlist!!');
-                User.update({waitlist_position: position}, {where: {id: md.user_id}});
-                var room_length = bot.getWaitList().length;
-                if (position > room_length) {
-                    position = room_length;
-                }
+        return md;
+    }
 
-                if (move_queue.length == 0) {
-                    /* The queue is empty, we can unlock the waitlist! */
-                    bot.moderateLockBooth(false);
-                }
+    move_queue_push = function(md) {
+        move_queue.push(md);
+        bot.moderateLockBooth(true);
+
+        var user = bot.getUser(md.user_id);
+        var room_length = bot.getWaitList().length;
+        var current_position = bot.getWaitListPosition(md.user_id);
+        if (user) {
+            chatMessage('/me Added ' + user.username + ' to the queue. Queue length: ' + move_queue.length);
+        }
+    }
+
+    move_queue_remove = function(md) {
+        move_queue = _.without(move_queue, md.user_id);
+
+        if (move_queue.length == 0) {
+            logger.info('[MQUEUE]', 'Unlocking booth. (move_queue_remove)');
+            bot.moderateLockBooth(false, false, function() {
+                logger.info('[MQUEUE]', 'Successfully unlocked booth. (move_queue_remove)');
+            });
+        }
+    }
+
+    process_move_event = function(md) {
+        var current_position = bot.getWaitListPosition(md.user_id);
+        var new_position = md.position;
+        var room_length = bot.getWaitList().length;
+        var user = bot.getUser(md.user_id);
+
+        if (!user) {
+            chatMessage('/me Removing ' + md.user_id + ' from movement queue, because he\'s not here.');
+            move_queue_remove(md);
+            return;
+        }
+
+        if (new_position > room_length) {
+            new_position = room_length;
+        }
+
+        /* We're trying to move the user to the same position, just assume we're done! */
+        if (current_position === new_position) {
+            logger.info('[MQUEUE]', 'Trying to move ' + user.username + ' from ' + current_position + ' to ' + new_position + ', skipping.');
+            move_queue_shift();
+            return false;
+        }
+
+        /* If the requested position is -1 we assume
+         * the person should be removed from the wait list. */
+        if (new_position === -1) {
+            logger.info('[MQUEUE]', 'Removing ' + user.username + ' from the waitlist.');
+            bot.moderateRemoveDJ(md.user_id, function() {
+                logger.info('[MQUEUE]', 'Successfully removed ' + user.username + ' from the waitlist.');
+                move_queue_remove(md);
+            });
+            return true;
+        }
+
+        if (current_position === 0) {
+            logger.info('[MQUEUE]', user.username + ' is currently playing...');
+            if (move_queue.length > 1) {
+                var cur_md = move_queue.shift();
+                move_queue.push(cur_md);
+            }
+        } else if (current_position === -1) {
+            /* The user is not in queue, for us to move this person,
+             * we need to have a free spot in the wait list. */
+            if (room_length !== 50) {
+                logger.info('[MQUEUE]', 'Adding ' + user.username + ' to the queue. (1)');
+                add_to_waitlist_history[user.id] = true;
+                bot.moderateAddDJ(md.user_id, function () {
+                    add_to_waitlist_history[user.id] = true;
+                    setTimeout(function() {
+                        add_to_waitlist_history[user.id] = false;
+                    }, 1000);
+                    logger.info('[MQUEUE]', 'Successfully added ' + user.username + ' to the queue! (1)');
+
+                    logger.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
+                    setTimeout(function() {
+                        bot.moderateMoveDJ(md.user_id, new_position, function() {
+                            move_queue_remove(md);
+
+                            User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
+                            logger.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
+
+                            if (move_queue.length == 0) {
+                                /* The queue is empty, we can unlock the waitlist! */
+                                logger.info('[MQUEUE]', 'Unlocking booth. (1)');
+                                bot.moderateLockBooth(false, false, function() {
+                                    logger.info('[MQUEUE]', 'Successfully unlocked booth. (1)');
+                                });
+                            } else {
+                                logger.info('[MQUEUE]', 'Move queue is not empty, not unlocking booth. (1)');
+                                logger.info(move_queue);
+                            }
+                        });
+                    }, 250);
+                });
+            }
+        } else {
+            logger.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
+            bot.moderateMoveDJ(md.user_id, new_position, function() {
+                logger.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
+
+                move_queue_remove(md);
+
+                User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
             });
         }
     }

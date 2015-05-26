@@ -9,6 +9,13 @@ var roomHasActiveMods = false;
 var skipTimer;
 var motd_i = 0
 
+/**
+ * Keep track of the length of the waitlist,
+ * that way, on each waitlist update we can figure out
+ * whether someone joined the waitlist or if someone left.
+ **/
+var waitlist_length = 10000000;
+
 function runBot(error, auth) {
     if (error) {
         logger.error("[INIT] An error occurred: " + err);
@@ -199,10 +206,6 @@ function runBot(error, auth) {
         }
     });
 
-    bot.on('djListUpdate', function(data) {
-        //process_move_queue();
-    });
-
     bot.on('advance', function (data) {
         if (config.verboseLogging) {
             logger.success('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
@@ -211,6 +214,7 @@ function runBot(error, auth) {
         motd_advance();
         //process_move_queue();
 
+        waitlist_length = bot.getWaitList().length;
         saveWaitList(true);
 
         // Writes current room state to outfile so it can be used for the web
@@ -418,10 +422,41 @@ function runBot(error, auth) {
 
     });
 
+    bot.on('djListLocked', function(data) {
+        room_locked = data.f;
+    });
+
     bot.on('djListUpdate', function (data) {
         if (config.verboseLogging) {
             logger.success('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
         }
+
+        if (settings['rdjtest'] === true) {
+            if (data && data.length > waitlist_length) {
+                var last_user_id = data.slice(-1).pop();
+                logger.info('last user id: ' + last_user_id);
+                if (last_user_id) {
+                    logger.info('yep');
+                    var last_user = bot.getUser(last_user_id);
+                    if (last_user) {
+                        logger.info('could get user!');
+                        if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user_id] !== true) {
+                            logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
+
+                            setTimeout(function() {
+                                logger.info('[RDJPROT]', 'removing user with id ' + last_user_id);
+                                bot.moderateRemoveDJ(last_user_id, function() {
+                                    logger.info('[RDJPROT]', 'done');
+                                    process_move_queue();
+                                });
+                            }, 100);
+                        }
+                    }
+                }
+            }
+        }
+
+        waitlist_length = data.length;
         saveWaitList(false);
     });
 
@@ -764,79 +799,8 @@ function runBot(error, auth) {
 
             /* Fetch the first user from the queue */
             var md = move_queue[0];
-            var current_position = bot.getWaitListPosition(md.user_id);
-            var new_position = md.position;
-            var room_length = bot.getWaitList().length;
-            var user = bot.getUser(md.user_id);
 
-            if (!user) {
-                chatMessage('/me Removing ' + md.user_id + ' from movement queue, because he\'s not here.');
-                move_queue.shift();
-                return;
-            }
-
-            if (new_position > room_length) {
-                new_position = room_length;
-            }
-
-            if (current_position === new_position) {
-                move_queue.shift();
-                if (move_queue.length == 0) {
-                    /* The queue is empty, we can unlock the waitlist! */
-                    logger.info('[MQUEUE]', 'Unlocking booth. (3)');
-                    bot.moderateLockBooth(false, false, function() {
-                        logger.info('[MQUEUE]', 'Successfully unlocked booth. (3)');
-                    });
-                }
-                return false;
-            }
-
-            if (current_position === -1) {
-                /* The user is not in queue, for us to move this person,
-                 * we need to have a free spot in the wait list. */
-                if (room_length !== 50) {
-                    logger.info('[MQUEUE]', 'Adding ' + user.username + ' to the queue. (1)');
-                    bot.moderateAddDJ(md.user_id, function () {
-                        logger.info('[MQUEUE]', 'Successfully added ' + user.username + ' to the queue! (1)');
-
-                        logger.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
-                        bot.moderateMoveDJ(md.user_id, new_position, function() {
-                            User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
-                            move_queue.shift();
-                            logger.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
-
-                            if (move_queue.length == 0) {
-                                /* The queue is empty, we can unlock the waitlist! */
-                                logger.info('[MQUEUE]', 'Unlocking booth. (1)');
-                                bot.moderateLockBooth(false, false, function() {
-                                    logger.info('[MQUEUE]', 'Successfully unlocked booth. (1)');
-                                });
-                            } else {
-                                logger.info('[MQUEUE]', 'Move queue is not empty, not unlocking booth. (1)');
-                                logger.info(move_queue);
-                            }
-                        });
-                    });
-                }
-            } else {
-                logger.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
-                bot.moderateMoveDJ(md.user_id, new_position, function() {
-                    move_queue.shift();
-                    User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
-                    logger.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
-
-                    if (move_queue.length == 0) {
-                        /* The queue is empty, we can unlock the waitlist! */
-                        logger.info('[MQUEUE]', 'Unlocking booth. (2)');
-                        bot.moderateLockBooth(false, false, function() {
-                            logger.info('[MQUEUE]', 'Successfully unlocked booth. (2)');
-                        });
-                    } else {
-                        logger.info('[MQUEUE]', 'Move queue is not empty, not unlocking booth. (2)');
-                        logger.info(move_queue);
-                    }
-                });
-            }
+            process_move_event(md);
         }
     }
 }
