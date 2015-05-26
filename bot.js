@@ -29,6 +29,7 @@ function runBot(error, auth) {
             { type: Sequelize.QueryTypes.SELECT })
         .then(function(rows) {
             logger.info('got settings!');
+            var fetched_settings = [];
             _.each(rows, function(row) {
                 var value = row['value'];
 
@@ -47,7 +48,25 @@ function runBot(error, auth) {
                 }
 
                 settings[row['id']] = value;
+                fetched_settings.push(row['id']);
             });
+
+            for (setting in settings) {
+                if (fetched_settings.indexOf(setting) == -1) {
+                    var type = typeof settings[setting];
+                    var insert_type = 'string';
+                    if (type === 'boolean') {
+                        insert_type = 'bool';
+                    } else if (type === 'string') {
+                        insert_type = 'string';
+                    } else if (type === 'number') {
+                        insert_type = 'int';
+                    }
+                    sequelize.query('INSERT INTO `settings` (`id`, `type`, `value`) VALUES (?, ?, ?)',
+                            { replacements: [setting, insert_type, settings[setting]], type: sequelize.QueryTypes.INSERT }
+                    );
+                }
+            }
         })
         .then(function() {
             logger.info('running bot connect');
@@ -458,6 +477,14 @@ function runBot(error, auth) {
 
         waitlist_length = data.length;
         saveWaitList(false);
+    });
+
+    bot.on('modAddWaitList', function(data) {
+        logger.info('add waitlist', data);
+    });
+
+    bot.on('modAddDJ', function(data) {
+        logger.info('add dj', data);
     });
 
     bot.on('close', reconnect);
