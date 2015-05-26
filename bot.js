@@ -459,7 +459,7 @@ function runBot(error, auth) {
                     var last_user = bot.getUser(last_user_id);
                     if (last_user) {
                         logger.info('could get user!');
-                        if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user_id] !== true) {
+                        if (move_queue[0] === last_user_id || move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user_id] !== true) {
                             logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
 
                             setTimeout(function() {
