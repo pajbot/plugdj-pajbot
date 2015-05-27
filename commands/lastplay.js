@@ -5,7 +5,7 @@ exports.matchStart = true;
 exports.cd_all = 5;
 exports.cd_user = 10;
 exports.cd_manager = 5;
-exports.min_role = PERMISSIONS.BOUNCER;
+exports.min_role = PERMISSIONS.RDJ;
 exports.handler = function (data) {
     var params = _.rest(data.message.split(' '), 1);
     if (params.length < 1) {
