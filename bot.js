@@ -450,26 +450,21 @@ function runBot(error, auth) {
             logger.success('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
         }
 
-        if (settings['rdjtest'] === true) {
-            if (data && data.length > waitlist_length) {
-                var last_user_id = data.slice(-1).pop();
-                logger.info('last user id: ' + last_user_id);
-                if (last_user_id) {
-                    logger.info('yep');
-                    var last_user = bot.getUser(last_user_id);
-                    if (last_user) {
-                        logger.info('could get user!');
-                        if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user_id] !== true && move_queue[0].user_id !== last_user_id) {
-                            logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
+        if (data && data.length > waitlist_length) {
+            var last_user_id = data.slice(-1).pop();
+            if (last_user_id) {
+                var last_user = bot.getUser(last_user_id);
+                if (last_user) {
+                    if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user_id] !== true && move_queue[0].user_id !== last_user_id) {
+                        logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
 
-                            setTimeout(function() {
-                                logger.info('[RDJPROT]', 'removing user with id ' + last_user_id);
-                                bot.moderateRemoveDJ(last_user_id, function() {
-                                    logger.info('[RDJPROT]', 'done');
-                                    process_move_queue();
-                                });
-                            }, 100);
-                        }
+                        setTimeout(function() {
+                            logger.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
+                            bot.moderateRemoveDJ(last_user_id, function() {
+                                logger.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
+                                process_move_queue();
+                            });
+                        }, 100);
                     }
                 }
             }

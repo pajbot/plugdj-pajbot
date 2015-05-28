@@ -80,8 +80,7 @@ module.exports = function (options) {
         'lockdown': false,
         'cleverbot': false,
         'lockskippos': 3,
-        'bouncerplus': false,
-        'rdjtest': false
+        'bouncerplus': false
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -93,8 +92,7 @@ module.exports = function (options) {
         'lockdown': 'Lockdown',
         'cleverbot': 'Cleverbot',
         'lockskippos': 'Lock skip position',
-        'bouncerplus': 'Bouncer+',
-        'rdjtest': 'RDJ test'
+        'bouncerplus': 'Bouncer+'
     };
     message_history = FixedArray(900);
     move_queue = [];
