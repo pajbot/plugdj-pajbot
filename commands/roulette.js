@@ -21,7 +21,8 @@ exports.handler = function (data) {
     } else {
         if (bot.running_roulette !== true) {
             var roulette_length = roulette_duration * 1000;
-            if (rest.length > 0) {
+            if (rest.length > 0 && data.from.role > 2) {
+                /* Only managers can create custom length roulettes. */
                 var roulette_length_arg = parseInt(rest);
                 if (!isNaN(roulette_length_arg) && roulette_length_arg > 0) {
                     roulette_length = roulette_length_arg * 1000;
