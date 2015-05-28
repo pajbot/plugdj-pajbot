@@ -1,4 +1,4 @@
-exports.names = ['bouncerplus', 'bplus'];
+exports.names = ['bouncerplus', 'bplus', 'bouncer+'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
