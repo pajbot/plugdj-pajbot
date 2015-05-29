@@ -671,4 +671,18 @@ module.exports = function (options) {
 
         return username;
     }
+
+    lockskip = function(dj) {
+        bot.changeDJCycle(false);
+        setTimeout(function() {
+            bot.changeDJCycle(true, function() {
+                bot.moderateForceSkip(function() {
+                    setTimeout(function() {
+                        bot.changeDJCycle(false);
+                        move_user(dj.id, settings['lockskippos']);
+                    }, 500);
+                });
+            });
+        }, 250);
+    }
 };
