@@ -30,13 +30,13 @@ exports.handler = function (data) {
         if (user.id == data.from.id) {
             modMessage(data, 'You\'re not in the waitlist.');
         } else {
-            modMessage(data, user.username + 'is not in the waitlist.');
+            modMessage(data, user.username + ' is not in the waitlist.');
         }
     } else if (pos == 0) {
         if (user.id == data.from.id) {
             modMessage(data, 'You\'re currently playing your song!');
         } else {
-            modMessage(data, user.username + 'is currently playing his song!');
+            modMessage(data, user.username + ' is currently playing his song!');
         }
     } else {
         if (user.id == data.from.id) {
