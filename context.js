@@ -80,7 +80,8 @@ module.exports = function (options) {
         'lockdown': false,
         'cleverbot': false,
         'lockskippos': 3,
-        'bouncerplus': false
+        'bouncerplus': false,
+        'skipunavailable': true
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -92,7 +93,8 @@ module.exports = function (options) {
         'lockdown': 'Lockdown',
         'cleverbot': 'Cleverbot',
         'lockskippos': 'Lock skip position',
-        'bouncerplus': 'Bouncer+'
+        'bouncerplus': 'Bouncer+',
+        'skipunavailable': 'Skip unavailable songs'
     };
     message_history = FixedArray(900);
     move_queue = [];

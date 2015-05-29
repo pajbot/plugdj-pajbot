@@ -21,7 +21,8 @@ Manager
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
 |.cycle | [on\|off] | Sets the current DJ cycle status. |
 |.lockskippos | (X) | Sets the current lock skip position to **X**. |
-|.bouncerplus | (on\|off\|status) | Toggles the Bouncer+ status. It decides whether the Bouncer+ commands below can be used by Bouncers or not.. |
+|.bouncerplus | (on\|off\|status) | Toggles the Bouncer+ status. It decides whether the Bouncer+ commands below can be used by Bouncers or not. |
+|.skipunavailable | (on\|off\|status) | Toggles the Skip Unavailable Song status. It decides whether songs that are found to be unavailable should be automatically skipped or not. |
 
 Bouncer+
 -------

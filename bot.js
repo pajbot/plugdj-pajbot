@@ -279,6 +279,27 @@ function runBot(error, auth) {
 
         if (data.media != null) {
 
+            if (data.media.format == 2) {
+                // The song is a soundcloud song!
+                var client_id = '73401fe4eb06e6ad2b23368567ed1bae';
+                request('https://api.soundcloud.com/tracks/'+data.media.cid+'.json?client_id='+client_id, function (error, response, body) {
+                    var json_data = JSON.parse(body);
+                    logger.info(json_data);
+                    if (settings['skipunavailable']) {
+                        if (!json_data.streamable) {
+                            logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                            if (data.currentDJ != null) {
+                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been lockskipped.');
+                                lockskip(data.currentDJ);
+                            } else {
+                                chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                bot.moderateForceSkip();
+                            }
+                        }
+                    }
+                });
+            }
+
             if (data.currentDJ != null) {
                 logger.success('********************************************************************');
                 logger.success('[UPTIME]', 'Bot online ' + timeSince(startupTimestamp, true));
