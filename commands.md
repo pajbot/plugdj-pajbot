@@ -44,7 +44,7 @@ Bouncer
 |Command | Arguments |  Description |
 |:------:|:---------:|:--------------------------------------:|
 |.status | | Prints out a bunch of mod-related status information. |
-|.songinfo | | Prints information about the current song, like whether it's been played before or not. |
+|.songinfo | (X) | Prints information about the current song (or the song that was played **X** songs ago), like whether it's been played before or not. |
 |.movequeue | | Prints a list of the current movement queue. |
 |.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
 |.lockskip | | Skips the current DJ and moves the DJ to the current lock skip position. |
