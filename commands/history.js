@@ -12,10 +12,18 @@ exports.handler = function (data) {
     var params = _.rest(input);
 
     if (params.length != 1) {
+        chatMessage('/me Usage: .history X');
         return;
     }
 
-    var offset = parseInt(params)-1;
+    var offset = parseInt(params);
+
+    if (isNaN(offset) || offset <= 0) {
+        chatMessage('/me Usage: .history X');
+        return;
+    }
+
+    offset -= 1;
 
     sequelize.query('SELECT `plays`.`id`, `songs`.`format`, `songs`.`cid`, `songs`.`author`, `songs`.`title` FROM `plays` INNER JOIN `songs` ON `songs`.`id`=`plays`.`song_id` ORDER BY `plays`.`id` DESC LIMIT '+offset+',1',
             { type: Sequelize.QueryTypes.SELECT })
