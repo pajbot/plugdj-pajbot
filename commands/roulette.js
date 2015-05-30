@@ -44,9 +44,13 @@ exports.handler = function (data) {
                     var users = bot.getUsers();
                     var user = _.findWhere(users, {username: winner});
                     if (user !== undefined) {
-                        move_user(user.id, position);
                         var current_position = bot.getWaitListPosition(user.id);
                         logger.info('[ROULETTE]', data.from.username + ' roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
+                        if (current_position == position) {
+                            chatMessage('nice value, from ' + current_position + ' to ' + position + ' :trumpw:');
+                        }
+
+                        move_user(user.id, position);
                     } else {
                         chatMessage('/me user who won roulette isn\'t even here :4head:');
                     }
