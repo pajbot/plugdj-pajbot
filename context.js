@@ -690,7 +690,7 @@ module.exports = function (options) {
     }
 
     load_responses = function() {
-        responses = [];
+        responses = {};
         EventResponse.findAll({
             where: {is_active: 1}
         }).on('success', function(rows) {

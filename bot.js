@@ -711,7 +711,7 @@ function runBot(error, auth) {
             mentionResponse(data);
         } else {
             var response = responses[cmd_msg];
-            if (response) {
+            if (response !== undefined) {
                 var cur_time = Date.now() / 1000;
                 var time_diff = cur_time - response.last_run;
 
