@@ -16,7 +16,7 @@ exports.handler = function (data) {
         return;
     }
 
-    var aliases = _.first(params).toLowerCase().replace(/\.\!/, '');
+    var aliases = _.first(params).toLowerCase().replace(/(\.|\!)/g, '');
 
     EventResponse.destroy({
         where: {trigger: aliases}
