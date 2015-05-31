@@ -614,6 +614,7 @@ function runBot(error, auth) {
     }
 
     function reconnect() {
+        logger.info('Reconnect called!!!!!!!!');
         bot.connect(config.roomName);
     }
 
