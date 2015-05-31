@@ -1,4 +1,4 @@
-exports.names = ['.join', '.leave', '!join', '!leave'];
+exports.names = ['join', 'leave'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

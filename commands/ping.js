@@ -5,6 +5,7 @@ exports.matchStart = true;
 exports.cd_all = 10;
 exports.cd_user = 30;
 exports.cd_manager = 5;
+exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
     chatMessage('/me Pong! (bot started ' + moment.utc(uptime.getTime()).fromNow() + ')');
 };

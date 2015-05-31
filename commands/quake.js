@@ -7,6 +7,7 @@ exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {
     request('http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson', function (error, response, body) {
+            logger.info(error);
         var quakes = JSON.parse(body).features.slice(0, 3);
         chatMessage('/me Recent earthquakes: ' + _.map(quakes, function (quake) {
             var timeElapsed = new Date() - new Date(quake.properties.time);
