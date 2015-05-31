@@ -27,7 +27,8 @@
         "moment": "*",
         "cleverbot-node": "*",
         "node-datatable": "git://github.com/jpravetz/node-datatable.git",
-        "fixed-array": "*"
+        "fixed-array": "*",
+        "html-entities": "*"
     },
     "devDependencies": {
         "sequelize-fixtures": "*"
