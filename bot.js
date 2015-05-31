@@ -1,4 +1,6 @@
 var PlugAPI = require('plugapi');
+var Entities = require('html-entities').AllHtmlEntities;
+var entities = new Entities();
 var fs = require('fs');
 path = require('path')
 var config = require(path.resolve(__dirname, 'config.json'));
@@ -785,7 +787,14 @@ function runBot(error, auth) {
             if (config.verboseLogging) {
                 logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
             }
-            chatMessage('@' + data.from.username + ' ' + response.message);
+            logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
+            var message = response.message;
+            var matches = message.match(/\|([a-fA-F0-9]{4})/g);
+            _.each(matches, function(match) {
+                message = message.replace(match, '&#'+parseInt(match.substr(1), 16) + ';');
+            });
+            message = entities.decode(message);
+            chatMessage('@' + data.from.username + ' ' + message);
 
         });
     }
