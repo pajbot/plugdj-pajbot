@@ -627,6 +627,7 @@ function runBot(error, auth) {
         bot.multiLineLimit = 5;
 
         loadCommands();
+        load_responses();
     }
 
     function handleCommand(data) {
@@ -706,8 +707,21 @@ function runBot(error, auth) {
             }
         } else if (settings['cleverbot'] && data.message.indexOf('@' + bot.getUser().username) > -1) {
             mentionResponse(data);
-        } else if (config.eventResponses && data.message.indexOf('.') === 0) {
-            chatResponse(data);
+        } else {
+            var response = responses[cmd_msg];
+            if (response) {
+                var cur_time = Date.now() / 1000;
+                var time_diff = cur_time - response.last_run;
+
+                if (config.removeCommands) {
+                    bot.moderateDeleteChat(data.id);
+                }
+
+                if (time_diff > response.cd) {
+                    chatMessage(response.message);
+                    response.last_run = cur_time;
+                }
+            }
         }
     }
 

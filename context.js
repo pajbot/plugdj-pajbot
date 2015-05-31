@@ -70,6 +70,7 @@ module.exports = function (options) {
         HOST: 5
     }
 
+    responses = []
     settings = {
         'autoskip': false,
         'timeguard': false,
@@ -686,5 +687,35 @@ module.exports = function (options) {
                 });
             });
         }, 250);
+    }
+
+    load_responses = function() {
+        responses = [];
+        EventResponse.findAll({
+            where: {is_active: 1}
+        }).on('success', function(rows) {
+            if (rows) {
+                for (var i=0; i<rows.length; ++i) {
+                    var row = rows[i];
+                    /**
+                     * cd is currently hardcoded at 15. is this good?
+                     **/
+                    var response = {
+                        cd: 15,
+                        last_run: 0,
+                        message: row['response']
+                    };
+
+                    _.each(row['trigger'].split('|'), function(trigger) {
+                        trigger = trigger.trim();
+
+                        if (trigger.length > 0) {
+                            responses['.'+trigger] = response;
+                            responses['!'+trigger] = response;
+                        }
+                    });
+                }
+            }
+        });
     }
 };
