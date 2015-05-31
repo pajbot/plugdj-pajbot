@@ -67,7 +67,6 @@
     "maxSongLengthSecs": 420,
     "verboseLogging": false,
     "quietMode": false,
-    "chatRandomnessPercentage": 5,
     "migrateOldPlugDatabase": false,
     "removeCommands": true
 }

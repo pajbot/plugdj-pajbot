@@ -780,38 +780,14 @@ function runBot(error, auth) {
     }
 
     function mentionResponse(data) {
-        // How much ADHD does the bot have?
-        if (!config.chatRandomnessPercentage) {
-            chatRandomnessPercentage = 5;
-        } else {
-            chatRandomnessPercentage = config.chatRandomnessPercentage;
-        }
+        cleverMessage = data.message.replace('@' + bot.getUser().username, '').trim();
+        cleverbot.write(cleverMessage, function (response) {
+            if (config.verboseLogging) {
+                logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
+            }
+            chatMessage('@' + data.from.username + ' ' + response.message);
 
-        if (_.random(1, 100) > chatRandomnessPercentage) {
-            cleverMessage = data.message.replace('@' + bot.getUser().username, '').trim();
-            cleverbot.write(cleverMessage, function (response) {
-                if (config.verboseLogging) {
-                    logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
-                }
-                chatMessage('@' + data.from.username + ' ' + response.message);
-
-            });
-        }
-        else if (config.eventResponses) {
-            EventResponse.find({
-                where: Sequelize.and({event_type: 'mention', is_active: true}),
-                order: 'RAND()'
-            })
-                .on('success', function (row) {
-                    if (row === null) {
-                        return;
-                    }
-                    else {
-                        chatMessage(row.response.replace('{sender}', data.from.username));
-                    }
-
-                });
-        }
+        });
     }
 
     function chatResponse(data) {
