@@ -42,7 +42,7 @@ exports.handler = function (data) {
     } else {
         console.log(params.join(' '));
         username_uf = params.join(' ').trim();
-        username = username_uf.replace('@', '');
+        username = username_uf.replace(/@/g, '');
         console.log(username);
         var user = _.findWhere(bot.getUsers(), {username: username});
         if (user) {

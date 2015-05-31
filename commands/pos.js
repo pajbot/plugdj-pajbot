@@ -13,7 +13,7 @@ exports.handler = function (data) {
         user = data.from;
     } else {
         var username_uf = params.join(' ').trim();
-        var username = username_uf.replace('@', '');
+        var username = username_uf.replace(/@/g, '');
         console.log(username);
         var _user = _.findWhere(bot.getUsers(), {username: username});
         if (_user) {
