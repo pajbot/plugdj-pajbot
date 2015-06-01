@@ -74,7 +74,10 @@ function runBot(error, auth) {
         .then(function() {
             Youtube.authenticate({
                 type: "oauth",
-                token: config.apiKeys.youtube
+                refresh_token: config.apiKeys.youtube.refresh_token,
+                client_id: config.apiKeys.youtube.client_id,
+                client_secret: config.apiKeys.youtube.client_secret,
+                redirect_url: config.apiKeys.youtube.redirect_url,
             });
         })
         .then(function() {
