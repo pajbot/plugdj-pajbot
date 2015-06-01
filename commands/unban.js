@@ -18,7 +18,7 @@ exports.handler = function (data) {
 
     User.find({where: {username: usernameFormatted}}).on('success', function (row) {
         if (row === null) {
-            chatMessage('/me No user named ' + usernameFormatted + ' was not found.');
+            modMessage(data, usernameFormatted.replace(/@/g, '') + ' was not found.');
         } else {
             bot.moderateUnbanUser(row.id, function() {
                 chatMessage('/me [@'+data.from.username+'] Unbanned ' + row.username + '.');

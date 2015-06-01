@@ -29,7 +29,7 @@ exports.handler = function (data) {
     } else {
         User.find({where: {username: usernameFormatted}}).on('success', function (row) {
             if (row === null) {
-                modMessage(data, usernameFormatted + ' was not found.');
+                modMessage(data, usernameFormatted.replace(/@/g, '') + ' was not found.');
             } else {
                 modMessage(data, row.username + ' was last seen ' + timeSince(row.last_seen) + '.');
             }

@@ -38,7 +38,7 @@ exports.handler = function (data) {
 
         User.find({where: {username: usernameFormatted}}).on('success', function (row) {
             if (row === null) {
-                chatMessage('/me No user named ' + usernameFormatted + ' was not found.');
+                chatMessage('/me No user named ' + usernameFormatted.replace(/@/g, '') + ' was not found.');
             } else {
                 /*
                 if (data.from.username == 'Jeanny' && row.username == 'PAJLADA') {
