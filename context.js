@@ -5,7 +5,9 @@ module.exports = function (options) {
     Sequelize = require('sequelize');
     Promise = require('bluebird');
 
-    bot = new PlugAPI(options.auth);
+    bot = new PlugAPI(options.auth, function() {
+        logger.info('Auth callback called!');
+    });
     config = options.config;
     logger = PlugAPI.CreateLogger('Bot');
     fs = require('fs');
