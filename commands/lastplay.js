@@ -37,7 +37,7 @@ exports.handler = function (data) {
                                 song_link = 'https://youtu.be/' + dbSong['cid'];
                                 modMessage(data, usernameFormatted + ' last played ' + dbSong['author'] + ' - ' + dbSong['title'] + ' (' + song_link + ') ' + moment.utc(dbPlay['updated_at']).calendar() + ' (' + moment.utc(dbPlay['updated_at']).fromNow() + ')');
                             } else {
-                                var client_id = '73401fe4eb06e6ad2b23368567ed1bae';
+                                var client_id = config.apiKeys.soundcloud;
                                 request('https://api.soundcloud.com/tracks/'+dbSong['cid']+'.json?client_id='+client_id, function (error, response, body) {
                                     var json_data = JSON.parse(body);
                                     song_link = json_data.permalink_url;

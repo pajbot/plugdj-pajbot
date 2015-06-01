@@ -2,6 +2,7 @@ var PlugAPI = require('plugapi');
 var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
 var fs = require('fs');
+var Youtube = require('youtube-api');
 path = require('path')
 var config = require(path.resolve(__dirname, 'config.json'));
 
@@ -69,6 +70,12 @@ function runBot(error, auth) {
                     );
                 }
             }
+        })
+        .then(function() {
+            Youtube.authenticate({
+                type: "oauth",
+                token: config.apiKeys.youtube
+            });
         })
         .then(function() {
             logger.info('running bot connect');
@@ -283,7 +290,7 @@ function runBot(error, auth) {
 
             if (data.media.format == 2) {
                 // The song is a soundcloud song!
-                var client_id = '73401fe4eb06e6ad2b23368567ed1bae';
+                var client_id = config.apiKeys.soundcloud;
                 request('https://api.soundcloud.com/tracks/'+data.media.cid+'.json?client_id='+client_id, function (error, response, body) {
                     var json_data = JSON.parse(body);
                     logger.info(json_data);
@@ -298,6 +305,37 @@ function runBot(error, auth) {
                                 bot.moderateForceSkip();
                             }
                         }
+                    }
+                });
+            } else {
+                Youtube.videos.list({
+                    "part": "id,status",
+                    "id": data.media.cid,
+                }, function (err, api_data) {
+                    logger.info(err);
+                    logger.info(api_data);
+
+                    if (api_data && api_data.items.length == 0) {
+                        /* The video doesn't exist anymore :tfw: */
+                        if (settings['skipunavailable']) {
+                            logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                            if (data.currentDJ != null) {
+                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been lockskipped.');
+                                lockskip(data.currentDJ);
+                            } else {
+                                chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                bot.moderateForceSkip();
+                            }
+                        }
+                    }
+
+                    if (api_data && api_data.items) {
+                        _.each(api_data.items, function(item) {
+                            logger.info(item);
+                            if (item.status) {
+                                logger.info(item.status);
+                            }
+                        });
                     }
                 });
             }

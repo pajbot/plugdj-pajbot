@@ -23,7 +23,9 @@
         "echoNest": "###",
         "lastFm": "lastFmApiKey",
         "lastFm_secret": "lastfmSecretKey",
-        "wordnik": "wordnikApiKey"
+        "wordnik": "wordnikApiKey",
+        "youtube": "youtubeApiKey",
+        "soundcloud": "soundcloudApiKey"
     },
     "slack": {
         "webhookUrl": "https://xxxxxx.slack.com/services/hooks/incoming-webhook?token=xxxxxxxxxxx",

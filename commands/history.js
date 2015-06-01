@@ -33,7 +33,7 @@ exports.handler = function (data) {
                 if (row['format'] == 1) {
                     modMessage(data, row['author'] + ' - ' + row['title'] + ' (https://youtu.be/' + row['cid'] + ') played ' + (offset+1) + ' songs ago.');
                 } else {
-                    var client_id = '73401fe4eb06e6ad2b23368567ed1bae';
+                    var client_id = config.apiKeys.soundcloud;
                     request('https://api.soundcloud.com/tracks/'+row['cid']+'.json?client_id='+client_id, function (error, response, body) {
                         var json_data = JSON.parse(body);
                         var song_url = json_data.permalink_url;

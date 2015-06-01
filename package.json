@@ -28,7 +28,8 @@
         "cleverbot-node": "*",
         "node-datatable": "git://github.com/jpravetz/node-datatable.git",
         "fixed-array": "*",
-        "html-entities": "*"
+        "html-entities": "*",
+        "youtube-api": "*"
     },
     "devDependencies": {
         "sequelize-fixtures": "*"
