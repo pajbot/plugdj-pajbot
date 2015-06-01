@@ -301,8 +301,9 @@ function runBot(error, auth) {
                         if (!json_data.streamable) {
                             logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
                             if (data.currentDJ != null) {
-                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been lockskipped.');
-                                lockskip(data.currentDJ);
+                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
+                                bot.moderateForceSkip();
+                                //lockskip(data.currentDJ);
                             } else {
                                 chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
                                 bot.moderateForceSkip();
@@ -323,8 +324,9 @@ function runBot(error, auth) {
                         if (settings['skipunavailable']) {
                             logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
                             if (data.currentDJ != null) {
-                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been lockskipped.');
-                                lockskip(data.currentDJ);
+                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
+                                bot.moderateForceSkip();
+                                //lockskip(data.currentDJ);
                             } else {
                                 chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
                                 bot.moderateForceSkip();
