@@ -32,6 +32,7 @@ Manager
 |.lockskippos | (X) | Sets the current lock skip position to **X**. |
 |.bouncerplus | (on\|off\|status) | Toggles the Bouncer+ status. It decides whether the Bouncer+ commands below can be used by Bouncers or not. |
 |.skipunavailable | (on\|off\|status) | Toggles the Skip Unavailable Song status. It decides whether songs that are found to be unavailable should be automatically skipped or not. |
+|.russianroulettee | (X\|stop) | Starts a russian roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 
 Bouncer+
 -------
