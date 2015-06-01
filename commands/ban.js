@@ -62,7 +62,7 @@ exports.handler = function (data) {
         }
 
         var r = bot.moderateBanUser(user.id, null, real_dur, function() {
-            chatMessage('/me [@' + data.from.username + '] Banned ' + usernameFormatted + ' ' + duration_string + '.');
+            modMessage(data, 'Banned ' + usernameFormatted + ' ' + duration_string + '.');
             logger.info('[BAN] ' + usernameFormatted + ' was banned by ' + data.from.username + ' ' + duration_string);
             var userData = {
                 type: 'ban',
@@ -74,7 +74,7 @@ exports.handler = function (data) {
         });
 
         if (r === false) {
-            chatMessage('/me [@' + data.from.userame + '] Couldn\'t ban ' + usernameFormatted + ' for some reason.');
+            modMessage(data, 'Couldn\'t ban ' + usernameFormatted + ' for some reason.');
         }
     }
 };
