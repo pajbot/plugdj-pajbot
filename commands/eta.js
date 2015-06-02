@@ -29,7 +29,13 @@ exports.handler = function (data) {
         if (user.id == data.from.id) {
             modMessage(data, 'You\'re not in the waitlist :dansgame:.');
         } else {
-            modMessage(data, user.username + 'is not in the waitlist :dansgame:.');
+            modMessage(data, user.username + ' is not in the waitlist :dansgame:.');
+        }
+    } else if (pos === 0) {
+        if (user.id == data.from.id) {
+            modMessage(data, 'You\'re currently playing your song :dansgame:.');
+        } else {
+            modMessage(data, user.username + ' is currently playing his song :dansgame:.');
         }
     } else {
         var time_remaining = bot.getTimeRemaining();
