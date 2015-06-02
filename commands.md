@@ -15,6 +15,7 @@ Co-Host
 |.addcom | ALIAS COMMAND | Adds a command with alias **ALIAS**, which outputs `COMMAND`. **ALIAS** can be pipe-separated to have multiple aliases on a single command, i.e. jeppe|jeppe950|yeeppe950 |
 |.delcom | ALIAS | Removes the command with alias **ALIAS**. Note that the alias must match exactly the one used with .addcom, that means for a command that has multiple aliases, ALL aliases must be included in the original order. Just ask pajlada Kappa if there\'s any trouble |
 |.reload | | Reloads all user-created commands. There should never be a reason to run this command, but it's there anyway. |
+|.say | MESSAGE | Sends `MESSAGE` as the bot. |
 
 Manager
 -------
