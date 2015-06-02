@@ -319,28 +319,29 @@ function runBot(error, auth) {
                     logger.info(err);
                     logger.info(api_data);
 
-                    if (api_data && api_data.items.length == 0) {
-                        /* The video doesn't exist anymore :tfw: */
-                        if (settings['skipunavailable']) {
-                            logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
-                            if (data.currentDJ != null) {
-                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
-                                bot.moderateForceSkip();
-                                //lockskip(data.currentDJ);
-                            } else {
-                                chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
-                                bot.moderateForceSkip();
+                    if (api_data) {
+                        if (api_data.items.length === 0) {
+                            /* The video is not available. */
+                            if (settings['skipunavailable']) {
+                                logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                                if (data.currentDJ != null) {
+                                    chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
+                                    bot.moderateForceSkip();
+                                } else {
+                                    chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                    bot.moderateForceSkip();
+                                }
                             }
-                        }
-                    }
-
-                    if (api_data && api_data.items) {
-                        _.each(api_data.items, function(item) {
-                            logger.info(item);
+                        } else {
+                            var item = _.first(api_data.items);
                             if (item.status) {
                                 logger.info(item.status);
+                                if (item.status.embeddable === false) {
+                                    chatMessage('/me This song is not embeddable :tfw:');
+                                    //bot.moderateForceSkip();
+                                }
                             }
-                        });
+                        }
                     }
                 });
             }
