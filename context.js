@@ -703,7 +703,7 @@ module.exports = function (options) {
                      * cd is currently hardcoded at 15. is this good?
                      **/
                     var response = {
-                        cd: 15,
+                        cd: 30,
                         last_run: 0,
                         message: row['response']
                     };
