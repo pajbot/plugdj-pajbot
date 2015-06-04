@@ -47,7 +47,7 @@ exports.handler = function (data) {
             return;
         }
         if (dbUser.waitlist_position > -1 && secondsSince(dbUser.last_leave) <= settings['dctimer'] && (position === -1 || (position > -1 && position > dbUser.waitlist_position))) {
-            chatMessage('/me ' + dbUser.username + ' disconnected ' + timeSince(dbUser.last_leave, true) + 'ago and should be at position ' + dbUser.waitlist_position);
+            chatMessage('/me ' + dbUser.username + ' disconnected ' + timeSince(dbUser.last_leave, true) + ' ago and should be at position ' + dbUser.waitlist_position);
             move_user(user.id, dbUser.waitlist_position);
             //User.update({last_leave: null}, {where: {id: dbUser.id}});
         } else {
