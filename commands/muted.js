@@ -20,5 +20,5 @@ exports.handler = function (data) {
             username = '@' + user.username;
         }
     }
-    chatMessage('/me ' + username + ' No asking for skips. You have been muted for 15 minutes.');
+    chatMessage('/me ' + username + ' Do not ask for skips. You have been muted for 15 minutes.');
 };
