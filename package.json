@@ -29,7 +29,8 @@
         "node-datatable": "git://github.com/jpravetz/node-datatable.git",
         "fixed-array": "*",
         "html-entities": "*",
-        "youtube-api": "*"
+        "youtube-api": "git://github.com/pajlada/youtube-api.git",
+        "url": "*"
     },
     "devDependencies": {
         "sequelize-fixtures": "*"
