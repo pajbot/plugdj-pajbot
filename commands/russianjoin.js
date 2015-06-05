@@ -17,7 +17,8 @@ exports.handler = function (data) {
             case '.rjoin':
             case '!rjoin':
                 {
-                    if (bot.russian_roulette_users.indexOf(data.from.username) == -1) {
+                    var position = bot.getWaitListPosition(data.from.id);
+                    if (position != -1 && bot.russian_roulette_users.indexOf(data.from.username) == -1) {
                         chatMessage('/me ' + data.from.username + ' joined the russian roulette! (.rleave if you regret it.)', 2);
                         bot.russian_roulette_users.push(data.from.username);
                     }
