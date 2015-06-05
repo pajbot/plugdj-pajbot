@@ -72,6 +72,7 @@ function runBot(error, auth) {
             }
         })
         .then(function() {
+            logger.info('[YOUTUBE]', 'Authenticating with youtube...');
             Youtube.authenticate({
                 type: "oauth",
                 refresh_token: config.apiKeys.youtube.refresh_token,
@@ -79,6 +80,7 @@ function runBot(error, auth) {
                 client_secret: config.apiKeys.youtube.client_secret,
                 redirect_url: config.apiKeys.youtube.redirect_url,
             });
+            logger.info('[YOUTUBE]', 'Authenticated!');
         })
         .then(function() {
             logger.info('running bot connect');
