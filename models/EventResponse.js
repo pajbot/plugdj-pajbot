@@ -4,6 +4,7 @@ module.exports = function (sequelize, Sequelize) {
         event_type: {type: Sequelize.STRING, allowNull: false},
         trigger: {type: Sequelize.STRING},
         response: {type: Sequelize.STRING, allowNull: false},
+        cd: {type: Sequelize.INTEGER.UNSIGNED, defaultValue: 30},
         is_active: {type: Sequelize.BOOLEAN, defaultValue: true}
     }, {
         underscored: true,

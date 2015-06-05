@@ -699,11 +699,8 @@ module.exports = function (options) {
             if (rows) {
                 for (var i=0; i<rows.length; ++i) {
                     var row = rows[i];
-                    /**
-                     * cd is currently hardcoded at 15. is this good?
-                     **/
                     var response = {
-                        cd: 30,
+                        cd: row['cd'],
                         last_run: 0,
                         message: row['response']
                     };
