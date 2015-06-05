@@ -1,9 +1,7 @@
-BeavisBot
+pajbot
 ==========
 
-BeavisBot is a heavily-adapted port of SparkleBot, which got its start on turntable.fm and migrated to plug.dj after tt.fm's demise.
-
-This bot uses https://github.com/TATDK/plugapi as its API dependency and is designed to be run using a node.JS instance.
+pajbot is a port of [BeavisBot](https://github.com/AvatarKava/BeavisBot)
 
 Quick Installation
 -----------------------
@@ -12,7 +10,7 @@ Quick Installation
 3. Edit config.json to suit your needs
 4. If you are using SQLite, copy the supplied sample.sqlite to the root folder and rename it to align with your settings in config.json
 
-Known issues are located at https://github.com/AvatarKava/BeavisBot/issues - please submit any bug reports or feature requests there!
+Known issues are located at https://github.com/pajlada/pajbot/issues - please submit any bug reports or feature requests there!
 
 Logging and Log Rotation
 ------------------------
