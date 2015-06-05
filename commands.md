@@ -97,3 +97,4 @@ User
 |.reward | (@username) | Gives a random reward to `@username`. |
 |.quake | | Prints information about recent earthquakes. |
 |.link | | Prints a link to the current song. |
+|.love | @username | Outputs the percentage chance of love developing between you and `@username`. |
