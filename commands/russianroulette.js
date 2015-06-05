@@ -28,7 +28,7 @@ exports.handler = function (data) {
                     roulette_length = roulette_length_arg * 1000;
                 }
             }
-            modMessage(data, 'The russian roulette is now open! Type .russianjoin to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
+            modMessage(data, 'The russian roulette is now open! Type .rjoin to participate! The roulette will finish in ' + (roulette_length/1000) + ' seconds.');
             bot.running_russian_roulette = true;
             bot.russian_roulette_users = [];
 

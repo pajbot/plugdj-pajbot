@@ -1,4 +1,4 @@
-exports.names = ['russianjoin', 'russianleave'];
+exports.names = ['russianjoin', 'russianleave', 'rjoin', 'rleave'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
@@ -14,9 +14,11 @@ exports.handler = function (data) {
         switch (command) {
             case '.russianjoin':
             case '!russianjoin':
+            case '.rjoin':
+            case '!rjoin':
                 {
                     if (bot.russian_roulette_users.indexOf(data.from.username) == -1) {
-                        chatMessage('/me ' + data.from.username + ' joined the russian roulette! (.russianleave if you regret it.)', 2);
+                        chatMessage('/me ' + data.from.username + ' joined the russian roulette! (.rleave if you regret it.)', 2);
                         bot.russian_roulette_users.push(data.from.username);
                     }
                 }
@@ -24,6 +26,8 @@ exports.handler = function (data) {
 
             case '.russianleave':
             case '!russianleave':
+            case '.rleave':
+            case '!rleave':
                 {
                     var i = bot.russian_roulette_users.indexOf(data.from.username);
                     if (i !== -1) {
