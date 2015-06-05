@@ -34,6 +34,7 @@ Manager
 |.bouncerplus | (on\|off\|status) | Toggles the Bouncer+ status. It decides whether the Bouncer+ commands below can be used by Bouncers or not. |
 |.skipunavailable | (on\|off\|status) | Toggles the Skip Unavailable Song status. It decides whether songs that are found to be unavailable should be automatically skipped or not. |
 |.russianroulettee | (X\|stop) | Starts a russian roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
+|.fors |  | Notify all DJs and Staff that FORSEN is in the room, or is on his way. |
 
 Bouncer+
 -------
@@ -61,6 +62,7 @@ Bouncer
 |.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
 |.lockskip | | Skips the current DJ and moves the DJ to the current lock skip position. |
 |.waveform | | Prints the waveform of the current song. (Soundcloud only) |
+|.english | @username | Tells `@username` to speak english. |
 
 
 
