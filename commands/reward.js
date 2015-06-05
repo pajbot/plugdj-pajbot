@@ -48,7 +48,7 @@ exports.handler = function (data) {
         if (user) {
             username = '@' + user.username;
         } else {
-            chatMessage(username + ' is not here :biblethump:');
+            modMessage(data, 'Invalid user specified.');
             return;
         }
     }

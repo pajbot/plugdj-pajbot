@@ -18,7 +18,7 @@ exports.handler = function (data) {
 
     User.find({where: {username: usernameFormatted}}).on('success', function (dbUser) {
         if (dbUser === null) {
-            modMessage(data, usernameFormatted.replace(/@/g, '') + ' was not found.');
+            modMessage(data, 'Invalid user specified.');
         } else {
             Play.find({
                 where: {user_id: dbUser['id']},

@@ -19,7 +19,7 @@ exports.handler = function (data) {
         if (_user) {
             user = _user;
         } else {
-            modMessage(data, username + ' is not here :dansgame:');
+            modMessage(data, 'Invalid user specified.');
             return;
         }
     }

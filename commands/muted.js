@@ -18,6 +18,8 @@ exports.handler = function (data) {
         var user = _.findWhere(bot.getUsers(), {username: username});
         if (user) {
             username = '@' + user.username;
+        } else {
+            username = '';
         }
     }
     chatMessage('/me ' + username + ' Do not ask for skips. You have been muted for 15 minutes.');

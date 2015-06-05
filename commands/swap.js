@@ -46,6 +46,8 @@ exports.handler = function (data) {
                         }, 500);
                     }
                 }
+            } else {
+                modMessage(data, 'Invalid users specified.');
             }
         } else {
             modMessage(data, 'Usage: .swap @USER1 @USER2');

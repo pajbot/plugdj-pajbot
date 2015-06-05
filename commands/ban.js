@@ -74,7 +74,7 @@ exports.handler = function (data) {
         });
 
         if (r === false) {
-            modMessage(data, 'Couldn\'t ban ' + usernameFormatted + ' for some reason.');
+            modMessage(data, 'Invalid user specified.');
         }
     }
 };
