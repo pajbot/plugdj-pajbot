@@ -30,7 +30,8 @@
         "fixed-array": "*",
         "html-entities": "*",
         "youtube-api": "git://github.com/pajlada/youtube-api.git",
-        "url": "*"
+        "url": "*",
+        "spatial-noise": "*"
     },
     "devDependencies": {
         "sequelize-fixtures": "*"

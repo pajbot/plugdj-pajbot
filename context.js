@@ -4,6 +4,7 @@ module.exports = function (options) {
 
     Sequelize = require('sequelize');
     Promise = require('bluebird');
+    Noise = require('spatial-noise');
 
     bot = new PlugAPI(options.auth, function() {
         logger.info('Auth callback called!');
