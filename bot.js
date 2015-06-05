@@ -746,9 +746,11 @@ function runBot(error, auth) {
 
             if (can_run_command) {
                 if (hasAccess(data.from, command.min_role)) {
-                    command.last_run = cur_time;
-                    command.last_run_users[data.from.username] = cur_time;
-                    command.handler(data);
+                    var r = command.handler(data);
+                    if (r !== false) {
+                        command.last_run = cur_time;
+                        command.last_run_users[data.from.username] = cur_time;
+                    }
                 } else {
                     logger.info(data.from.username + ' does not have access to run the \'' + _.first(data.message.split(' ')) + '\' command.');
                 }
