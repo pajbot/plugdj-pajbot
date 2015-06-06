@@ -1,4 +1,4 @@
-exports.names = ['english'];
+exports.names = ['english', 'eng'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
