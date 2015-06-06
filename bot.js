@@ -702,9 +702,6 @@ function runBot(error, auth) {
         })[0];
 
         if (command && command.enabled) {
-            var cur_time = Date.now() / 1000;
-            var time_diff = cur_time - command.last_run;
-
             /* SPECIAL PERMISSIONS */
             if (data.from.id === 5653828) { /* PAJLADA */
                 data.from.role = PlugAPI.ROOM_ROLE.COHOST;
@@ -714,22 +711,26 @@ function runBot(error, auth) {
                 data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
             }
 
-            var can_run_command = false;
+            var can_run_command = true;
+            var cur_time = Date.now() / 1000;
+            var time_diff = cur_time - command.last_run;
+            var time_diff_user = cur_time;
+            if (data.from.username in command.last_run_users) {
+                time_diff_user -= command.last_run_users[data.from.username];
+            }
+
             if (data.from.role >= PlugAPI.ROOM_ROLE.MANAGER) {
-                if (time_diff > command.cd_manager) {
-                    can_run_command = true;
-                } else {
+                if (command.cd_manager >= time_diff) {
                     logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (manager+) ' + time_diff);
+                    can_run_command = false;
                 }
             } else {
-                var time_diff_user = cur_time;
-                if (data.from.username in command.last_run_users) {
-                    time_diff_user -= command.last_run_users[data.from.username];
-                }
-                if (time_diff > command.cd_all && time_diff_user > command.cd_user) {
-                    can_run_command = true;
-                } else {
-                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam ' + time_diff);
+                if (command.cd_all >= time_diff) {
+                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (cd_all) ' + time_diff);
+                    can_run_command = false;
+                } else if (command.cd_user >= time_diff_user) {
+                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (cd_user) ' + time_diff_user);
+                    can_run_command = false;
                 }
             }
 
@@ -747,7 +748,10 @@ function runBot(error, auth) {
             if (can_run_command) {
                 if (hasAccess(data.from, command.min_role)) {
                     var r = command.handler(data);
-                    if (r !== false) {
+                    if (typeof r === 'object' && 'cd_all' in r && 'cd_user' in r) {
+                        command.last_run = cur_time - command.cd_all + r.cd_all;
+                        command.last_run_users[data.from.username] = cur_time - command.cd_user + r.cd_user;
+                    } else if (r !== false) {
                         command.last_run = cur_time;
                         command.last_run_users[data.from.username] = cur_time;
                     }
