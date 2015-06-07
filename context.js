@@ -721,7 +721,7 @@ module.exports = function (options) {
 
     /**
      * Useful for commands that only take one parameter, a username.
-     * The CB will only return a non-failure if the user is in the 
+     * The CB will only return a non-failure if the user is in the room
      *
      * params is a list of strings (most likely taken from _.rest(input))
      *
