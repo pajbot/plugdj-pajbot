@@ -18,8 +18,9 @@ exports.handler = function (data) {
         if (user) {
             var lang = user.language;
             var ch = '/me @' + username + ' ';
-            switch(lang){
+            switch (lang) {
                 case 'da': ch += 'Vær venlig at tale engelsk.'; break;
+                case 'sv': ch += 'Vänligen tala engelska.'; break;
                 case 'de': ch += 'Bitte sprechen Sie Englisch.'; break;
                 case 'es': ch += 'Por favor, hable Inglés.'; break;
                 case 'fr': ch += 'Parlez anglais, s\'il vous plaît.'; break;
