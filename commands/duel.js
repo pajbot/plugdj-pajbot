@@ -1,4 +1,4 @@
-exports.names = ['duel', 'accept'];
+exports.names = ['duel', 'accept', 'deny'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
@@ -31,27 +31,47 @@ exports.handler = function (data) {
 
     switch (command) {
         case 'duel':
-            var current_position = bot.getWaitListPosition(data.from.id);
-            if (current_position === -1) {
-                logger.info('You must be in the waitlist to duel someone!.');
-                /* You must be in the waitlist to duel someone. */
-                return false;
-            }
 
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
+                    var current_position = bot.getWaitListPosition(data.from.id);
+                    var duelee_position = bot.getWaitListPosition(user.id);
+                    if (current_position === -1 && duelee_position === -1) {
+                        logger.info('You must be in the waitlist to duel someone!.');
+                        modMessage(data, 'You or ' + user.username + ' must be in the waitlist to duel.');
+                        /* You must be in the waitlist to duel someone. */
+                        return {cd: 2, cd_user: 10};
+                    } else {
+                        /*
+                        if (current_position <= 0 && current_position > 40 && duelee_position === -1) {
+                            logger.info('You must be above position 40 to duel someone outside the waitlist.');
+                            modMessage(data, 'You must be above position 40 to duel someone outside the waitlist.');
+                            return {cd: 2, cd_user: 10};
+                        } else if (duelee_position <= 0 && duelee_position > 40 && current_position === -1) {
+                            logger.info(user.username + ' must be above position 40 to be dueled by you when you\'re outside the waitlist.');
+                            modMessage(data, user.username + ' must be above position 40 to be dueled by you when you\'re outside the waitlist.');
+                            return {cd: 2, cd_user: 10};
+                        }
+                        */
+                    }
                     if (user.id === data.from.id) {
                         logger.info('You can\'t duel yourself...');
                         /* wtf are you doing dueling yourself man */
                         return false;
                     }
 
-                    for (k in duel_requests) {
-                        var req = duel_requests[k];
-                        if (req.target.id === user.id) {
-                            logger.info('The person you are trying to duel is already in dueled by someone.');
+                    var run = true;
+
+                    _.each(duel_requests, function(req) {
+                        if (req && req.target && req.target.id === user.id) {
+                            run = false;
                             return false;
                         }
+                    });
+
+                    if (!run) {
+                        logger.info('The person you are trying to duel is already in dueled by someone.');
+                        return false;
                     }
 
                     if (duel_requests[data.from.id] === undefined) {
@@ -62,14 +82,26 @@ exports.handler = function (data) {
                             timeout: setTimeout(function() {
                                 var req = duel_requests[data.from.id];
                                 modMessage(data, 'Your duel request to ' + user.username + ' has been cancelled, because the target took too long to respond.');
-                                duel_requests[data.from.id] = undefined;
+                                delete duel_requests[data.from.id];
                             }, request_time * 1000)
                         };
 
-                        chatMessage('@' + user.username + ', you have been challenged to a duel by ' + data.from.username + ', type .accept to accept!');
+                        chatMessage('@' + user.username + ', you have been challenged to a duel by ' + data.from.username + ', type .accept or .deny');
                     }
                 }
             });
+            break;
+
+        case 'deny':
+            for (k in duel_requests) {
+                var req = duel_requests[k];
+                if (req.target.id === data.from.id) {
+                    modMessage(data, 'You denied the duel request from @' + req.requestor.username + '.');
+                    clearTimeout(req.timeout);
+                    delete duel_requests[data.from.id];
+                    break;
+                }
+            }
             break;
 
         case 'accept':
