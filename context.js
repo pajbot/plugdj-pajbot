@@ -741,10 +741,10 @@ module.exports = function (options) {
                 if (user) {
                     cb(false, user, db_user);
                 } else {
-                    cb('NOT_IN_ROOM', false);
+                    cb('NOT_IN_ROOM', false, db_user);
                 }
             } else {
-                cb('NO_USER', false);
+                cb('NO_USER', false, false);
             }
         });
     }
