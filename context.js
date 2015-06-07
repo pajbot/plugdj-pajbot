@@ -718,4 +718,34 @@ module.exports = function (options) {
             }
         });
     }
+
+    /**
+     * Useful for commands that only take one parameter, a username.
+     * The CB will only return a non-failure if the user is in the 
+     *
+     * params is a list of strings (most likely taken from _.rest(input))
+     *
+     * cb example:
+     * function(err, user, db_user) {
+     *   lalala
+     * }
+     **/
+    get_user_by_param = function(params, cb) {
+        var username_formatted = S(params.join(' ').trim()).chompLeft('@').s;
+
+        User.find({
+            where: {username: username_formatted}
+        }).on('success', function(db_user) {
+            if (db_user) {
+                var user = _.findWhere(bot.getUsers(), {id: db_user.id});
+                if (user) {
+                    cb(false, user, db_user);
+                } else {
+                    cb('NOT_IN_ROOM', false);
+                }
+            } else {
+                cb('NO_USER', false);
+            }
+        });
+    }
 };
