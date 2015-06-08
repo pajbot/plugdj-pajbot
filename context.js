@@ -479,7 +479,7 @@ module.exports = function (options) {
 
             setTimeout(function() {
                 message_out_history.shift();
-            }, 3000);
+            }, 5000);
 
             return true;
         } else if (add_to_queue === true) {
