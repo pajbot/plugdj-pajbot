@@ -347,7 +347,10 @@ module.exports = function (options) {
 
     move_queue_push = function(md) {
         move_queue.push(md);
-        bot.moderateLockBooth(true);
+        var current_position = bot.getWaitListPosition(md.user_id);
+        if (current_position !== 0) {
+            bot.moderateLockBooth(true);
+        }
 
         var user = bot.getUser(md.user_id);
         var room_length = bot.getWaitList().length;
@@ -409,6 +412,9 @@ module.exports = function (options) {
                 move_queue.push(cur_md);
             }
         } else if (current_position === -1) {
+            if (!room_locked) {
+                bot.moderateLockBooth(true);
+            }
             /* The user is not in queue, for us to move this person,
              * we need to have a free spot in the wait list. */
             if (room_length !== 50) {
