@@ -127,9 +127,7 @@ function runBot(error, auth) {
     });
 
     bot.on('modSkip', function (data) {
-        logger.info(data);
         bot.getHistory(function(history) {
-            logger.info(history);
             if (history) {
                 for (var i = 2; i < history.length; i++) {
                     if (history[1].media.cid === history[i].media.cid) {
@@ -314,7 +312,6 @@ function runBot(error, auth) {
                 var client_id = config.apiKeys.soundcloud;
                 request('https://api.soundcloud.com/tracks/'+data.media.cid+'.json?client_id='+client_id, function (error, response, body) {
                     var json_data = JSON.parse(body);
-                    logger.info(json_data);
                     if (settings['skipunavailable']) {
                         if (!json_data.streamable) {
                             logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
@@ -334,8 +331,6 @@ function runBot(error, auth) {
                     "part": "id,status",
                     "id": data.media.cid,
                 }, function (err, api_data) {
-                    logger.info(err);
-                    logger.info(api_data);
 
                     if (api_data) {
                         if (api_data.items.length === 0) {
@@ -353,7 +348,6 @@ function runBot(error, auth) {
                         } else {
                             var item = _.first(api_data.items);
                             if (item.status) {
-                                logger.info(item.status);
                                 if (item.status.embeddable === false) {
                                     chatMessage('/me This song is not embeddable :tfw:');
                                     //bot.moderateForceSkip();
