@@ -2,14 +2,14 @@ exports.names = ['duel', 'accept', 'deny'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
-exports.cd_all = 0;
-exports.cd_user = 0;
+exports.cd_all = 1;
+exports.cd_user = 5;
 exports.cd_manager = 0;
 
-var duel_requests = [];
-var request_time = 30; // How long the person has to accept the duel request in seconds
+duel_request = false;
+var request_time = 15; // How long the person has to accept the duel request in seconds
 var last_duel = 0;
-var duel_cd = 60; // A duel can only be run every 60 seconds
+var duel_cd = 60 * 2; // How often a duel can be run
 
 exports.handler = function (data) {
     var input = data.message.split(' ');
@@ -36,23 +36,17 @@ exports.handler = function (data) {
                 if (user) {
                     var current_position = bot.getWaitListPosition(data.from.id);
                     var duelee_position = bot.getWaitListPosition(user.id);
-                    if (current_position === -1 && duelee_position === -1) {
+                    if (current_position === -1 || duelee_position === -1) {
                         logger.info('You must be in the waitlist to duel someone!.');
-                        modMessage(data, 'You or ' + user.username + ' must be in the waitlist to duel.');
+                        modMessage(data, 'You and ' + user.username + ' must be in the waitlist to duel.');
                         /* You must be in the waitlist to duel someone. */
                         return {cd: 2, cd_user: 10};
                     } else {
-                        /*
-                        if (current_position <= 0 && current_position > 40 && duelee_position === -1) {
-                            logger.info('You must be above position 40 to duel someone outside the waitlist.');
-                            modMessage(data, 'You must be above position 40 to duel someone outside the waitlist.');
-                            return {cd: 2, cd_user: 10};
-                        } else if (duelee_position <= 0 && duelee_position > 40 && current_position === -1) {
-                            logger.info(user.username + ' must be above position 40 to be dueled by you when you\'re outside the waitlist.');
-                            modMessage(data, user.username + ' must be above position 40 to be dueled by you when you\'re outside the waitlist.');
+                        if (current_position > 45 || duelee_position > 45) {
+                            logger.info('Both participants must be above position 45 to duel eachother.');
+                            modMessage(data, 'Both participants must be above position 45 to duel eachother.');
                             return {cd: 2, cd_user: 10};
                         }
-                        */
                     }
                     if (user.id === data.from.id) {
                         logger.info('You can\'t duel yourself...');
@@ -60,118 +54,103 @@ exports.handler = function (data) {
                         return false;
                     }
 
-                    var run = true;
-
-                    _.each(duel_requests, function(req) {
-                        if (req && req.target && req.target.id === user.id) {
-                            run = false;
-                            return false;
-                        }
-                    });
-
-                    if (!run) {
-                        logger.info('The person you are trying to duel is already in dueled by someone.');
+                    if (duel_request) {
+                        logger.info('There\'s already a duel request active.');
                         return false;
                     }
 
-                    if (duel_requests[data.from.id] === undefined) {
-                        /* This person does not have any duel requests atm */
-                        duel_requests[data.from.id] = {
-                            target: user,
-                            requestor: data.from,
-                            timeout: setTimeout(function() {
-                                var req = duel_requests[data.from.id];
-                                modMessage(data, 'Your duel request to ' + user.username + ' has been cancelled, because the target took too long to respond.');
-                                delete duel_requests[data.from.id];
-                            }, request_time * 1000)
-                        };
+                    /* This person does not have any duel requests atm */
+                    duel_request = {
+                        target: user,
+                        requestor: data.from,
+                        running: false,
+                        timeout: setTimeout(function() {
+                            modMessage(data, 'Your duel request to ' + user.username + ' has been cancelled, because the target took too long to respond.');
+                            duel_request = false;
+                        }, request_time * 1000)
+                    };
 
-                        chatMessage('@' + user.username + ', you have been challenged to a duel by ' + data.from.username + ', type .accept or .deny');
-                    }
+                    chatMessage('/me @' + user.username + ', you have been challenged to a duel by ' + data.from.username + ', respond with .accept or .deny');
                 }
             });
             break;
 
         case 'deny':
-            for (k in duel_requests) {
-                var req = duel_requests[k];
-                if (req.target.id === data.from.id) {
-                    modMessage(data, 'You denied the duel request from @' + req.requestor.username + '.');
-                    clearTimeout(req.timeout);
-                    delete duel_requests[data.from.id];
-                    break;
-                }
+            if (duel_request && duel_request.target.id === data.from.id && duel_request.running === false) {
+                modMessage(data, 'You denied the duel request from @' + duel_request.requestor.username + '.');
+                clearTimeout(duel_request.timeout);
+                duel_request = false;
+            } else {
+                logger.info('There is no duel request for you active.');
             }
             break;
 
         case 'accept':
-            var clear = false;
-            for (k in duel_requests) {
-                var req = duel_requests[k];
-                if (req.target.id === data.from.id) {
-                    modMessage(data, 'You accepted the duel request from @' + req.requestor.username + '... Picking a winner...');
-                    last_duel = cur_time;
-                    clear = true;
-                    setTimeout(function() {
-                        var users = [];
+            if (duel_request && duel_request.target.id === data.from.id && duel_request.running === false) {
+                duel_request.running = true;
+                clearTimeout(duel_request.timeout);
+                var req = duel_request;
 
-                        users[0] = req.requestor;
-                        users[1] = req.target;
+                modMessage(data, 'You accepted the duel request from @' + req.requestor.username + '... Picking a winner...');
+                last_duel = cur_time;
+                setTimeout(function() {
+                    if (duel_request === false) {
+                        chatMessage('/me The dueling pit is now open again.');
+                    }
+                }, (duel_cd + 2) * 1000);
+                setTimeout(function() {
+                    var users = [];
 
-                        var winner_id = _.random(0, 1);
+                    users[0] = req.requestor;
+                    users[1] = req.target;
 
-                        var winner  = users[winner_id];
-                        var loser = users[winner_id === 0 ? 1 : 0];
+                    var winner_id = _.random(0, 1);
 
-                        var winner_pos = bot.getWaitListPosition(winner.id);
-                        var loser_pos = bot.getWaitListPosition(loser.id);
+                    var winner  = users[winner_id];
+                    var loser = users[winner_id === 0 ? 1 : 0];
 
-                        logger.info('winner pos: ' + winner_pos);
-                        logger.info('loser pos: ' + loser_pos);
+                    var winner_pos = bot.getWaitListPosition(winner.id);
+                    var loser_pos = bot.getWaitListPosition(loser.id);
 
-                        /* If the winner is further in the waitlist than the loser, or if the loser is not in the waitlist, or if the loser is currently playing */
-                        if (winner_pos > 0 && (winner_pos < loser_pos || loser_pos === -1 || loser_pos === 0)) {
-                            chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He gets moved 5 positions up!');
+                    logger.info('winner pos: ' + winner_pos);
+                    logger.info('loser pos: ' + loser_pos);
 
-                            /* HANDLE WINNER */
-                            var new_pos = _.max([winner_pos-5, 1]);
-                            logger.info('new_pos: ' + new_pos);
-                            move_user(winner.id, new_pos);
+                    /* If the winner is further in the waitlist than the loser, or if the loser is not in the waitlist, or if the loser is currently playing */
+                    if (winner_pos > 0 && (winner_pos < loser_pos || loser_pos === -1 || loser_pos === 0)) {
+                        chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He gets moved 5 positions up!');
 
-                            /* HANDLE LOSER */
-                            if (loser_pos === 0) {
-                                bot.moderateForceSkip();
-                            } else {
-                                bot.moderateRemoveDJ(loser.id);
-                            }
+                        /* HANDLE WINNER */
+                        var new_pos = _.max([winner_pos-5, 1]);
+                        logger.info('new_pos: ' + new_pos);
+                        move_user(winner.id, new_pos);
 
+                        /* HANDLE LOSER */
+                        if (loser_pos === 0) {
+                            bot.moderateForceSkip();
                         } else {
-                            chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He wins ' + loser.username + '\'s position ( ' + loser_pos + ')!');
-
-                            /* HANDLE WINNER */
-                            var new_pos = _.max([loser_pos, 1]);
-                            logger.info('new_pos: ' + new_pos);
-                            move_user(winner.id, new_pos);
-
-                            /* HANDLE LOSER */
-                            if (loser_pos === 0) {
-                                bot.moderateForceSkip();
-                            } else {
-                                bot.moderateRemoveDJ(loser.id);
-                            }
+                            bot.moderateRemoveDJ(loser.id);
                         }
-                    }, 2500);
-                    break;
-                }
-            }
 
-            if (clear) {
-                for (k in duel_requests) {
-                    var req = duel_requests[k];
-                    clearTimeout(req.timeout);
-                }
+                    } else {
+                        chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He wins ' + loser.username + '\'s position ( ' + loser_pos + ')!');
 
-                duel_requests = [];
+                        /* HANDLE WINNER */
+                        var new_pos = _.max([loser_pos, 1]);
+                        logger.info('new_pos: ' + new_pos);
+                        move_user(winner.id, new_pos);
+
+                        /* HANDLE LOSER */
+                        if (loser_pos === 0) {
+                            bot.moderateForceSkip();
+                        } else {
+                            bot.moderateRemoveDJ(loser.id);
+                        }
+                    }
+
+                    duel_request = false;
+                }, 2500);
+            } else {
+                logger.info('There is no duel request active for you.');
             }
             break;
     }
