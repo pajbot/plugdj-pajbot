@@ -748,4 +748,90 @@ module.exports = function (options) {
             }
         });
     }
+
+    get_user = function(username) {
+        return User.find({
+            where: {username: username}
+        }).on('success', function(db_user) {
+            return 'cool';
+            if (db_user) {
+                var user = _.findWhere([{id: 5653828}, {id: 5032149}], {id: db_user.id});
+                if (user) {
+                    return 'asd';
+                    cb(false, user, db_user);
+                } else {
+                    return 'tfw';
+                    cb('NOT_IN_ROOM', false, db_user);
+                }
+            } else {
+                cb('NO_USER', false, false);
+            }
+        });
+    }
+
+    CPARAM = {
+        INT: 0,
+        FLOAT: 1,
+        USERNAME: 2,
+    };
+
+    /**
+     * Usage:
+     * parse_command_params('.test 1.5 5', CPARAM.FLOAT, CPARAM.INT).then(function(data) {
+     * });
+     *
+     * Parameters are parsed right-to-left.
+     **/
+    parse_command_params = function(message) {
+        var input = message.split(' ');
+        var command = _.first(input).substr(1);
+        var rest = _.rest(input);
+        var params = {};
+        var promises = [];
+        var ran = _.random(60000);
+        for (var i=arguments.length-1; i>=1; --i) {
+            var param_type = arguments[i];
+            switch (param_type) {
+                case CPARAM.FLOAT:
+                    params[i-1] = parseFloat(rest.pop());
+                    break;
+
+                case CPARAM.INT:
+                    params[i-1] = parseInt(rest.pop());
+                    break;
+
+                case CPARAM.USERNAME:
+                    {
+                        var reststr = rest.join(' ');
+                        var at_pos = reststr.lastIndexOf('@');
+                        var username = reststr.substr(at_pos+1);
+                        rest = reststr.substr(0, at_pos).split(' ');
+
+                        var x = function() {
+                            var index = i-1;
+                            promises.push(get_user(username).on('success', function(db_user) {
+                                if (db_user) {
+                                    var user = _.findWhere(bot.getUsers(), {id: db_user.id});
+                                    if (user) {
+                                        params[index] = {user: user, db_user: db_user};
+                                    } else {
+                                        params[index] = {err: 'NOT_IN_ROOM', db_user: db_user};
+                                    }
+                                } else {
+                                    params[index] = {err: 'INVALID_USER'};
+                                }
+                            }));
+                        }();
+                    }
+                    break;
+            }
+        }
+
+        return Promise.settle(promises).then(function() {
+            return {
+                command: command,
+                params: params
+            };
+        });
+    }
 };
