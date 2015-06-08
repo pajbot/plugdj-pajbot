@@ -125,17 +125,23 @@ function runBot(error, auth) {
         }
         logger.info('[BAN]', data.m + ' ' + duration + ' banned ' + data.t);
     });
-	
-	bot.on('modSkip', function (data) {
-		var history = bot.getHistory();
-		for (var i = 2; i < history.length; i++) {
-			if (history[1].cid === history[i].cid) {
-				var skippeduser = history[1].username;
-				chatMessage('@' + skippeduser + ' Your song was skipped because it was played ' + i + ' songs ago.')
-				}
-		}
-	};
-	
+
+    bot.on('modSkip', function (data) {
+        logger.info(data);
+        bot.getHistory(function(history) {
+            logger.info(history);
+            if (history) {
+                for (var i = 2; i < history.length; i++) {
+                    if (history[1].media.cid === history[i].media.cid) {
+                        var skippeduser = history[1].user.username;
+                        chatMessage('@' + skippeduser + ' Your song was skipped because it was played ' + i + ' songs ago.');
+                        break;
+                    }
+                }
+            }
+        });
+    });
+    
     bot.on('chat', function (data) {
         if (config.verboseLogging) {
             logger.info('[CHAT]', JSON.stringify(data, null, 2));
