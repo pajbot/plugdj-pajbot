@@ -7,9 +7,11 @@ exports.cd_user = 5;
 exports.cd_manager = 0;
 
 duel_request = false;
+duel_last_run_users = {};
 var request_time = 15; // How long the person has to accept the duel request in seconds
 var last_duel = 0;
 var duel_cd = 60 * 2; // How often a duel can be run
+var duel_request_user_cd = 45; // How often a person can request a duel
 
 exports.handler = function (data) {
     var input = data.message.split(' ');
@@ -34,6 +36,16 @@ exports.handler = function (data) {
 
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
+                    var time_diff_user = cur_time;
+                    if (data.from.id in duel_last_run_users) {
+                        time_diff_user -= duel_last_run_users[data.from.id];
+                    }
+
+                    if (duel_request_user_cd >= time_diff_user) {
+                        logger.info(data.from.username + ' has already requested a duel in the last ' + duel_request_user_cd + ' seconds, aborting.');
+                        return {cd: 1, cd_user: 10};
+                    }
+
                     var current_position = bot.getWaitListPosition(data.from.id);
                     var duelee_position = bot.getWaitListPosition(user.id);
                     var room_length = bot.getWaitList().length;
@@ -65,6 +77,8 @@ exports.handler = function (data) {
                         logger.info('There\'s already a duel request active.');
                         return false;
                     }
+
+                    duel_last_run_users[data.from.id] = cur_time;
 
                     /* This person does not have any duel requests atm */
                     duel_request = {
