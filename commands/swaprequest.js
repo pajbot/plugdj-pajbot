@@ -2,16 +2,18 @@ exports.names = ['swaprequest', 'swapyes', 'swapno', 'swapaccept', 'swapdecline'
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
-exports.cd_all = 5;
-exports.cd_user = 5;
-exports.cd_manager = 5;
+exports.cd_all = 1;
+exports.cd_user = 0;
+exports.cd_manager = 0;
 
 swap_request = false;
-swap_last_run_users = {};
+swap_last_request_users = {};
+swap_last_perform_users = {};
 var request_time = 15; // How long the person has to accept the swap request in seconds
 var last_swap = 0;
-var swap_cd = 30; // How often a swap can be run
-var swap_request_user_cd = 1; // How often a person can request a swap
+var swap_cd = 5; // How often a swap can be run
+var swap_request_user_cd = 60; // How often a person can request a swap
+var swap_perform_user_cd = 60 * 10; // How often a person can perform a swap
 
 exports.handler = function (data) {
     var input = data.message.split(' ');
@@ -22,7 +24,7 @@ exports.handler = function (data) {
 
     if (swap_cd >= time_diff) {
         /* A swap was run recently */
-        logger.info('A swap was run recently made, chill out!');
+        logger.info('A swap was recently made, chill out!');
         logger.info(swap_cd);
         logger.info(time_diff);
         logger.info(last_swap);
@@ -36,14 +38,21 @@ exports.handler = function (data) {
         case 'swapreq':
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
-                    var time_diff_user = cur_time;
-                    if (data.from.id in swap_last_run_users) {
-                        time_diff_user -= swap_last_run_users[data.from.id];
+                    if (data.from.id in swap_last_perform_users) {
+                        var user_diff = cur_time -= swap_last_perform_users[data.from.id];
+                        if (swap_perform_user_cd >= user_diff) {
+                            logger.info(data.from.username + ' has already performed a swap in the last ' + swap_perform_user_cd + ' seconds, aborting.');
+                            modMessage(data, 'You have already performed a swap in the last ' + sec_to_str(swap_perform_user_cd) + '.');
+                            return {cd: 1, cd_user: 60};
+                        }
                     }
 
-                    if (swap_request_user_cd >= time_diff_user) {
-                        logger.info(data.from.username + ' has already requested a swap in the last ' + swap_request_user_cd + ' seconds, aborting.');
-                        return {cd: 1, cd_user: 10};
+                    if (data.from.id in swap_last_request_users) {
+                        var user_diff = cur_time -= swap_last_request_users[data.from.id];
+                        if (swap_request_user_cd >= user_diff) {
+                            logger.info(data.from.username + ' has already requested a swap in the last ' + swap_request_user_cd + ' seconds, aborting.');
+                            return {cd: 1, cd_user: 10};
+                        }
                     }
 
                     var current_position = bot.getWaitListPosition(data.from.id);
@@ -73,7 +82,7 @@ exports.handler = function (data) {
                         return false;
                     }
 
-                    swap_last_run_users[data.from.id] = cur_time;
+                    swap_last_request_users[data.from.id] = cur_time;
 
                     /* This person does not have any swap requests atm */
                     swap_request = {
@@ -111,12 +120,7 @@ exports.handler = function (data) {
 
                 modMessage(data, 'You accepted the swap request from @' + req.requestor.username + '. Commencing swap!');
                 last_swap = cur_time;
-
-                setTimeout(function() {
-                    if (swap_request === false) {
-                        chatMessage('/me You can now swap again.');
-                    }
-                }, swap_cd * 1000);
+                swap_last_perform_users[req.requestor.id] = cur_time;
 
                 setTimeout(function() {
                     swap_users(req.requestor, req.target);
