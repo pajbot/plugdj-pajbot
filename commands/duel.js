@@ -36,15 +36,21 @@ exports.handler = function (data) {
                 if (user) {
                     var current_position = bot.getWaitListPosition(data.from.id);
                     var duelee_position = bot.getWaitListPosition(user.id);
+                    var room_length = bot.getWaitList().length;
+                    var min_position = room_length - 5;
                     if (current_position === -1 || duelee_position === -1) {
                         logger.info('You must be in the waitlist to duel someone!.');
                         modMessage(data, 'You and ' + user.username + ' must be in the waitlist to duel.');
                         /* You must be in the waitlist to duel someone. */
                         return {cd: 2, cd_user: 10};
+                    } else if (current_position === 0 || duelee_position === 0) {
+                        modMessage(data, 'You or ' + user.username + ' can\'t be playing your songs while dueling.');
+                        /* You must be in the waitlist to duel someone. */
+                        return {cd: 2, cd_user: 10};
                     } else {
-                        if (current_position > 45 || duelee_position > 45) {
-                            logger.info('Both participants must be above position 45 to duel eachother.');
-                            modMessage(data, 'Both participants must be above position 45 to duel eachother.');
+                        if (current_position > min_position || duelee_position > min_position) {
+                            logger.info('Both participants must be above position ' + min_position + ' to duel eachother.');
+                            modMessage(data, 'Both participants must be above position ' + min_position + ' to duel eachother.');
                             return {cd: 2, cd_user: 10};
                         }
                     }
@@ -70,7 +76,7 @@ exports.handler = function (data) {
                         }, request_time * 1000)
                     };
 
-                    chatMessage('/me @' + user.username + ', you have been challenged to a duel by ' + data.from.username + ', respond with .accept or .deny');
+                    chatMessage('/me @' + user.username + ', (' + duelee_position + ') you have been challenged to a duel by ' + data.from.username + ', (' + current_position + ') respond with .accept or .deny');
                 }
             });
             break;
@@ -132,7 +138,7 @@ exports.handler = function (data) {
                         }
 
                     } else {
-                        chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He wins ' + loser.username + '\'s position ( ' + loser_pos + ')!');
+                        chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He wins ' + loser.username + '\'s position (' + loser_pos + ')!');
 
                         /* HANDLE WINNER */
                         var new_pos = _.max([loser_pos, 1]);
