@@ -35,6 +35,7 @@ Manager
 |.skipunavailable | (on\|off\|status) | Toggles the Skip Unavailable Song status. It decides whether songs that are found to be unavailable should be automatically skipped or not. |
 |.russianroulettee | (X\|stop) | Starts a russian roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 |.fors |  | Notify all DJs and Staff that FORSEN is in the room, or is on his way. |
+|.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 
 Bouncer+
 -------
@@ -49,7 +50,6 @@ Bouncer+
 |.swap | @userA @userB | Swaps the position of `@userA` and `@userB`. At least one of the users must be in the waitlist. |
 |.move | @username X | Moves `@username` to position **X**. |
 |.maxlength | (X) | Sets the max song length to **X** minutes (so 5.5 is 5 minutes 30 seconds). |
-|.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 
 Bouncer
 -------
@@ -99,3 +99,4 @@ User
 |.link | | Prints a link to the current song. |
 |.love | @username | Outputs the percentage chance of love developing between you and `@username`. |
 |.duel | @username | Initiate a [duel](https://github.com/pajlada/pajbot/blob/master/docs/dueling.md) with `@username`. |
+|.swaprequest | @username | Request to [swap](https://github.com/pajlada/pajbot/blob/master/docs/swaprequest.md) with `@username`. |
