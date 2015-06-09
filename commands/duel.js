@@ -54,6 +54,7 @@ exports.handler = function (data) {
                             return {cd: 2, cd_user: 10};
                         }
                     }
+
                     if (user.id === data.from.id) {
                         logger.info('You can\'t duel yourself...');
                         /* wtf are you doing dueling yourself man */
@@ -103,7 +104,7 @@ exports.handler = function (data) {
                     if (duel_request === false) {
                         chatMessage('/me The dueling pit is now open again.');
                     }
-                }, (duel_cd + 2) * 1000);
+                }, duel_cd * 1000);
                 setTimeout(function() {
                     var users = [];
 
