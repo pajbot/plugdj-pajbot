@@ -725,6 +725,29 @@ module.exports = function (options) {
         });
     }
 
+    swap_users = function(user_1, user_2) {
+        if (!user_1 || !user_2) {
+            return false;
+        }
+
+        var position_1 = bot.getWaitListPosition(user_1.id);
+        var position_2 = bot.getWaitListPosition(user_2.id);
+
+        if (position_1 !== -1 || position_2 !== -1) {
+            if (position_2 === -1) {
+                move_user(user_2.id, position_1);
+                setTimeout(function() {
+                    move_user(user_1.id, position_2);
+                }, 500);
+            } else {
+                move_user(user_1.id, position_2);
+                setTimeout(function() {
+                    move_user(user_2.id, position_1);
+                }, 500);
+            }
+        }
+    }
+
     /**
      * Useful for commands that only take one parameter, a username.
      * The CB will only return a non-failure if the user is in the room
