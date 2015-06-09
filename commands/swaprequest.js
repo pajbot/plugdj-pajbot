@@ -39,7 +39,7 @@ exports.handler = function (data) {
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
                     if (data.from.id in swap_last_perform_users) {
-                        var user_diff = cur_time -= swap_last_perform_users[data.from.id];
+                        var user_diff = cur_time - swap_last_perform_users[data.from.id];
                         if (swap_perform_user_cd >= user_diff) {
                             logger.info(data.from.username + ' has already performed a swap in the last ' + swap_perform_user_cd + ' seconds, aborting.');
                             modMessage(data, 'You have already performed a swap in the last ' + sec_to_str(swap_perform_user_cd) + '.');
@@ -48,7 +48,7 @@ exports.handler = function (data) {
                     }
 
                     if (data.from.id in swap_last_request_users) {
-                        var user_diff = cur_time -= swap_last_request_users[data.from.id];
+                        var user_diff = cur_time - swap_last_request_users[data.from.id];
                         if (swap_request_user_cd >= user_diff) {
                             logger.info(data.from.username + ' has already requested a swap in the last ' + swap_request_user_cd + ' seconds, aborting.');
                             return {cd: 1, cd_user: 10};
