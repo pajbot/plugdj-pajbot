@@ -1,4 +1,4 @@
-exports.names = ['swaprequest', 'swapyes', 'swapno'];
+exports.names = ['swaprequest', 'swapyes', 'swapno', 'swapaccept', 'swapdecline', 'swapreq'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
@@ -33,6 +33,7 @@ exports.handler = function (data) {
 
     switch (command) {
         case 'swaprequest':
+        case 'swapreq':
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
                     var time_diff_user = cur_time;
@@ -91,6 +92,7 @@ exports.handler = function (data) {
             break;
 
         case 'swapno':
+        case 'swapdecline':
             if (swap_request && swap_request.target.id === data.from.id && swap_request.running === false) {
                 modMessage(data, 'You denied the swap request from @' + swap_request.requestor.username + '.');
                 clearTimeout(swap_request.timeout);
@@ -101,6 +103,7 @@ exports.handler = function (data) {
             break;
 
         case 'swapyes':
+        case 'swapaccept':
             if (swap_request && swap_request.target.id === data.from.id && swap_request.running === false) {
                 swap_request.running = true;
                 clearTimeout(swap_request.timeout);
