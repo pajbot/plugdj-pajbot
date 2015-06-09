@@ -1,4 +1,4 @@
-exports.names = ['.gtfm', '!gtfm', '.lmgtfy', '!lmgtfy'];
+exports.names = ['gtfm', 'lmgtfy'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

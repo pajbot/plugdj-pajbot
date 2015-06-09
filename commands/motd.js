@@ -1,4 +1,4 @@
-exports.names = ['.motd', '.motdi', '.motdinterval', '!motd', '!motdi', '!motdinterval'];
+exports.names = ['motd', 'motdi', 'motdinterval'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;

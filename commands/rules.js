@@ -1,4 +1,4 @@
-exports.names = ['.rules', '!rules'];
+exports.names = ['rules'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

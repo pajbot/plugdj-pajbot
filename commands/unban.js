@@ -1,4 +1,4 @@
-exports.names = ['.unban', '!unban'];
+exports.names = ['unban'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;

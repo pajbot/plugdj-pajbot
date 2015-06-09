@@ -1,4 +1,4 @@
-exports.names = ['.cycle', '!cycle'];
+exports.names = ['cycle'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;

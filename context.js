@@ -777,7 +777,23 @@ module.exports = function (options) {
             }
         });
     }
+	
+    assist = function(message, advice) {
+        var params = _.rest(message.split(' '), 1);
+    
+        if (params.length >= 1) {
+            get_user_by_param(params, function(err, user, db_user) {
+                if (user) {
+                    chatMessage('/me @' + user.username + ' ' + advice );
+                } else {   
+                    chatMessage('/me ' + advice);
+                }
+        });
+        } else {   
+            chatMessage('/me ' + advice);
+    }
 
+	
     get_user = function(username) {
         return User.find({
             where: {username: username}
