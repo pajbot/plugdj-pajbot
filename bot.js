@@ -719,6 +719,12 @@ function runBot(error, auth) {
                 data.from.role = PlugAPI.ROOM_ROLE.COHOST;
             } else if (data.from.id === 3256101) { /* RosenMVP */
                 data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
+            } else if (data.from.role >= PlugAPI.ROOM_ROLE.BOUNCER) {
+                if (data.from.id === 4843672) { /* Jack */
+                    data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
+                } else if (data.from.id === 4466061) { /* -Vaxom */
+                    data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
+                }
             }
 
             var can_run_command = true;
