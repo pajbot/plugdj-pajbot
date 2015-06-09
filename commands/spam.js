@@ -1,4 +1,4 @@
-exports.names = ['.spam'];
+exports.names = ['spam'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = true;

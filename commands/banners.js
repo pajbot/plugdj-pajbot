@@ -1,4 +1,4 @@
-exports.names = ['.banners', '.banner', '!banners', '!banner'];
+exports.names = ['banners', 'banner'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
