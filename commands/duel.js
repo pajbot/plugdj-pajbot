@@ -8,7 +8,7 @@ exports.cd_manager = 0;
 
 duel_request = false;
 duel_last_run_users = {};
-var request_time = 15; // How long the person has to accept the duel request in seconds
+var request_time = 25; // How long the person has to accept the duel request in seconds
 var last_duel = 0;
 var duel_cd = 60 * 2; // How often a duel can be run
 var duel_request_user_cd = 45; // How often a person can request a duel
@@ -86,7 +86,7 @@ exports.handler = function (data) {
                         requestor: data.from,
                         running: false,
                         timeout: setTimeout(function() {
-                            modMessage(data, 'Your duel request to ' + user.username + ' has been cancelled, because the target took too long to respond.');
+                            modMessage(data, user.username + ' did not answer your duel request.');
                             duel_request = false;
                         }, request_time * 1000)
                     };
