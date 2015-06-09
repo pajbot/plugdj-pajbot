@@ -788,9 +788,10 @@ module.exports = function (options) {
                 } else {   
                     chatMessage('/me ' + advice);
                 }
-        });
+            });
         } else {   
             chatMessage('/me ' + advice);
+        }
     }
 
 	
