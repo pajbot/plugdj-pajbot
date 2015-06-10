@@ -17,6 +17,7 @@ exports.handler = function (data) {
         var user = _.findWhere(bot.getUsers(), {username: username});
         if (user) {
             var lang = user.language;
+            logger.info("Language: '" + lang + "'");
             var ch = '/me @' + username + ' ';
             switch (lang) {
                 case 'da': ch += 'Vær venlig at tale engelsk.'; break;
