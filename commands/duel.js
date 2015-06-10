@@ -137,7 +137,7 @@ exports.handler = function (data) {
                     logger.info('loser pos: ' + loser_pos);
 
                     /* If the winner is further in the waitlist than the loser, or if the loser is not in the waitlist, or if the loser is currently playing */
-                    if (winner_pos > 0 && (winner_pos < loser_pos || loser_pos === -1 || loser_pos === 0)) {
+                    if (winner_pos > 0 && (winner_pos-5 < loser_pos || loser_pos === -1 || loser_pos === 0)) {
                         chatMessage('/me @' + winner.username + ' won the duel versus @' + loser.username + ' :pogchamp: He gets moved 5 positions up!');
 
                         /* HANDLE WINNER */
