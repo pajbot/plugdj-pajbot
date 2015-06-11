@@ -1,4 +1,4 @@
-exports.names = ['lastplay'];
+exports.names = ['lastplay', 'lastplayed'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
