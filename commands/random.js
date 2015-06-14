@@ -9,18 +9,17 @@ exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
     var input = data.message.split(' ');
     var range = _.last(input);
-	var result = '';
-   
-			
+    var result = '';
+
     if (input.length >= 2) {
-		result = _.random(1, range);
-	} else { 
-		var x = _.random(1, 2);
-		if (x = 1) {
-			 result = 'Heads';
-		} else {
-			result = 'Tails';
-		}
-	};
+        result = _.random(1, range);
+    } else { 
+        var x = _.random(1, 2);
+        if (x = 1) {
+            result = 'Heads';
+        } else {
+            result = 'Tails';
+        }
+    };
     chatMessage('/me [@' + data.from.username + '] Your random result is: ' + result + '.');
 };
