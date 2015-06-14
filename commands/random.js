@@ -15,7 +15,7 @@ exports.handler = function (data) {
         result = _.random(1, range);
     } else { 
         var x = _.random(1, 2);
-        if (x = 1) {
+        if (x === 1) {
             result = 'Heads';
         } else {
             result = 'Tails';
