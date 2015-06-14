@@ -400,6 +400,7 @@ module.exports = function (options) {
             logger.info('[MQUEUE]', 'Removing ' + user.username + ' from the waitlist.');
             bot.moderateRemoveDJ(md.user_id, function() {
                 logger.info('[MQUEUE]', 'Successfully removed ' + user.username + ' from the waitlist.');
+                User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
                 move_queue_remove(md);
             });
             return true;
