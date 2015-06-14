@@ -8,11 +8,24 @@ exports.cd_manager = 0;
 exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
     var input = data.message.split(' ');
-    var range = _.last(input);
     var result = '';
 
     if (input.length >= 2) {
-        result = _.random(1, range);
+        var from = 1;
+        var to = 100;
+
+        if (input.length >= 3) {
+            from = parseInt(input[1]);
+            to = parseInt(input[2]);
+        } else {
+            to = parseInt(input[1]);
+        }
+
+        if (isNaN(from) || isNaN(to)) {
+            return false;
+        }
+
+        result = _.random(from, to);
     } else { 
         var x = _.random(1, 2);
         if (x === 1) {
