@@ -101,3 +101,4 @@ User
 |.love | @username | Outputs the percentage chance of love developing between you and `@username`. |
 |.duel | @username | Initiate a [duel](https://github.com/pajlada/pajbot/blob/master/docs/dueling.md) with `@username`. |
 |.swaprequest | @username | Request to [swap](https://github.com/pajlada/pajbot/blob/master/docs/swaprequest.md) with `@username`. |
+|.random | (FROM, TO) | If no argument is given, flips a coin and returns the results. If one argument is given, returns a value between 1 and the given number. If two arguments are given, returns a number between the two given numbers. (Inclusive) |
