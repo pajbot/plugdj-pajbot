@@ -1,4 +1,4 @@
-exports.names = ['random'];
+exports.names = ['random', 'rng'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
