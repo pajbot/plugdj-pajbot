@@ -839,11 +839,25 @@ module.exports = function (options) {
             var param_type = arguments[i];
             switch (param_type) {
                 case CPARAM.FLOAT:
-                    params[i-1] = parseFloat(rest.pop());
+                    var d = rest.pop();
+                    var value = parseFloat(d);
+                    logger.info(value);
+                    if (isNaN(value)) {
+                        rest.push(d);
+                    } else {
+                        params[i-1] = value;
+                    }
                     break;
 
                 case CPARAM.INT:
-                    params[i-1] = parseInt(rest.pop());
+                    var d = rest.pop();
+                    var value = parseInt(d);
+                    logger.info(value);
+                    if (isNaN(value)) {
+                        rest.push(d);
+                    } else {
+                        params[i-1] = value;
+                    }
                     break;
 
                 case CPARAM.USERNAME:
