@@ -835,7 +835,6 @@ module.exports = function (options) {
         var rest = _.rest(input);
         var params = {};
         var promises = [];
-        var ran = _.random(60000);
         for (var i=arguments.length-1; i>=1; --i) {
             var param_type = arguments[i];
             switch (param_type) {
