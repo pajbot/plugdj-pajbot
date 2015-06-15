@@ -1,10 +1,10 @@
+path = require('path')
+var config = require(path.resolve(__dirname, 'config.json'));
 var PlugAPI = require('plugapi');
 var Entities = require('html-entities').AllHtmlEntities;
 var entities = new Entities();
 var fs = require('fs');
 var Youtube = require('youtube-api');
-path = require('path')
-var config = require(path.resolve(__dirname, 'config.json'));
 
 runBot(false, config.auth);
 
