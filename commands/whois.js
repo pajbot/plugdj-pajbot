@@ -37,8 +37,6 @@ exports.handler = function (data) {
                 profile = ', Profile: https://plug.dj/@/' + dbUser.slug;
             }
             modMessage(data, 'Username: ' + dbUser.username + ', Joined: ' + dbUser.joined + ', Rank: ' + rank + ', Level: ' + dbUser.level + profile + '.');
-        } else {
-            modMessage(data, 'No user with the name ' + usernameFormatted + ' found.');
         }
     });
 };
