@@ -1,4 +1,4 @@
-exports.names = ['doubleroulette'];
+exports.names = ['doubleroulette', 'droulette'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
