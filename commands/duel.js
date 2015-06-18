@@ -149,7 +149,7 @@ exports.handler = function (data) {
                         if (loser_pos === 0) {
                             bot.moderateForceSkip();
                         } else {
-                            bot.moderateRemoveDJ(loser.id);
+                            move_user(loser.id, -1);
                         }
 
                     } else {
@@ -164,7 +164,7 @@ exports.handler = function (data) {
                         if (loser_pos === 0) {
                             bot.moderateForceSkip();
                         } else {
-                            bot.moderateRemoveDJ(loser.id);
+                            move_user(loser.id, -1);
                         }
                     }
 
