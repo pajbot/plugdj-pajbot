@@ -37,6 +37,7 @@ Manager
 |.fors |  | Notify all DJs and Staff that FORSEN is in the room, or is on his way. |
 |.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 |.doubleroulette | (X) | Starts a normal and russian roulette that lasts for 60 or **X** seconds. |
+|.experience |  | Check experience of the bot. |
 
 Bouncer+
 -------
