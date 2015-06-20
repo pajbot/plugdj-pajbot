@@ -21,7 +21,7 @@ var cookies = [ /* Common (9/10) */
     "Vanilla Icecream Cone with Sprinkles",
     "Bubblegum Flavored Popcicle",
     "en bröllopstårta",
-    "a burger :celeopie::dssclap::anneburger:",
+    "a burger :bioop::dssclap::anneburger:",
     "kladdkaka"
     ];
 

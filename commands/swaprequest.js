@@ -1,4 +1,4 @@
-exports.names = ['swaprequest', 'swapyes', 'swapno', 'swapaccept', 'swapdecline', 'swapreq'];
+exports.names = ['swaprequest', 'swapyes', 'swapno', 'swapaccept', 'swapdecline', 'swapreq', 'reqswap', 'requestswap'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
@@ -36,6 +36,8 @@ exports.handler = function (data) {
     switch (command) {
         case 'swaprequest':
         case 'swapreq':
+        case 'reqswap':
+        case 'requestswap':
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
                     if (data.from.id in swap_last_perform_users) {
