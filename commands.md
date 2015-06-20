@@ -38,6 +38,7 @@ Manager
 |.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 |.doubleroulette | (X) | Starts a normal and russian roulette that lasts for 60 or **X** seconds. |
 |.experience |  | Check experience of the bot. |
+|.swap | @userA @userB | Swaps the position of `@userA` and `@userB`. At least one of the users must be in the waitlist. |
 
 Bouncer+
 -------
@@ -49,7 +50,6 @@ Bouncer+
 |.kill | | Kills the bot. |
 |.lock | | Locks the waitlist. |
 |.unlock | | Unlocks the waitlist. |
-|.swap | @userA @userB | Swaps the position of `@userA` and `@userB`. At least one of the users must be in the waitlist. |
 |.move | @username X | Moves `@username` to position **X**. |
 |.maxlength | (X) | Sets the max song length to **X** minutes (so 5.5 is 5 minutes 30 seconds). |
 
