@@ -6,5 +6,5 @@ exports.cd_all = 10;
 exports.cd_user = 20;
 exports.cd_manager = 5;
 exports.handler = function (data) {
-    chatMessage(config.responses.rules);
+    assist(data.message, config.responses.rules);
 };

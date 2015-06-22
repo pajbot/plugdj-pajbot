@@ -7,4 +7,4 @@ exports.cd_user = 30;
 exports.cd_manager = 5;
 exports.handler = function (data) {
     assist(data.message, 'How to DJ: http://support.plug.dj/hc/en-us/articles/203263577-I-want-to-DJ-How-do-I-do-it-');
-};		
+};
