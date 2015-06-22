@@ -37,8 +37,8 @@ function do_history(data, format, cid, songs_ago)
             }).on('success', function (rows) {
                 logger.info(rows);
                 var prefix = 'This song';
-                if (songs_ago > 0) {
-                    prefix = 'The song that played ' + (songs_ago) + ' songs ago';
+                if (songs_ago >= 0) {
+                    prefix = 'The song that played ' + (songs_ago+1) + ' songs ago ('+format+','+cid+')';
                 }
                 if (rows && rows.length > 0) {
                     modMessage(data, prefix + ' has been played '+(rows.length)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
@@ -64,7 +64,7 @@ exports.handler = function (data) {
         var tmp_offset = parseInt(params);
 
         if (!isNaN(tmp_offset) && tmp_offset >= 1) {
-            offset = tmp_offset;
+            offset = tmp_offset-1;
         }
     }
 
