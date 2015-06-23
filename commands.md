@@ -34,7 +34,7 @@ Manager
 |.lockdown | (on\|off\|status) | Toggles the Lockdown effect. Lockdown means no grayplebs can type in the chat. |
 |.lockskippos | (X) | Sets the current lock skip position to **X**. |
 |.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
-|.russianroulettee | (X\|stop) | Starts a russian roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
+|.russianroulette | (X\|stop) | Starts a russian roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 |.doubleroulette | (X) | Starts a normal and russian roulette that lasts for 60 or **X** seconds. |
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
 |.skipunavailable | (on\|off\|status) | Toggles the Skip Unavailable Song status. It decides whether songs that are found to be unavailable should be automatically skipped or not. |
