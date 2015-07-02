@@ -345,8 +345,13 @@ function runBot(error, auth) {
                             var item = _.first(api_data.items);
                             if (item.status) {
                                 if (item.status.embeddable === false) {
-                                    chatMessage('/me This song is not embeddable :tfw:');
-                                    //bot.moderateForceSkip();
+                                    if (data.currentDJ != null) {
+                                        chatMessage('/me @' + data.currentDJ.username + ' your song is not embeddable, you have been skipped.');
+                                        bot.moderateForceSkip();
+                                    } else {
+                                        chatMessage('/me Skipping unembeddable song, but no dj. :dansgame:');
+                                        bot.moderateForceSkip();
+                                    }
                                 }
                             }
                         }
@@ -631,6 +636,11 @@ function runBot(error, auth) {
         // This only gets passed some of the time
         if (user.slug !== undefined) {
             userData.slug = user.slug;
+        }
+
+        // Guests are passed through here, but they're always listed as level 0.
+        if (user.level == 0) {
+            return false;
         }
 
         User.findOrCreate({where: {id: user.id}, defaults: userData}).spread(function (dbUser) {
