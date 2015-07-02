@@ -11,9 +11,7 @@ exports.handler = function (data) {
     if (media.format == 1) {
         modMessage(data, 'Link to current song: https://youtu.be/' + media.cid);
     } else {
-        var client_id = config.apiKeys.soundcloud;
-        request('https://api.soundcloud.com/tracks/'+media.cid+'.json?client_id='+client_id, function (error, response, body) {
-            var json_data = JSON.parse(body);
+        soundcloud_get_track(media.cid, function (json_data) {
             var song_url = json_data.permalink_url;
             modMessage(data, 'Link to current song: ' + song_url);
         });

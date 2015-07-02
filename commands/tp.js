@@ -7,6 +7,4 @@ exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {				
     assist(data.message, 'https://fungustime.pw/tastyplug/');
- };		
-    					
-
+};

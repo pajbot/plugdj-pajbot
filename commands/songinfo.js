@@ -14,8 +14,6 @@ function do_history(data, format, cid, songs_ago)
         return;
     }
 
-    logger.info('do history: ' + format + ', ' + cid);
-
     Song.findAll({
         where: {
             format: format,
@@ -36,14 +34,29 @@ function do_history(data, format, cid, songs_ago)
                 order: 'updated_at DESC'
             }).on('success', function (rows) {
                 logger.info(rows);
-                var prefix = 'This song';
-                if (songs_ago >= 0) {
-                    prefix = 'The song that played ' + (songs_ago+1) + ' songs ago ('+format+','+cid+')';
-                }
-                if (rows && rows.length > 0) {
-                    modMessage(data, prefix + ' has been played '+(rows.length)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
+                if (format == 1) {
+                    var prefix = 'This song';
+                    if (songs_ago >= 0) {
+                        prefix = 'The song that played ' + (songs_ago+1) + ' songs ago (https://youtu.be/' + cid + ')';
+                    }
+                    if (rows && rows.length > 0) {
+                        modMessage(data, prefix + ' has been played '+(rows.length)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
+                    } else {
+                        modMessage(data, prefix + ' has not been played here in my lifetime.');
+                    }
                 } else {
-                    modMessage(data, prefix + ' has not been played here in my lifetime.');
+                    soundcloud_get_track(cid, function (json_data) {
+                        var song_url = json_data.permalink_url;
+                        var prefix = 'This song';
+                        if (songs_ago >= 0) {
+                            prefix = 'The song that played ' + (songs_ago+1) + ' songs ago (' + song_url + ')';
+                        }
+                        if (rows && rows.length > 0) {
+                            modMessage(data, prefix + ' has been played '+(rows.length)+' times in my lifetime, last time being ' + moment.utc(rows[0]['updated_at']).calendar() + ' (' + moment.utc(rows[0]['updated_at']).fromNow() + ')');
+                        } else {
+                            modMessage(data, prefix + ' has not been played here in my lifetime.');
+                        }
+                    });
                 }
             });
         } else {
@@ -92,6 +105,6 @@ exports.handler = function (data) {
                 do_history(data, format, cid, offset);
             });
     } else {
-        do_history(data, format, cid, 0);
+        do_history(data, format, cid, -1);
     }
 };

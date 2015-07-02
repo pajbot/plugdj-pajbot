@@ -821,6 +821,7 @@ module.exports = function (options) {
         INT: 0,
         FLOAT: 1,
         USERNAME: 2,
+        STRING: 3,
     };
 
     /**
@@ -865,6 +866,10 @@ module.exports = function (options) {
                     {
                         var reststr = rest.join(' ');
                         var at_pos = reststr.lastIndexOf('@');
+                        if (at_pos == -1 && i-1 == 0) {
+                            logger.info('Fallbacking to getting username without @');
+                            at_pos = -1;
+                        }
                         var username = reststr.substr(at_pos+1);
                         rest = reststr.substr(0, at_pos).split(' ');
 
@@ -885,6 +890,10 @@ module.exports = function (options) {
                         }();
                     }
                     break;
+
+                case CPARAM.STRING:
+                    params[i-1] = rest.pop();
+                    break;
             }
         }
 
@@ -894,5 +903,20 @@ module.exports = function (options) {
                 params: params
             };
         });
+    }
+
+    soundcloud_request = function (url, callback) {
+        request(url + '?client_id='+config.apiKeys.soundcloud, function (error, response, body) {
+            try {
+                var json_data = JSON.parse(body);
+                callback(json_data);
+            } catch (e) {
+                logger.error('Error caught while trying to parse soundcloud data: ' + e);
+            }
+        });
+    }
+
+    soundcloud_get_track = function(cid, callback) {
+        soundcloud_request('https://api.soundcloud.com/tracks/'+cid+'.json', callback);
     }
 };

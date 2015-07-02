@@ -308,10 +308,7 @@ function runBot(error, auth) {
         if (data.media != null) {
 
             if (data.media.format == 2) {
-                // The song is a soundcloud song!
-                var client_id = config.apiKeys.soundcloud;
-                request('https://api.soundcloud.com/tracks/'+data.media.cid+'.json?client_id='+client_id, function (error, response, body) {
-                    var json_data = JSON.parse(body);
+                soundcloud_get_track(data.media.cid, function (json_data) {
                     if (settings['skipunavailable']) {
                         if (!json_data.streamable) {
                             logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
@@ -331,7 +328,6 @@ function runBot(error, auth) {
                     "part": "id,status",
                     "id": data.media.cid,
                 }, function (err, api_data) {
-
                     if (api_data) {
                         if (api_data.items.length === 0) {
                             /* The video is not available. */
