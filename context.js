@@ -334,15 +334,16 @@ module.exports = function (options) {
             return;
         }
 
-        /* If the user is out of the waitlist, and the waitlist is full (50 or more)
-         * we add the user to the move queue instead. */
-        if (current_position === 0 || (current_position === -1 && room_length >= 50)) {
+        if (current_position !== -1 && current_position !== 0) {
+            /* If the user is already in the waitlist,
+             * we can perform the operation immediately */
+            logger.info('[MQUEUE1]', 'Performing move for ' + user_id + ' to ' + new_position + ' immediately.');
+            process_move_event(md);
+        } else {
+            /* Otherwise, add the user to the move queue */
             logger.info('[MQUEUE1]', 'Added ' + user_id + ' to the move queue, position ' + new_position + '.');
             move_queue_push(md);
-            return;
         }
-
-        process_move_event(md);
     }
 
     move_queue_push = function(md) {
