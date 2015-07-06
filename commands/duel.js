@@ -135,6 +135,8 @@ exports.handler = function (data) {
 
                     logger.info('winner pos: ' + winner_pos);
                     logger.info('loser pos: ' + loser_pos);
+                    logger.info('[DUEL]', winner.username + ' won duel.');
+                    logger.info('[DUEL]', loser.username + ' lost duel.');
 
                     /* If the winner is further in the waitlist than the loser, or if the loser is not in the waitlist, or if the loser is currently playing */
                     if (winner_pos > 0 && (winner_pos-5 < loser_pos || loser_pos === -1 || loser_pos === 0)) {
