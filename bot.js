@@ -782,6 +782,9 @@ function runBot(error, auth) {
                 }
             }
         } else if (settings['cleverbot'] && data.message.indexOf('@' + bot.getUser().username) > -1) {
+            if (data.from.id == 6281653) {
+                return false;
+            }
             mentionResponse(data);
         } else {
             var response = responses[cmd_msg];
