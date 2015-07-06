@@ -921,6 +921,10 @@ function runBot(error, auth) {
             var md = move_queue[0];
 
             process_move_event(md);
+        } else {
+            if (room_locked) {
+                bot.moderateLockBooth(false, false);
+            }
         }
     }
 }
