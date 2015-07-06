@@ -13,7 +13,7 @@ exports.handler = function (data) {
         return false;
     }
 
-    modMessage(data, 'Spinning the cylinder...');
+    modMessage(data, 'Spinning the cylinder at position ' + current_position + '...');
 
     setTimeout(function () {
         current_position = bot.getWaitListPosition(data.from.id);
