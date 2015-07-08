@@ -311,7 +311,7 @@ function runBot(error, auth) {
                 soundcloud_get_track(data.media.cid, function (json_data) {
                     if (settings['skipunavailable']) {
                         if (!json_data.streamable) {
-                            logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                            logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
                             if (data.currentDJ != null) {
                                 chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
                                 bot.moderateForceSkip();
