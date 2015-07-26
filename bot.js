@@ -98,6 +98,9 @@ function runBot(error, auth) {
         }
 
         bot.getUsers().forEach(function (user) {
+            if (!user.id) {
+                return;
+            }
             updateDbUser(user);
         });
 
@@ -143,21 +146,17 @@ function runBot(error, auth) {
     bot.on('chat', function (data) {
         if (config.verboseLogging) {
             logger.info('[CHAT]', JSON.stringify(data, null, 2));
-        } else if (data.from !== undefined && data.from !== null) {
-            logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
         }
 
         if (data.from !== undefined && data.from !== null) {
             data.message = data.message.trim();
-            //if (data.msg == '.') {
-            //    bot.moderateDeleteChat(data.id);
-            //}
-            //else {
-            //    handleCommand(data);
-            //}
+
+            logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
+
             if (settings['lockdown'] && data.from.role === 0) {
                 bot.moderateDeleteChat(data.id);
             }
+
             handleCommand(data);
             User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
         }
@@ -166,6 +165,9 @@ function runBot(error, auth) {
     });
 
     bot.on('userJoin', function (data) {
+        if (data.id === undefined || data.guest === true) {
+            return;
+        }
         if (config.verboseLogging) {
             logger.info('[JOIN]', JSON.stringify(data, null, 2));
         }
@@ -224,6 +226,9 @@ function runBot(error, auth) {
     })
 
     bot.on('userLeave', function (data) {
+        if (data.id === undefined || data.guest === true) {
+            return;
+        }
         logger.info('[LEAVE]', 'User left: ' + data.username);
         var position = bot.getWaitListPosition(data.id);
         User.update({last_seen: new Date(), last_leave: new Date()}, {where: {id: data.id}});
@@ -313,7 +318,7 @@ function runBot(error, auth) {
                         if (!json_data.streamable) {
                             logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
                             if (data.currentDJ != null) {
-                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
+                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available or embeddable, you have been skipped.');
                                 bot.moderateForceSkip();
                                 //lockskip(data.currentDJ);
                             } else {
@@ -530,24 +535,54 @@ function runBot(error, auth) {
             logger.success('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
         }
 
-        if (data && data.length > waitlist_length) {
-            var last_user_id = data.slice(-1).pop();
-            if (last_user_id) {
-                var last_user = bot.getUser(last_user_id);
-                if (last_user) {
-                    if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user_id] !== true && move_queue[0].user_id !== last_user_id) {
-                        logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
+        logger.info('[TEST]', 'Waitlist length: ' + waitlist_length);
+        logger.info('[TEST]', 'Data length: ' + data.length);
+        //logger.info(data);
 
-                        setTimeout(function() {
-                            logger.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
-                            bot.moderateRemoveDJ(last_user_id, function() {
-                                logger.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
-                                process_move_queue();
-                            });
-                        }, 100);
+        if (!data) {
+            /* Got some strange data in djListUpdate... */
+            return false;
+        }
+
+        if (data.length > waitlist_length) {
+            // Someone joined the waitlist!
+            var last_user = data[data.length - 1];
+            if (last_user) {
+                logger.info('[TEST]', last_user.username + ' just joined the waitlist!');
+                logger.info('[TEST]', 'Movement queue length: ' + move_queue.length);
+                if (move_queue.length > 0) {
+                    // Is there someone waiting to be moved?
+                    if (add_to_waitlist_history[last_user.id] !== true) {
+                        // Is the person who last joined in the "add to waitlist" history? aka did bot just add them?
+                        if (move_queue[0].user_id !== last_user.id) {
+                            // Is the person who last joined the person who was supposed to get in anyway?
+                            logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
+
+                            setTimeout(function() {
+                                logger.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
+                                bot.moderateRemoveDJ(last_user.id, function() {
+                                    logger.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
+                                    process_move_queue();
+                                });
+                            }, 100);
+                        } else {
+                            logger.info('[TEST]', last_user.username + ' joined, and he is not supposed to get in.');
+                        }
+                    } else {
+                        logger.info('[TEST]', last_user.username + ' joined, and we did not add him ourselves.');
                     }
+                } else {
+                    logger.info('[TEST]', last_user.username + ' joined, but there is no one in the waitlist anyway.');
+                }
+
+                // original if-case
+                if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user.id] !== true && move_queue[0].user_id !== last_user.id) {
                 }
             }
+        } else if (data.length < waitlist_length) {
+            // Someone left the waitlist
+        } else if (data.length == waitlist_length) {
+            // Someone was moved in the waitlist
         }
 
         waitlist_length = data.length;
@@ -601,6 +636,9 @@ function runBot(error, auth) {
             var userList = bot.getWaitList();
         }
         userList.forEach(function (user) {
+            if (user.id === undefined) {
+                return;
+            }
             var position = bot.getWaitListPosition(user.id);
             // user last seen in 900 seconds
             if (position > 0) {
