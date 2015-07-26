@@ -125,7 +125,7 @@ exports.handler = function (data) {
                     users[0] = req.requestor;
                     users[1] = req.target;
 
-                    var winner_id = _.random(0, 1);
+                    var winner_id = Crypto_rand.randInt(0, 1);
 
                     var winner  = users[winner_id];
                     var loser = users[winner_id === 0 ? 1 : 0];

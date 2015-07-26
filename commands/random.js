@@ -25,9 +25,9 @@ exports.handler = function (data) {
             return false;
         }
 
-        result = _.random(from, to);
+        result = Crypto_rand.randInt(from, to);
     } else { 
-        var x = _.random(1, 2);
+        var x = Crypto_rand.randInt(1, 2);
         if (x === 1) {
             result = 'Heads';
         } else {

@@ -36,9 +36,9 @@ exports.handler = function (data) {
                 bot.running_roulette = false;
                 if (bot.roulette_users.length > 0) {
                     logger.info(bot.roulette_users);
-                    var winner_index = _.random(0, bot.roulette_users.length-1);
+                    var winner_index = Crypto_rand.randInt(0, bot.roulette_users.length-1);
                     var winner = bot.roulette_users[winner_index];
-                    var position = _.random(1, bot.getWaitList().length);
+                    var position = Crypto_rand.randInt(1, bot.getWaitList().length);
                     chatMessage('A winner has been picked (' + bot.roulette_users.length + ' participants)! @' + winner + ' to position ' + position + '.');
 
                     var users = bot.getUsers();

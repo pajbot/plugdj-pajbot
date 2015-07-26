@@ -5,7 +5,7 @@ module.exports = function (options) {
     Sequelize = require('sequelize');
     Promise = require('bluebird');
     Noise = require('spatial-noise');
-	Crypto_rand = require('crypto-rand');
+    Crypto_rand = require('crypto-rand');
 	
     bot = new PlugAPI(options.auth, function() {
         logger.info('Auth callback called!');
