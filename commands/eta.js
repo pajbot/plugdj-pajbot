@@ -6,6 +6,7 @@ exports.cd_all = 2;
 exports.cd_user = 30;
 exports.cd_manager = 2;
 exports.min_role = PERMISSIONS.NONE;
+AVERAGE_SONG_LENGTH = 3.294;
 exports.handler = function (data) {
     var params = _.rest(data.message.split(' '), 1);
     var user;
@@ -39,7 +40,7 @@ exports.handler = function (data) {
         }
     } else {
         var time_remaining = bot.getTimeRemaining();
-        var time = Math.round(((pos - 1) * 3.368 * 60 + time_remaining));
+        var time = Math.round(((pos - 1) * AVERAGE_SONG_LENGTH * 60 + time_remaining));
         if (user.id == data.from.id) {
             modMessage(data, 'You will reach the booth in approximately ' + sec_to_str(time) + '.');
         } else {
