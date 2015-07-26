@@ -31,7 +31,8 @@
         "html-entities": "*",
         "youtube-api": "*",
         "url": "*",
-        "spatial-noise": "*"
+        "spatial-noise": "*",
+        "crypto-rand": "git://github.com/crazymykl/crypto-rand.git"
     },
     "devDependencies": {
         "sequelize-fixtures": "*"

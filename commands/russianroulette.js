@@ -36,10 +36,10 @@ exports.handler = function (data) {
                 bot.running_russian_roulette = false;
                 if (bot.russian_roulette_users.length > 0) {
                     logger.info(bot.russian_roulette_users);
-                    var winner_index = _.random(0, bot.russian_roulette_users.length-1);
+                    var winner_index = Crypto_rand.randInt(0, bot.russian_roulette_users.length-1);
                     var winner = bot.russian_roulette_users[winner_index];
-                    var position = _.random(1, bot.getWaitList().length);
-                    var type = _.random(1, 6);
+                    var position = Crypto_rand.randInt(1, bot.getWaitList().length);
+                    var type = Crypto_rand.randInt(1, 6);
                     if (type === 6) {
                         position = -1;
                     }
