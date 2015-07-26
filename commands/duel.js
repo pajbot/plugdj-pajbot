@@ -133,6 +133,21 @@ exports.handler = function (data) {
                     var winner_pos = bot.getWaitListPosition(winner.id);
                     var loser_pos = bot.getWaitListPosition(loser.id);
 
+                    var room_length = bot.getWaitList().length;
+                    var min_position = room_length - 5;
+                    if (winner_pos === -1 || loser_pos === -1) {
+                        chatMessage('/me :dansgame: 1');
+                        return;
+                    } else if (winner_pos === 0 || loser_pos === 0) {
+                        chatMessage('/me :dansgame: 2');
+                        return;
+                    } else {
+                        if (winner_pos > min_position || loser_pos > min_position) {
+                            chatMessage('/me :dansgame:');
+                            return;
+                        }
+                    }
+
                     logger.info('winner pos: ' + winner_pos);
                     logger.info('loser pos: ' + loser_pos);
                     logger.info('[DUEL]', winner.username + ' won duel.');
