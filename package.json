@@ -29,7 +29,7 @@
         "node-datatable": "git://github.com/jpravetz/node-datatable.git",
         "fixed-array": "*",
         "html-entities": "*",
-        "youtube-api": "git://github.com/pajlada/youtube-api.git",
+        "youtube-api": "*",
         "url": "*",
         "spatial-noise": "*"
     },
