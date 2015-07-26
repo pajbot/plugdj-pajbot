@@ -11,7 +11,7 @@ var forasen_userid = 5007428;
 
 exports.handler = function (data) {
     var user = _.findWhere(bot.getUsers(), {id: forsen_userid});
-	var smurf = _.findWhere(bot.getUsers(), {id: forasen_userid});
+    var smurf = _.findWhere(bot.getUsers(), {id: forasen_userid});
     if (user || smurf) {
         chatMessage('@djs @staff FORSEN IS IN THE ROOM, CHECK YOUR PLAYLISTS AND READ THE RULES');
     } else {
