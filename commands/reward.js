@@ -37,7 +37,7 @@ exports.handler = function (data) {
     var username = '';
     if (params.length < 1) {
         var users = bot.getUsers();
-        var randomUserIndex = _Crypto_rand.randInt(1, users.length);
+        var randomUserIndex = Crypto_rand.randInt(1, users.length);
         username = '@' + users[(randomUserIndex - 1)].username;
     } else {
         console.log(params.join(' '));
