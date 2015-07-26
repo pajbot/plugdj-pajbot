@@ -6,5 +6,5 @@ exports.cd_all = 15;
 exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.handler = function (data) {				
-    assist(data.message, 'https://fungustime.pw/tastyplug/');
+    assist(data.message, 'For Twitch Emotes, Autojoin and more on plug.dj, get https://fungustime.pw/tastyplug/');
 };

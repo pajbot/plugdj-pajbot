@@ -17,7 +17,7 @@ exports.handler = function (data) {
 
     setTimeout(function () {
         current_position = bot.getWaitListPosition(data.from.id);
-        if (_.random(1, 6) === 6) {
+        if (Crypto_rand.randInt(1, 6) === 6) {
             chatMessage('/me *BANG* You\'re dead @' + data.from.username + '! :tfw:');
             if (current_position === 0) {
                 bot.moderateForceSkip();

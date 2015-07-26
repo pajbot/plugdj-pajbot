@@ -37,7 +37,7 @@ exports.handler = function (data) {
     var username = '';
     if (params.length < 1) {
         var users = bot.getUsers();
-        var randomUserIndex = _.random(1, users.length);
+        var randomUserIndex = _Crypto_rand.randInt(1, users.length);
         username = '@' + users[(randomUserIndex - 1)].username;
     } else {
         console.log(params.join(' '));
@@ -53,9 +53,9 @@ exports.handler = function (data) {
         }
     }
 
-    var random_sentence = _.random(0, 10);
-    var random_cookie = _.random(0, cookies.length - 1);
-    var random_taco = _.random(0, tacos.length - 1);
+    var random_sentence = Crypto_rand.randInt(0, 10);
+    var random_cookie = Crypto_rand.randInt(0, cookies.length - 1);
+    var random_taco = Crypto_rand.randInt(0, tacos.length - 1);
     if (random_sentence <= 9) {
         chatMessage(username + ', ' + data.from.username + ' has rewarded you with ' + cookies[random_cookie] + '. Enjoy! :minik:');
     } else {

@@ -55,7 +55,10 @@ exports.handler = function (data) {
                     if (user !== undefined) {
                         var current_position = bot.getWaitListPosition(user.id);
                         logger.info('[RUSSIANROULETTE]', data.from.username + ' roulette ended with ' + bot.russian_roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
-
+                        if (current_position == position) {
+                            chatMessage('No value here, comrades! From ' + current_position + ' to ' + position + ' :mlgrussia:');
+                        }
+						
                         move_user(user.id, position);
                     } else {
                         chatMessage('/me user who won roulette isn\'t even here :4head:');
