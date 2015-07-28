@@ -12,18 +12,18 @@ User
 
 |Command | Arguments |  Description |
 |:------:|:---------:|:--------------------------------------:|
-|.banners |  | Links to Vaxom's dank banners. |
+|.banners |  | Links to [Vaxom's dank banners](http://imgur.com/a/bYuHO). |
 |.commands |  | Links to this page! |
 |.dc | (@username) | Puts you back in queue if you disconnected a short time ago. Only bouncers+ can use .dc for others. |
 |.duel | @username | Initiate a [duel](https://github.com/pajlada/pajbot/blob/master/docs/dueling.md) with `@username`. |
 |.eta | (@username) | Prints your approximate time left before you can play your song. Only bouncers+ can use .eta for others. |
-|.join | | Joins the current roulette if one is active. |
+|.join | | Joins the current [roulette](https://github.com/pajlada/pajbot/blob/master/docs/roulette.md) if one is active. |
 |.leave | | Leaves the current roulette, if you joined. |
 |.link | | Prints a link to the current song. |
 |.love | @username | Outputs the percentage chance of love developing between you and `@username`. |
 |.ping | | Prints the current uptime of the bot. |
 |.quake | | Prints information about recent earthquakes. |
-|.tp | | Links to the TastyPlug extension. |
+|.tp | | Links to the [TastyPlug](https://fungustime.pw/tastyplug/) extension. |
 |.random | (FROM, TO) | If no argument is given, flips a coin and returns the results. If one argument is given, returns a value between 1 and the given number. If two arguments are given, returns a number between the two given numbers. (Inclusive) |
 |.rules | | Link to the latest rules. |
 |.reward | (@username) | Gives a random reward to `@username`. |
@@ -83,8 +83,8 @@ Manager
 |.fors |  | Notify all DJs and Staff that FORSEN is in the room, or is on his way. |
 |.lockdown | (on\|off\|status) | Toggles the Lockdown effect. Lockdown means no grayplebs can type in the chat. |
 |.lockskippos | (X) | Sets the current lock skip position to **X**. |
-|.roulette | (X\|stop) | Starts a roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
-|.russianroulette | (X\|stop) | Starts a russian roulette that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
+|.roulette | (X\|stop) | Starts a [roulette](https://github.com/pajlada/pajbot/blob/master/docs/roulette.md) that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
+|.russianroulette | (X\|stop) | Starts a [russian roulette](https://github.com/pajlada/pajbot/blob/master/docs/roulette.md) that lasts for 60 or **X** seconds. Use stop to stop a running roulette. |
 |.doubleroulette | (X) | Starts a normal and russian roulette that lasts for 60 or **X** seconds. |
 |.setrank | @username [Nazi\|DiscPleb\|Pleb] | Sets the rank of `@username` to the specified rank. |
 |.skipunavailable | (on\|off\|status) | Toggles the Skip Unavailable Song status. It decides whether songs that are found to be unavailable should be automatically skipped or not. |
