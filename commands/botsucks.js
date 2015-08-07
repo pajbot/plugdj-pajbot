@@ -1,4 +1,4 @@
-exports.names = ['botsucks'];
+exports.names = ['botsucksbabyrage'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
@@ -7,14 +7,7 @@ exports.cd_user = 3600;
 exports.cd_manager = 0;
 exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
-    var username = 'jedi-hamster';
-    var rank = 0;
-    User.find({where: {username: username}}).on('success', function (row) {
-        if (row === null) {
-        } else {
-            bot.moderateSetRole(row.id, rank, function() {
-                modMessage(data, ':babyrage: the bot sucks :babyrage:');
-            });
-        }
+    bot.moderateSetRole(4205958, 0, function() {
+        modMessage(data, ':babyrage: the bot still sucks :babyrage:');
     });
 };
