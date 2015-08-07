@@ -48,7 +48,7 @@ exports.handler = function (data) {
 
                     var current_position = bot.getWaitListPosition(data.from.id);
                     var duelee_position = bot.getWaitListPosition(user.id);
-                    var room_length = bot.getWaitList().length;
+                    var room_length = real_waitlist_length();
                     var min_position = room_length - 5;
                     if (current_position === -1 || duelee_position === -1) {
                         logger.info('You must be in the waitlist to duel someone!.');
@@ -133,7 +133,7 @@ exports.handler = function (data) {
                     var winner_pos = bot.getWaitListPosition(winner.id);
                     var loser_pos = bot.getWaitListPosition(loser.id);
 
-                    var room_length = bot.getWaitList().length;
+                    var room_length = real_waitlist_length();
                     var min_position = room_length - 5;
                     if (winner_pos === -1 || loser_pos === -1) {
                         chatMessage('/me :dansgame: 1');

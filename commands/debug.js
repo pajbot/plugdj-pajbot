@@ -7,8 +7,7 @@ exports.cd_user = 30;
 exports.cd_manager = 5;
 exports.min_role = PERMISSIONS.BOUNCER;
 exports.handler = function (data) {
-    var waitlist = bot.getWaitList();
-    var room_length = waitlist.length;
+    var room_length = real_waitlist_length();
     var str_array = [];
     var stuff = {
         'Room length': room_length,
@@ -17,5 +16,4 @@ exports.handler = function (data) {
         str_array.push(key + ': ' + value);
     });
     modMessage(data, str_array.join(', '));
-    logger.info('[WL]', waitlist.join(', '));
 };

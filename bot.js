@@ -83,548 +83,555 @@ function runBot(error, auth) {
             logger.info('[YOUTUBE]', 'Authenticated!');
         })
         .then(function() {
-            logger.info('running bot connect');
-            bot.connect(config.roomName);
-            logger.info('ran it!');
-        });
+            logger.info('Initializing bot...');
+            bot = new PlugAPI(auth, function(err, bot) {
+                console.log(err);
+                console.log(bot);
+                if (err) {
+                    logger.error('Something went wrong...');
+                    return;
+                }
 
+                logger.info(bot);
 
-    bot.on('roomJoin', function (data) {
+                logger.info('Connecting to ' + config.roomName);
+                bot.connect(config.roomName);
 
-        logger.success('[INIT] Joined room: ' + data);
+                bot.on('roomJoin', function (data) {
 
-        if (config.responses.botConnect !== "") {
-            chatMessage(config.responses.botConnect);
-        }
+                    logger.success('[INIT] Joined room: ' + data);
 
-        bot.getUsers().forEach(function (user) {
-            if (!user.id) {
-                return;
-            }
-            updateDbUser(user);
-        });
-
-        setInterval(process_move_queue, 2500);
-    });
-
-    bot.on('chatDelete', function(data) {
-        var username = 'PAJBOT';
-        if (data.mi === 6281653) {
-            logger.info('[CHATD]', 'PAJBOT deleted ' + data.c);
-        } else {
-            User.find(data.mi).on('success', function (db_user) {
-                logger.info('[CHATD]', db_user.username + ' deleted ' + data.c);
-            });
-        }
-    });
-
-    bot.on('modBan', function(data) {
-        var duration;
-        switch (data.d) {
-            case 'h': duration = '1 hour'; break;
-            case 'd': duration = '24 hour'; break;
-            case 'p': duration = 'permanently'; break;
-            default: duration = '?? ('+data.d+')'; break;
-        }
-        logger.info('[BAN]', data.m + ' ' + duration + ' banned ' + data.t);
-    });
-
-    bot.on('modSkip', function (data) {
-        bot.getHistory(function(history) {
-            if (history) {
-                for (var i = 2; i < history.length; i++) {
-                    if (history[1].media.cid === history[i].media.cid) {
-                        var skippeduser = history[1].user.username;
-                        chatMessage('@' + skippeduser + ' Your song was skipped because it was played ' + i + ' songs ago.');
-                        break;
+                    if (config.responses.botConnect !== "") {
+                        chatMessage(config.responses.botConnect);
                     }
-                }
-            }
-        });
-    });
-    
-    bot.on('chat', function (data) {
-        if (config.verboseLogging) {
-            logger.info('[CHAT]', JSON.stringify(data, null, 2));
-        }
 
-        if (data.from !== undefined && data.from !== null) {
-            data.message = data.message.trim();
-
-            logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
-
-            if (settings['lockdown'] && data.from.role === 0) {
-                bot.moderateDeleteChat(data.id);
-            }
-
-            handleCommand(data);
-            User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
-        }
-
-        message_history.push(data.id);
-    });
-
-    bot.on('userJoin', function (data) {
-        if (data.id === undefined || data.guest === true) {
-            return;
-        }
-        if (config.verboseLogging) {
-            logger.info('[JOIN]', JSON.stringify(data, null, 2));
-        }
-
-        var newUser = false;
-        var message = "";
-
-        if (data.username !== bot.getUser().username) {
-            User.find(data.id).on('success', function (dbUser) {
-
-                if (data.username == config.superAdmin && config.responses.welcome.superAdmin != null) {
-                    message = config.responses.welcome.superAdmin.replace('{username}', data.username);
-                    logger.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
-                }
-                else if (dbUser == null) {
-                    message = config.responses.welcome.newUser.replace('{username}', data.username);
-                    newUser = true;
-                    logger.info('[JOIN]', data.username + ' is a first-time visitor to the room!');
-                }
-                else {
-                    message = config.responses.welcome.oldUser.replace('{username}', data.username);
-                    logger.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
-                }
-
-                // Greet with the theme if it's not the default
-                RoomEvent.find({where: {starts_at: {lte: new Date()}, ends_at: {gte: new Date()}}}).on('success', function (row) {
-                    if (row !== null) {
-                        if (row.type == 'event') {
-                            message += ' :star: SPECIAL EVENT :star: ' + row.title + ' (.event for details)';
+                    bot.getUsers().forEach(function (user) {
+                        if (!user.id) {
+                            return;
                         }
-                        else if (row.type == 'theme') {
-                            message += ' Theme: ' + row.title + ' (.theme for details)';
-                        }
+                        updateDbUser(user);
+                    });
+
+                    setInterval(process_move_queue, 2500);
+                });
+
+                bot.on('chatDelete', function(data) {
+                    var username = 'PAJBOT';
+                    if (data.mi === 6281653) {
+                        logger.info('[CHATD]', 'PAJBOT deleted ' + data.c);
+                    } else {
+                        User.find(data.mi).on('success', function (db_user) {
+                            logger.info('[CHATD]', db_user.username + ' deleted ' + data.c);
+                        });
                     }
                 });
 
-                if (!roomHasActiveMods) {
-                    message += ' Type .help if you need it!';
-                }
+                bot.on('modBan', function(data) {
+                    var duration;
+                    switch (data.d) {
+                        case 'h': duration = '1 hour'; break;
+                        case 'd': duration = '24 hour'; break;
+                        case 'p': duration = 'permanently'; break;
+                        default: duration = '?? ('+data.d+')'; break;
+                                     }
+                                     logger.info('[BAN]', data.m + ' ' + duration + ' banned ' + data.t);
+                                     });
 
-                if (message && (config.welcomeUsers == "NEW" || config.welcomeUsers == "ALL")) {
-                    if (newUser) {
-                        setTimeout(function () {
-                            chatMessage(message)
-                        }, 5000);
-                    }
-                    else if (config.welcomeUsers == "ALL" && secondsSince(dbUser.last_active) >= 900 && secondsSince(dbUser.last_seen) >= 900) {
-                        setTimeout(function () {
-                            chatMessage(message)
-                        }, 5000);
-                    }
-                }
-            });
-            updateDbUser(bot.getUser(data.id));
-        }
-    })
-
-    bot.on('userLeave', function (data) {
-        if (data.id === undefined || data.guest === true) {
-            return;
-        }
-        logger.info('[LEAVE]', 'User left: ' + data.username);
-        var position = bot.getWaitListPosition(data.id);
-        User.update({last_seen: new Date(), last_leave: new Date()}, {where: {id: data.id}});
-    });
-
-    bot.on('userUpdate', function (data) {
-        if (config.verboseLogging) {
-            logger.info('[EVENT] USER_UPDATE', data);
-        }
-    });
-
-    bot.on('grab', function (data) {
-        var user = _.findWhere(bot.getUsers(), {id: data});
-        if (user) {
-            logger.info('[GRAB]', user.username + ' grabbed this song');
-        }
-    });
-
-    bot.on('vote', function (data) {
-        var user = _.findWhere(bot.getUsers(), {id: data.i});
-        if (user && data.v === -1) {
-            //logger.info('[MEH]', user.username);
-        } else if (user && data.v === 1) {
-            //logger.info('[WOOT]', user.username);
-        } else if (user) {
-            logger.info('[VOTE]', user.username + ': ' + data.v + ' ???? XXX');
-        }
-    });
-
-    bot.on('advance', function (data) {
-        if (config.verboseLogging) {
-            logger.success('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
-        }
-
-        motd_advance();
-        //process_move_queue();
-
-        waitlist_length = bot.getWaitList().length;
-        saveWaitList(true);
-
-        // Writes current room state to outfile so it can be used for the web
-        if (config.roomStateFile) {
-
-            var JSONstats = {}
-
-            JSONstats.media = bot.getMedia();
-            JSONstats.dj = bot.getDJ();
-            JSONstats.waitlist = bot.getWaitList();
-            JSONstats.users = bot.getUsers();
-            JSONstats.staff = bot.getStaff();
-
-            fs.writeFile(
-                config.roomStateFile,
-                JSON.stringify(JSONstats, null, 2),
-                function (err) {
-                    if (err) {
-                        logger.error(err);
-                        return console.log(err);
-                    }
-                }
-            );
-        }
-
-        Promise.map(bot.getWaitList(), function (dj) {
-            var position = bot.getWaitListPosition(dj.id);
-            logger.info('[WLIST]', position + ' - ' + dj.username);
-        });
-
-        // Write previous play data to DB
-        if (data.lastPlay.media !== null && data.lastPlay.dj !== null) {
-            Play.create({
-                user_id: data.lastPlay.dj.id,
-                song_id: data.lastPlay.media.id,
-                positive: data.lastPlay.score.positive,
-                negative: data.lastPlay.score.negative,
-                grabs: data.lastPlay.score.grabs,
-                listeners: data.lastPlay.score.listeners,
-                skipped: data.lastPlay.score.skipped
-            });
-        }
-
-        if (data.media != null) {
-
-            if (data.media.format == 2) {
-                soundcloud_get_track(data.media.cid, function (json_data) {
-                    if (settings['skipunavailable']) {
-                        if (!json_data.streamable) {
-                            logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
-                            if (data.currentDJ != null) {
-                                chatMessage('/me @' + data.currentDJ.username + ' your song is not available or embeddable, you have been skipped.');
-                                bot.moderateForceSkip();
-                                //lockskip(data.currentDJ);
-                            } else {
-                                chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
-                                bot.moderateForceSkip();
-                            }
-                        }
-                    }
-                });
-            } else {
-                Youtube.videos.list({
-                    "part": "id,status",
-                    "id": data.media.cid,
-                }, function (err, api_data) {
-                    if (api_data) {
-                        if (api_data.items.length === 0) {
-                            /* The video is not available. */
-                            if (settings['skipunavailable']) {
-                                logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
-                                if (data.currentDJ != null) {
-                                    chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
-                                    bot.moderateForceSkip();
-                                } else {
-                                    chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
-                                    bot.moderateForceSkip();
-                                }
-                            }
-                        } else {
-                            var item = _.first(api_data.items);
-                            if (item.status) {
-                                if (item.status.embeddable === false) {
-                                    if (data.currentDJ != null) {
-                                        chatMessage('/me @' + data.currentDJ.username + ' your song is not embeddable, you have been skipped.');
-                                        bot.moderateForceSkip();
-                                    } else {
-                                        chatMessage('/me Skipping unembeddable song, but no dj. :dansgame:');
-                                        bot.moderateForceSkip();
+                        bot.on('modSkip', function (data) {
+                            bot.getHistory(function(history) {
+                                if (history) {
+                                    for (var i = 2; i < history.length; i++) {
+                                        if (history[1].media.cid === history[i].media.cid) {
+                                            var skippeduser = history[1].user.username;
+                                            chatMessage('@' + skippeduser + ' Your song was skipped because it was played ' + i + ' songs ago.');
+                                            break;
+                                        }
                                     }
                                 }
+                            });
+                        });
+
+                        bot.on('chat', function (data) {
+                            if (config.verboseLogging) {
+                                logger.info('[CHAT]', JSON.stringify(data, null, 2));
                             }
-                        }
-                    }
-                });
-            }
 
-            if (data.currentDJ != null) {
-                logger.success('********************************************************************');
-                logger.success('[UPTIME]', 'Bot online ' + timeSince(startupTimestamp, true));
-                logger.success('[SONG]', data.currentDJ.username + ' played: ' + data.media.author + ' - ' + data.media.title);
-                User.update({waitlist_position: -1}, {where: {id: data.currentDJ.id}});
-            }
+                            if (data.from !== undefined && data.from !== null) {
+                                data.message = data.message.trim();
 
-            // Perform automatic song metadata correction
-            if (config.autoSuggestCorrections) {
-                correctMetadata();
-            }
+                                logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
 
-            // Auto skip for "stuck" songs
-            clearTimeout(skipTimer);
-            skipTimer = setTimeout(function () {
-                if (bot.getMedia() && bot.getMedia().cid == data.media.cid) {
-                    if (settings['autoskip']) {
-                        bot.moderateForceSkip();
-                        logger.info('[AUTOSKIP]', 'Song was autoskipped.');
-                    }
-                }
-            }, (data.media.duration + 3) * 1000);
+                                if (settings['lockdown'] && data.from.role === 0) {
+                                    bot.moderateDeleteChat(data.id);
+                                }
 
-            // Write current song data to DB
-            var songData = {
-                id: data.media.id,
-                author: data.media.author,
-                title: data.media.title,
-                format: data.media.format,
-                cid: data.media.cid,
-                duration: data.media.duration,
-                image: data.media.image
-            };
-            Song.findOrCreate({where: {id: data.media.id, cid: data.media.cid}, defaults: songData}).spread(function (song) {
-                song.updateAttributes(songData);
-            });
-
-            if (config.wootSongs == 'ALL') {
-                bot.woot();
-            }
-
-            if (config.songResponses) {
-                SongResponse.find({
-                    where: Sequelize.or(
-                               Sequelize.and({media_type: 'author', trigger: {like: data.media.author}, is_active: true}),
-                               Sequelize.and({media_type: 'title', trigger: {like: data.media.title}, is_active: true}),
-                               Sequelize.and({media_type: 'cid', trigger: data.media.format + '-' + data.media.cid, is_active: true})
-                               )
-                }).on('success', function (row) {
-                    if (row !== null) {
-                        if (row.response != '') {
-                            logger.info('[SONGRESPONSE]', 'Sending response: ' + row.response);
-                            chatMessage(row.response);
-                        }
-                        if (row.rate === 1) {
-                            bot.woot();
-                        }
-                        else if (row.rate === -1) {
-                            bot.meh();
-                        }
-                    }
-                });
-            }
-
-            var maxIdleTime = config.activeDJTimeoutMins * 60;
-            var idleDJs = [];
-            roomHasActiveMods = false;
-
-            if (config.removeInactiveDJs) {
-            Promise.map(bot.getWaitList(), function (dj) {
-                return User.find({
-                    where: {id: dj.id},
-                    include: {
-                        model: Karma,
-                        required: false,
-                        where: {
-                            type: 'warn',
-                            created_at: {gte: moment.utc().subtract(config.activeDJTimeoutMins, 'minutes').toDate()}
-                        },
-                        limit: 1,
-                        order: [['created_at', 'DESC']]
-                    }
-                }).on('success', function (dbUser) {
-                    var position = bot.getWaitListPosition(dj.id);
-                    if (dbUser !== null) {
-                        if (secondsSince(dbUser.last_active) >= maxIdleTime && moment.utc().isAfter(moment.utc(startupTimestamp).add(config.activeDJTimeoutMins, 'minutes'))) {
-                            logger.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
-                            if (dbUser.Karmas.length > 0) {
-                                logger.warning('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
-                                bot.moderateRemoveDJ(dj.id);
-                                chatMessage('@' + dbUser.username + ' ' + config.responses.activeDJRemoveMessage);
-                                var userData = {
-                                    type: 'remove',
-                                    details: 'Removed from position ' + position + ': AFK for ' + timeSince(dbUser.last_active, true),
-                                    user_id: dj.id,
-                                    mod_user_id: bot.getUser().id
-                                };
-                                Karma.create(userData);
-                                User.update({waitlist_position: -1}, {where: {id: dj.id}});
+                                handleCommand(data);
+                                User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
                             }
-                            else if (position > 1) {
-                                var userData = {
-                                    type: 'warn',
-                                    details: 'Warned in position ' + position + ': AFK for ' + timeSince(dbUser.last_active, true),
-                                    user_id: dj.id,
-                                    mod_user_id: bot.getUser().id
-                                };
-                                Karma.create(userData);
-                                idleDJs.push(dbUser.username);
+
+                            message_history.push(data.id);
+                        });
+
+                        bot.on('userJoin', function (data) {
+                            if (config.verboseLogging) {
+                                logger.info('[JOIN]', JSON.stringify(data, null, 2));
                             }
-                        }
-                        else {
-                            if (dj.role > 1) {
-                                roomHasActiveMods = true;
-                            }
-                            logger.info('[ACTIVE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
-                        }
-                    }
-                });
-            }).then(function () {
-                if (idleDJs.length > 0) {
-                    var idleDJsList = idleDJs.join(' @');
-                    chatMessage('@' + idleDJsList + ' ' + config.responses.activeDJReminder);
-                }
-            });
-            }
 
-            // Skip if the song has been blacklisted
-            /*
-             Song.find({where: {id: data.media.id, cid: data.media.cid, is_banned: true}}).on('success', function (row) {
-             // need to only do this if results!
-             logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
-             chatMessage('Sorry @' + data.currentDJ.username + ', this song has been blacklisted (NSFW video or Out of Range) in our song database.');
-             bot.moderateForceSkip();
-             var userData = {
-             type: 'skip',
-             details: 'Skipped for playing a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')',
-             user_id: data.currentDJ.id,
-             mod_user_id: bot.getUser().id
-             };
-             Karma.create(userData);
-             });
-             */
+                            var newUser = false;
+                            var message = "";
 
-            // Only police this if there aren't any mods around
-            if (settings['timeguard'] && data.media.duration > settings['maxlength']) {
-                logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
-                chatMessage('Sorry @' + data.currentDJ.username + ', this song is over our room\'s maximum song length (' + sec_to_str(settings['maxlength']) + ').');
-                bot.moderateForceSkip();
-                var userData = {
-                    type: 'skip',
-                    details: 'Skipped for playing a song of ' + data.media.duration + ' (room configured for max of ' + sec_to_str(settings['maxlength']) + ')',
-                    user_id: data.currentDJ.id,
-                    mod_user_id: bot.getUser().id
-                };
-                Karma.create(userData);
-            }
+                            if (data.username !== bot.getUser().username) {
+                                User.find(data.id).on('success', function (dbUser) {
 
-        }
+                                    if (data.username == config.superAdmin && config.responses.welcome.superAdmin != null) {
+                                        message = config.responses.welcome.superAdmin.replace('{username}', data.username);
+                                        logger.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
+                                    }
+                                    else if (dbUser == null) {
+                                        message = config.responses.welcome.newUser.replace('{username}', data.username);
+                                        newUser = true;
+                                        logger.info('[JOIN]', data.username + ' is a first-time visitor to the room!');
+                                    }
+                                    else {
+                                        message = config.responses.welcome.oldUser.replace('{username}', data.username);
+                                        logger.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
+                                    }
 
-    });
-
-    bot.on('djListLocked', function(data) {
-        room_locked = data.f;
-    });
-
-    bot.on('djListUpdate', function (data) {
-        if (config.verboseLogging) {
-            logger.success('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
-        }
-
-        logger.info('[TEST]', 'Waitlist length: ' + waitlist_length);
-        logger.info('[TEST]', 'Data length: ' + data.length);
-        //logger.info(data);
-
-        if (!data) {
-            /* Got some strange data in djListUpdate... */
-            return false;
-        }
-
-        if (data.length > waitlist_length) {
-            // Someone joined the waitlist!
-            var last_user = data[data.length - 1];
-            if (last_user) {
-                logger.info('[TEST]', last_user.username + ' just joined the waitlist!');
-                logger.info('[TEST]', 'Movement queue length: ' + move_queue.length);
-                if (move_queue.length > 0) {
-                    // Is there someone waiting to be moved?
-                    if (add_to_waitlist_history[last_user.id] !== true) {
-                        // Is the person who last joined in the "add to waitlist" history? aka did bot just add them?
-                        if (move_queue[0].user_id !== last_user.id) {
-                            // Is the person who last joined the person who was supposed to get in anyway?
-                            logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
-
-                            setTimeout(function() {
-                                logger.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
-                                bot.moderateRemoveDJ(last_user.id, function() {
-                                    logger.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
-                                    process_move_queue();
+                                // Greet with the theme if it's not the default
+                                RoomEvent.find({where: {starts_at: {lte: new Date()}, ends_at: {gte: new Date()}}}).on('success', function (row) {
+                                    if (row !== null) {
+                                        if (row.type == 'event') {
+                                            message += ' :star: SPECIAL EVENT :star: ' + row.title + ' (.event for details)';
+                                        }
+                                        else if (row.type == 'theme') {
+                                            message += ' Theme: ' + row.title + ' (.theme for details)';
+                                        }
+                                    }
                                 });
-                            }, 100);
-                        } else {
-                            logger.info('[TEST]', last_user.username + ' joined, and he is not supposed to get in.');
-                        }
-                    } else {
-                        logger.info('[TEST]', last_user.username + ' joined, and we did not add him ourselves.');
-                    }
-                } else {
-                    logger.info('[TEST]', last_user.username + ' joined, but there is no one in the waitlist anyway.');
-                }
 
-                // original if-case
-                if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user.id] !== true && move_queue[0].user_id !== last_user.id) {
-                }
-            }
-        } else if (data.length < waitlist_length) {
-            // Someone left the waitlist
-        } else if (data.length == waitlist_length) {
-            // Someone was moved in the waitlist
-        }
+                                if (!roomHasActiveMods) {
+                                    message += ' Type .help if you need it!';
+                                }
 
-        waitlist_length = data.length;
-        saveWaitList(false);
-    });
+                                if (message && (config.welcomeUsers == "NEW" || config.welcomeUsers == "ALL")) {
+                                    if (newUser) {
+                                        setTimeout(function () {
+                                            chatMessage(message)
+                                        }, 5000);
+                                    }
+                                    else if (config.welcomeUsers == "ALL" && secondsSince(dbUser.last_active) >= 900 && secondsSince(dbUser.last_seen) >= 900) {
+                                        setTimeout(function () {
+                                            chatMessage(message)
+                                        }, 5000);
+                                    }
+                                }
+                                });
+                                updateDbUser(bot.getUser(data.id));
+                            }
+                        })
 
-    bot.on('modAddWaitList', function(data) {
-        logger.info('add waitlist', data);
-    });
+                        bot.on('userLeave', function (data) {
+                            logger.info('[LEAVE]', 'User left: ' + data.username);
+                            var position = bot.getWaitListPosition(data.id);
+                            User.update({last_seen: new Date(), last_leave: new Date()}, {where: {id: data.id}});
+                        });
 
-    bot.on('modAddDJ', function(data) {
-        logger.info('add dj', data);
-    });
+                        bot.on('userUpdate', function (data) {
+                            if (config.verboseLogging) {
+                                logger.info('[EVENT] USER_UPDATE', data);
+                            }
+                        });
 
-    bot.on('close', reconnect);
-    bot.on('error', reconnect);
+                        bot.on('grab', function (data) {
+                            var user = _.findWhere(bot.getUsers(), {id: data});
+                            if (user) {
+                                logger.info('[GRAB]', user.username + ' grabbed this song');
+                            }
+                        });
 
-    if (config.telnet.listenOnIp && config.telnet.listenOnPort) {
-        bot.tcpListen(config.telnet.listenOnPort, config.telnet.listenOnIp);
-    }
+                        bot.on('vote', function (data) {
+                            var user = _.findWhere(bot.getUsers(), {id: data.i});
+                            if (user && data.v === -1) {
+                                //logger.info('[MEH]', user.username);
+                            } else if (user && data.v === 1) {
+                                //logger.info('[WOOT]', user.username);
+                            } else if (user) {
+                                logger.info('[VOTE]', user.username + ': ' + data.v + ' ???? XXX');
+                            }
+                        });
 
-    bot.on('tcpConnect', function (socket) {
-        logger.info('[TCP] Connected!');
-    });
+                        bot.on('advance', function (data) {
+                            if (config.verboseLogging) {
+                                logger.success('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
+                            }
 
-    bot.on('tcpMessage', function (socket, msg) {
-        if (typeof msg !== "undefined" && msg.length > 2) {
-            logger.info('[TCP] ' + msg);
-            // Convert into same format as incoming chat messages through the UI
-            var data = {
-                message: msg,
-                from: bot.getUser()
-            };
+                            motd_advance();
+                            //process_move_queue();
 
-            if (data.message.indexOf('.') === 0) {
-                handleCommand(data);
-            }
-            else {
-                chatMessage(msg);
-            }
-        }
-    });
+                            waitlist_length = real_waitlist_length();
+                            saveWaitList(true);
+
+                            // Writes current room state to outfile so it can be used for the web
+                            if (config.roomStateFile) {
+                                var JSONstats = {}
+
+                                JSONstats.media = bot.getMedia();
+                                JSONstats.dj = bot.getDJ();
+                                JSONstats.waitlist = real_waitlist();
+                                JSONstats.users = bot.getUsers();
+                                JSONstats.staff = bot.getStaff();
+
+                                fs.writeFile(
+                                        config.roomStateFile,
+                                        JSON.stringify(JSONstats, null, 2),
+                                        function (err) {
+                                            if (err) {
+                                                logger.error(err);
+                                                return console.log(err);
+                                            }
+                                        }
+                                        );
+                            }
+
+                            Promise.map(bot.getWaitList(), function (dj) {
+                                var position = bot.getWaitListPosition(dj.id);
+                                logger.info('[WLIST]', position + ' - ' + dj.username);
+                            });
+
+                            // Write previous play data to DB
+                            if (data.lastPlay.media !== null && data.lastPlay.dj !== null) {
+                                Play.create({
+                                    user_id: data.lastPlay.dj.id,
+                                    song_id: data.lastPlay.media.id,
+                                    positive: data.lastPlay.score.positive,
+                                    negative: data.lastPlay.score.negative,
+                                    grabs: data.lastPlay.score.grabs,
+                                    listeners: data.lastPlay.score.listeners,
+                                    skipped: data.lastPlay.score.skipped
+                                });
+                            }
+
+                            if (data.media != null) {
+
+                                if (data.media.format == 2) {
+                                    logger.info(data.media.cid);
+                                    soundcloud_get_track(data.media.cid, function (json_data) {
+                                        if (settings['skipunavailable']) {
+                                            logger.info(json_data);
+                                            if (!json_data.streamable) {
+                                                logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
+                                                if (data.currentDJ != null) {
+                                                    chatMessage('/me @' + data.currentDJ.username + ' your song is not available or embeddable, you have been skipped.');
+                                                    bot.moderateForceSkip();
+                                                    //lockskip(data.currentDJ);
+                                                } else {
+                                                    chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                                    bot.moderateForceSkip();
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Youtube.videos.list({
+                                        "part": "id,status",
+                                        "id": data.media.cid,
+                                    }, function (err, api_data) {
+                                        if (api_data) {
+                                            logger.info(api_data);
+                                            if (api_data.items.length === 0) {
+                                                /* The video is not available. */
+                                                if (settings['skipunavailable']) {
+                                                    logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                                                    if (data.currentDJ != null) {
+                                                        chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
+                                                        bot.moderateForceSkip();
+                                                    } else {
+                                                        chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                                        bot.moderateForceSkip();
+                                                    }
+                                                }
+                                            } else {
+                                                var item = _.first(api_data.items);
+                                                if (item.status) {
+                                                    if (item.status.embeddable === false) {
+                                                        if (data.currentDJ != null) {
+                                                            chatMessage('/me @' + data.currentDJ.username + ' your song is not embeddable, you have been skipped.');
+                                                            bot.moderateForceSkip();
+                                                        } else {
+                                                            chatMessage('/me Skipping unembeddable song, but no dj. :dansgame:');
+                                                            bot.moderateForceSkip();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+
+                                if (data.currentDJ != null) {
+                                    logger.success('********************************************************************');
+                                    logger.success('[UPTIME]', 'Bot online ' + timeSince(startupTimestamp, true));
+                                    logger.success('[SONG]', data.currentDJ.username + ' played: ' + data.media.author + ' - ' + data.media.title);
+                                    User.update({waitlist_position: -1}, {where: {id: data.currentDJ.id}});
+                                }
+
+                                // Perform automatic song metadata correction
+                                if (config.autoSuggestCorrections) {
+                                    correctMetadata();
+                                }
+
+                                // Auto skip for "stuck" songs
+                                clearTimeout(skipTimer);
+                                skipTimer = setTimeout(function () {
+                                    if (bot.getMedia() && bot.getMedia().cid == data.media.cid) {
+                                        if (settings['autoskip']) {
+                                            bot.moderateForceSkip();
+                                            logger.info('[AUTOSKIP]', 'Song was autoskipped.');
+                                        }
+                                    }
+                                }, (data.media.duration + 3) * 1000);
+
+                                // Write current song data to DB
+                                var songData = {
+                                    id: data.media.id,
+                                    author: data.media.author,
+                                    title: data.media.title,
+                                    format: data.media.format,
+                                    cid: data.media.cid,
+                                    duration: data.media.duration,
+                                    image: data.media.image
+                                };
+                                Song.findOrCreate({where: {id: data.media.id, cid: data.media.cid}, defaults: songData}).spread(function (song) {
+                                    song.updateAttributes(songData);
+                                });
+
+                                if (config.wootSongs == 'ALL') {
+                                    bot.woot();
+                                }
+
+                                if (config.songResponses) {
+                                    SongResponse.find({
+                                        where: Sequelize.or(
+                                                   Sequelize.and({media_type: 'author', trigger: {like: data.media.author}, is_active: true}),
+                                                   Sequelize.and({media_type: 'title', trigger: {like: data.media.title}, is_active: true}),
+                                                   Sequelize.and({media_type: 'cid', trigger: data.media.format + '-' + data.media.cid, is_active: true})
+                                                   )
+                                    }).on('success', function (row) {
+                                        if (row !== null) {
+                                            if (row.response != '') {
+                                                logger.info('[SONGRESPONSE]', 'Sending response: ' + row.response);
+                                                chatMessage(row.response);
+                                            }
+                                            if (row.rate === 1) {
+                                                bot.woot();
+                                            }
+                                            else if (row.rate === -1) {
+                                                bot.meh();
+                                            }
+                                        }
+                                    });
+                                }
+
+                                var maxIdleTime = config.activeDJTimeoutMins * 60;
+                                var idleDJs = [];
+                                roomHasActiveMods = false;
+
+                                if (config.removeInactiveDJs) {
+                                    Promise.map(bot.getWaitList(), function (dj) {
+                                        return User.find({
+                                            where: {id: dj.id},
+                                               include: {
+                                                   model: Karma,
+                                               required: false,
+                                               where: {
+                                                   type: 'warn',
+                                               created_at: {gte: moment.utc().subtract(config.activeDJTimeoutMins, 'minutes').toDate()}
+                                               },
+                                               limit: 1,
+                                               order: [['created_at', 'DESC']]
+                                               }
+                                        }).on('success', function (dbUser) {
+                                            var position = bot.getWaitListPosition(dj.id);
+                                            if (dbUser !== null) {
+                                                if (secondsSince(dbUser.last_active) >= maxIdleTime && moment.utc().isAfter(moment.utc(startupTimestamp).add(config.activeDJTimeoutMins, 'minutes'))) {
+                                                    logger.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                                                    if (dbUser.Karmas.length > 0) {
+                                                        logger.warning('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
+                                                        bot.moderateRemoveDJ(dj.id);
+                                                        chatMessage('@' + dbUser.username + ' ' + config.responses.activeDJRemoveMessage);
+                                                        var userData = {
+                                                            type: 'remove',
+                                        details: 'Removed from position ' + position + ': AFK for ' + timeSince(dbUser.last_active, true),
+                                        user_id: dj.id,
+                                        mod_user_id: bot.getUser().id
+                                                        };
+                                                        Karma.create(userData);
+                                                        User.update({waitlist_position: -1}, {where: {id: dj.id}});
+                                                    }
+                                                    else if (position > 1) {
+                                                        var userData = {
+                                                            type: 'warn',
+                                                            details: 'Warned in position ' + position + ': AFK for ' + timeSince(dbUser.last_active, true),
+                                                            user_id: dj.id,
+                                                            mod_user_id: bot.getUser().id
+                                                        };
+                                                        Karma.create(userData);
+                                                        idleDJs.push(dbUser.username);
+                                                    }
+                                                }
+                                                else {
+                                                    if (dj.role > 1) {
+                                                        roomHasActiveMods = true;
+                                                    }
+                                                    logger.info('[ACTIVE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                                                }
+                                            }
+                                        });
+                                    }).then(function () {
+                                        if (idleDJs.length > 0) {
+                                            var idleDJsList = idleDJs.join(' @');
+                                            chatMessage('@' + idleDJsList + ' ' + config.responses.activeDJReminder);
+                                        }
+                                    });
+                                }
+
+                                // Skip if the song has been blacklisted
+                                /*
+                                   Song.find({where: {id: data.media.id, cid: data.media.cid, is_banned: true}}).on('success', function (row) {
+                                // need to only do this if results!
+                                logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
+                                chatMessage('Sorry @' + data.currentDJ.username + ', this song has been blacklisted (NSFW video or Out of Range) in our song database.');
+                                bot.moderateForceSkip();
+                                var userData = {
+                                type: 'skip',
+                                details: 'Skipped for playing a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')',
+                                user_id: data.currentDJ.id,
+                                mod_user_id: bot.getUser().id
+                                };
+                                Karma.create(userData);
+                                });
+                                */
+
+                                // Only police this if there aren't any mods around
+                                if (settings['timeguard'] && data.media.duration > settings['maxlength']) {
+                                    logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
+                                    chatMessage('Sorry @' + data.currentDJ.username + ', this song is over our room\'s maximum song length (' + sec_to_str(settings['maxlength']) + ').');
+                                    bot.moderateForceSkip();
+                                    var userData = {
+                                        type: 'skip',
+                                        details: 'Skipped for playing a song of ' + data.media.duration + ' (room configured for max of ' + sec_to_str(settings['maxlength']) + ')',
+                                                user_id: data.currentDJ.id,
+                                                mod_user_id: bot.getUser().id
+                                                };
+                                                Karma.create(userData);
+                                                }
+
+                                                }
+
+                                                });
+
+                                    bot.on('djListLocked', function(data) {
+                                        room_locked = data.f;
+                                    });
+
+                                    bot.on('djListUpdate', function (data) {
+                                        if (config.verboseLogging) {
+                                            logger.success('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
+                                        }
+
+                                        logger.info('[TEST]', 'Waitlist length: ' + waitlist_length);
+                                        logger.info('[TEST]', 'Data length: ' + data.length);
+                                        //logger.info(data);
+
+                                        if (!data) {
+                                            /* Got some strange data in djListUpdate... */
+                                            return false;
+                                        }
+
+                                        if (data.length > waitlist_length) {
+                                            // Someone joined the waitlist!
+                                            var last_user = data[data.length - 1];
+                                            if (last_user) {
+                                                logger.info('[TEST]', last_user.username + ' just joined the waitlist!');
+                                                logger.info('[TEST]', 'Movement queue length: ' + move_queue.length);
+                                                if (move_queue.length > 0) {
+                                                    // Is there someone waiting to be moved?
+                                                    if (add_to_waitlist_history[last_user.id] !== true) {
+                                                        // Is the person who last joined in the "add to waitlist" history? aka did bot just add them?
+                                                        if (move_queue[0].user_id !== last_user.id) {
+                                                            // Is the person who last joined the person who was supposed to get in anyway?
+                                                            logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
+
+                                                            setTimeout(function() {
+                                                                logger.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
+                                                                bot.moderateRemoveDJ(last_user.id, function() {
+                                                                    logger.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
+                                                                    process_move_queue();
+                                                                });
+                                                            }, 100);
+                                                        } else {
+                                                            logger.info('[TEST]', last_user.username + ' joined, and he is not supposed to get in.');
+                                                        }
+                                                    } else {
+                                                        logger.info('[TEST]', last_user.username + ' joined, and we did not add him ourselves.');
+                                                    }
+                                                } else {
+                                                    logger.info('[TEST]', last_user.username + ' joined, but there is no one in the waitlist anyway.');
+                                                }
+
+                                                // original if-case
+                                                if (move_queue.length > 0 && room_locked && add_to_waitlist_history[last_user.id] !== true && move_queue[0].user_id !== last_user.id) {
+                                                }
+                                            }
+                                        } else if (data.length < waitlist_length) {
+                                            // Someone left the waitlist
+                                        } else if (data.length == waitlist_length) {
+                                            // Someone was moved in the waitlist
+                                        }
+
+                                        waitlist_length = data.length;
+                                        saveWaitList(false);
+                                    });
+
+                                    bot.on('modAddWaitList', function(data) {
+                                        logger.info('add waitlist', data);
+                                    });
+
+                                    bot.on('modAddDJ', function(data) {
+                                        logger.info('add dj', data);
+                                    });
+
+                                    bot.on('close', reconnect);
+                                    bot.on('error', reconnect);
+
+                                    if (config.telnet.listenOnIp && config.telnet.listenOnPort) {
+                                        bot.tcpListen(config.telnet.listenOnPort, config.telnet.listenOnIp);
+                                    }
+
+                                    bot.on('tcpConnect', function (socket) {
+                                        logger.info('[TCP] Connected!');
+                                    });
+
+                                    bot.on('tcpMessage', function (socket, msg) {
+                                        if (typeof msg !== "undefined" && msg.length > 2) {
+                                            logger.info('[TCP] ' + msg);
+                                            // Convert into same format as incoming chat messages through the UI
+                                            var data = {
+                                                message: msg,
+                                        from: bot.getUser()
+                                            };
+
+                                            if (data.message.indexOf('.') === 0) {
+                                                handleCommand(data);
+                                            }
+                                            else {
+                                                chatMessage(msg);
+                                            }
+                                        }
+                                    });
+            });
+        });
+
 
 
     function saveWaitList(wholeRoom) {
@@ -633,7 +640,7 @@ function runBot(error, auth) {
             var userList = bot.getUsers();
         }
         else {
-            var userList = bot.getWaitList();
+            var userList = real_waitlist();
         }
         userList.forEach(function (user) {
             if (user.id === undefined) {
@@ -724,10 +731,6 @@ function runBot(error, auth) {
         // load context
         require(path.resolve(__dirname, 'context.js'))({auth: auth, config: config});
 
-        // Allow bot to perform multi-line chat
-        bot.multiLine = true;
-        bot.multiLineLimit = 5;
-
         loadCommands();
         load_responses();
     }
@@ -769,6 +772,8 @@ function runBot(error, auth) {
                 } else if (data.from.id === 4466061) { /* -Vaxom */
                     data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
                 }
+            } else if (data.from.id === 4205958) { /* jedi-hamster :elegiggle: */
+                data.from.role = PlugAPI.ROOM_ROLE.NONE;
             }
 
             var can_run_command = true;

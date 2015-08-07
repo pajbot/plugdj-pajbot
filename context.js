@@ -6,11 +6,10 @@ module.exports = function (options) {
     Promise = require('bluebird');
     Noise = require('spatial-noise');
     Crypto_rand = require('crypto-rand');
-	
-    bot = new PlugAPI(options.auth, function() {
-        logger.info('Auth callback called!');
-    });
+
     config = options.config;
+
+    bot = undefined;
     logger = PlugAPI.CreateLogger('Bot');
     fs = require('fs');
 
@@ -376,7 +375,7 @@ module.exports = function (options) {
     process_move_event = function(md) {
         var current_position = bot.getWaitListPosition(md.user_id);
         var new_position = md.position;
-        var room_length = bot.getWaitList().length;
+        var room_length = real_waitlist_length();
         var user = bot.getUser(md.user_id);
 
         if (!user) {
@@ -780,24 +779,23 @@ module.exports = function (options) {
             }
         });
     }
-	
+
     assist = function(message, advice) {
         var params = _.rest(message.split(' '), 1);
-    
+
         if (params.length >= 1) {
             get_user_by_param(params, function(err, user, db_user) {
                 if (user) {
                     chatMessage('/me @' + user.username + ' ' + advice );
-                } else {   
+                } else {
                     chatMessage('/me ' + advice);
                 }
             });
-        } else {   
+        } else {
             chatMessage('/me ' + advice);
         }
     }
 
-	
     get_user = function(username) {
         return User.find({
             where: {username: username}
@@ -919,5 +917,28 @@ module.exports = function (options) {
 
     soundcloud_get_track = function(cid, callback) {
         soundcloud_request('https://api.soundcloud.com/tracks/'+cid+'.json', callback);
+    }
+
+    real_waitlist = function() {
+        /*
+        var users = bot.getUsers();
+        var waitlist = [];
+        for (var user in users) {
+            var wl_pos = bot.getWaitListPosition(users[user].id);
+            if (wl_pos > 0) {
+                logger.info(wl_pos + ' - ' + users[user].username);
+                waitlist[wl_pos] = users[user];
+            }
+        }
+
+        //logger.info(waitlist);
+
+        return waitlist;
+        */
+        return bot.getWaitList();
+    }
+
+    real_waitlist_length = function() {
+        return real_waitlist().length;
     }
 };

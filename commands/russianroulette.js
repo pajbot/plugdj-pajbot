@@ -38,7 +38,7 @@ exports.handler = function (data) {
                     logger.info(bot.russian_roulette_users);
                     var winner_index = Crypto_rand.randInt(0, bot.russian_roulette_users.length-1);
                     var winner = bot.russian_roulette_users[winner_index];
-                    var position = Crypto_rand.randInt(1, bot.getWaitList().length);
+                    var position = Crypto_rand.randInt(1, real_waitlist_length());
                     var type = Crypto_rand.randInt(1, 6);
                     if (type === 6) {
                         position = -1;
