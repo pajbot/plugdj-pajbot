@@ -28,6 +28,7 @@ User
 |.random | (FROM, TO) | If no argument is given, flips a coin and returns the results. If one argument is given, returns a value between 1 and the given number. If two arguments are given, returns a number between the two given numbers. (Inclusive) |
 |.rules | | Link to the latest rules. |
 |.reward | (@username) | Gives a random reward to `@username`. |
+|.songinfo | (X) | Prints information about the current song (or the song that was played **X** songs ago), like whether it's been played before or not. |
 |.swaprequest | @username | Request to [swap](https://github.com/pajlada/pajbot/blob/master/docs/swaprequest.md) with `@username`. |
 
 Resident DJ
@@ -39,6 +40,7 @@ Resident DJ
 |.gtfm | query | Links to lmgtfy.com with the query string attached. |
 |.lastplay | @username | Prints the last song played by `@username`. |
 |.lastseen | @username | Prints the last time `@username` was in the room. |
+|.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
 |.whois | @username | Prints some information about `@username`. |
 
 Bouncer
@@ -49,8 +51,6 @@ Bouncer
 |.english | @username | Tells `@username` to speak english. |
 |.lockskip | | Skips the current DJ and moves the DJ to the current lock skip position. |
 |.movequeue | | Prints a list of the current movement queue. |
-|.pos | (@username) | Prints the current position of the given username (or yourself if no username is specified). |
-|.songinfo | (X) | Prints information about the current song (or the song that was played **X** songs ago), like whether it's been played before or not. |
 |.status | | Prints out a bunch of mod-related status information. |
 |.waveform | | Prints the waveform of the current song. (Soundcloud only) |
 
