@@ -17,6 +17,7 @@ User
 |.dc | (@username) | Puts you back in queue if you disconnected a short time ago. Only bouncers+ can use .dc for others. |
 |.duel | @username | Initiate a [duel](https://github.com/pajlada/pajbot/blob/master/docs/dueling.md) with `@username`. |
 |.eta | (@username) | Prints your approximate time left before you can play your song. Only bouncers+ can use .eta for others. |
+|.history | X | Prints information about the song that was played X songs ago. |
 |.join | | Joins the current [roulette](https://github.com/pajlada/pajbot/blob/master/docs/roulette.md) if one is active. |
 |.leave | | Leaves the current roulette, if you joined. |
 |.link | | Prints a link to the current song. |
@@ -36,7 +37,6 @@ Resident DJ
 |:------:|:---------:|:--------------------------------------:|
 |.catfact |  | Prints a random fact about cats! |
 |.gtfm | query | Links to lmgtfy.com with the query string attached. |
-|.history | X | Prints information about the song that was played X songs ago. |
 |.lastplay | @username | Prints the last song played by `@username`. |
 |.lastseen | @username | Prints the last time `@username` was in the room. |
 |.whois | @username | Prints some information about `@username`. |
