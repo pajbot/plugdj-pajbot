@@ -1,4 +1,4 @@
-exports.names = ['kill', 'restart'];
+exports.names = ['kill', 'restart', 'quit'];
 exports.hidden = false;
 exports.enabled = true;
 exports.matchStart = true;
