@@ -7,5 +7,5 @@ exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.min_role = PERMISSIONS.NONE;
 exports.handler = function (data) {
-    chatMessage('/me Commands: http://git.io/vTObv');
+    chatMessage('/me Commands: http://git.io/vOp5L');
 };
