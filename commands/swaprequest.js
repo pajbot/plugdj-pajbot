@@ -62,7 +62,7 @@ exports.handler = function (data) {
 
                     if (current_position === -1 && partner_position === -1) {
                         logger.info('At least one of you must be in the waitlist to swap!.');
-                        modMessage(data, 'You and ' + user.username + ' must be in the waitlist to swap.');
+                        modMessage(data, 'You or ' + user.username + ' must be in the waitlist to swap.');
                         /* Someone needs to have a spot in list to swap. */
                         return {cd: 2, cd_user: 10};
                     } else { 
