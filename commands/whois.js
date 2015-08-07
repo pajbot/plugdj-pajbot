@@ -33,8 +33,16 @@ exports.handler = function (data) {
                 }
             }
             var profile = '';
-            if (dbUser.slug && dbUser.slug.length > 0) {
+            if (dbUser.slug && dbUser.slug.length > 0 && dbUser.slug !== 'null') {
                 profile = ', Profile: https://plug.dj/@/' + dbUser.slug;
+            } else {
+                var user = bot.getUser(dbUser.id);
+                console.log(user);
+                if (user) {
+                    if (user.slug && user.slug.length > 0 && user.slug !== 'null') {
+                        profile = ', Profile: https://plug.dj/@/' + user.slug;
+                    }
+                }
             }
             modMessage(data, 'Username: ' + dbUser.username + ', Joined: ' + dbUser.joined + ', Rank: ' + rank + ', Level: ' + dbUser.level + profile + '.');
         }
