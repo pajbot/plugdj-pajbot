@@ -6,5 +6,5 @@ exports.cd_all = 10;
 exports.cd_user = 20;
 exports.cd_manager = 5;
 exports.handler = function (data) {
-    assist(data.message, 'All RCS emotes can be found here: https://rcs.radiant.dj/emotes');
+    assist(data.message, 'All RCS emotes are found here: https://rcs.radiant.dj/emotes');
 };
