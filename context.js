@@ -379,7 +379,7 @@ module.exports = function (options) {
         var user = bot.getUser(md.user_id);
 
         if (!user) {
-            chatMessage('/me Removing ' + md.user_id + ' from movement queue, because he\'s not here.');
+            chatMessage('/me Removing ' + md.username + ' from movement queue, because he\'s not here.');
             move_queue_remove(md);
             return;
         }
