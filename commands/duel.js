@@ -135,6 +135,8 @@ exports.handler = function (data) {
 
                     var room_length = real_waitlist_length();
                     var min_position = room_length - 5;
+
+                    duel_request = false;
                     if (winner_pos === -1 || loser_pos === -1) {
                         chatMessage('/me :dansgame: 1');
                         return;
@@ -184,8 +186,6 @@ exports.handler = function (data) {
                             move_user(loser.id, -1);
                         }
                     }
-
-                    duel_request = false;
                 }, 2500);
             } else {
                 logger.info('There is no duel request active for you.');
