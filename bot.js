@@ -182,6 +182,11 @@ function runBot(error, auth) {
 
                             if (data.username !== bot.getUser().username) {
                                 User.find(data.id).on('success', function (dbUser) {
+                                    var forsen_ids = [3692275, 5007428];
+
+                                    if (forsen_ids.indexOf(data.id) !== -1) {
+                                        chatMessage('@djs @staff FORSEN JUST JOINED THE ROOM, CHECK YOUR PLAYLISTS AND READ THE RULES');
+                                    }
 
                                     if (data.username == config.superAdmin && config.responses.welcome.superAdmin != null) {
                                         message = config.responses.welcome.superAdmin.replace('{username}', data.username);
