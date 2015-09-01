@@ -276,28 +276,6 @@ function runBot(error, auth) {
                             waitlist_length = real_waitlist_length();
                             saveWaitList(true);
 
-                            // Writes current room state to outfile so it can be used for the web
-                            if (config.roomStateFile) {
-                                var JSONstats = {}
-
-                                JSONstats.media = bot.getMedia();
-                                JSONstats.dj = bot.getDJ();
-                                JSONstats.waitlist = real_waitlist();
-                                JSONstats.users = bot.getUsers();
-                                JSONstats.staff = bot.getStaff();
-
-                                fs.writeFile(
-                                        config.roomStateFile,
-                                        JSON.stringify(JSONstats, null, 2),
-                                        function (err) {
-                                            if (err) {
-                                                logger.error(err);
-                                                return console.log(err);
-                                            }
-                                        }
-                                        );
-                            }
-
                             Promise.map(bot.getWaitList(), function (dj) {
                                 var position = bot.getWaitListPosition(dj.id);
                                 logger.info('[WLIST]', position + ' - ' + dj.username);
@@ -317,61 +295,6 @@ function runBot(error, auth) {
                             }
 
                             if (data.media != null) {
-
-                                if (data.media.format == 2) {
-                                    logger.info(data.media.cid);
-                                    soundcloud_get_track(data.media.cid, function (json_data) {
-                                        if (settings['skipunavailable']) {
-                                            logger.info(json_data);
-                                            if (!json_data.streamable) {
-                                                logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
-                                                if (data.currentDJ != null) {
-                                                    chatMessage('/me @' + data.currentDJ.username + ' your song is not available or embeddable, you have been skipped.');
-                                                    bot.moderateForceSkip();
-                                                    //lockskip(data.currentDJ);
-                                                } else {
-                                                    chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
-                                                    bot.moderateForceSkip();
-                                                }
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    Youtube.videos.list({
-                                        "part": "id,status",
-                                        "id": data.media.cid,
-                                    }, function (err, api_data) {
-                                        if (api_data) {
-                                            logger.info(api_data);
-                                            if (api_data.items.length === 0) {
-                                                /* The video is not available. */
-                                                if (settings['skipunavailable']) {
-                                                    logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
-                                                    if (data.currentDJ != null) {
-                                                        chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
-                                                        bot.moderateForceSkip();
-                                                    } else {
-                                                        chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
-                                                        bot.moderateForceSkip();
-                                                    }
-                                                }
-                                            } else {
-                                                var item = _.first(api_data.items);
-                                                if (item.status) {
-                                                    if (item.status.embeddable === false) {
-                                                        if (data.currentDJ != null) {
-                                                            chatMessage('/me @' + data.currentDJ.username + ' your song is not embeddable, you have been skipped.');
-                                                            bot.moderateForceSkip();
-                                                        } else {
-                                                            chatMessage('/me Skipping unembeddable song, but no dj. :dansgame:');
-                                                            bot.moderateForceSkip();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
 
                                 if (data.currentDJ != null) {
                                     logger.success('********************************************************************');
@@ -407,7 +330,75 @@ function runBot(error, auth) {
                                     image: data.media.image
                                 };
                                 Song.findOrCreate({where: {id: data.media.id, cid: data.media.cid}, defaults: songData}).spread(function (song) {
-                                    song.updateAttributes(songData);
+                                    if (song.permalink !== null && song.permalink !== undefined) {
+                                        song.updateAttributes(songData);
+                                        write_room_state(song.permalink);
+                                    } else {
+                                        if (data.media.format == 1) {
+                                            songData.permalink = 'https://youtu.be/' + data.media.cid;
+                                            song.updateAttributes(songData);
+                                            write_room_state(songData.permalink);
+                                        }
+                                    }
+                                    if (data.media.format == 2) {
+                                        logger.info(data.media.cid);
+                                        soundcloud_get_track(data.media.cid, function (json_data) {
+                                            if (song.permalink === null || song.permalink === undefined) {
+                                                songData.permalink = json_data.permalink_url;
+                                                song.updateAttributes(songData);
+                                                write_room_state(songData.permalink);
+                                            }
+                                            if (settings['skipunavailable']) {
+                                                logger.info(json_data);
+                                                if (!json_data.streamable) {
+                                                    logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
+                                                    if (data.currentDJ != null) {
+                                                        chatMessage('/me @' + data.currentDJ.username + ' your song is not available or embeddable, you have been skipped.');
+                                                        bot.moderateForceSkip();
+                                                        //lockskip(data.currentDJ);
+                                                    } else {
+                                                        chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                                        bot.moderateForceSkip();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        Youtube.videos.list({
+                                            "part": "id,status",
+                                            "id": data.media.cid,
+                                        }, function (err, api_data) {
+                                            if (api_data) {
+                                                logger.info(api_data);
+                                                if (api_data.items.length === 0) {
+                                                    /* The video is not available. */
+                                                    if (settings['skipunavailable']) {
+                                                        logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                                                        if (data.currentDJ != null) {
+                                                            chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
+                                                            bot.moderateForceSkip();
+                                                        } else {
+                                                            chatMessage('/me Skipping unavailable song, but no dj. :dansgame:');
+                                                            bot.moderateForceSkip();
+                                                        }
+                                                    }
+                                                } else {
+                                                    var item = _.first(api_data.items);
+                                                    if (item.status) {
+                                                        if (item.status.embeddable === false) {
+                                                            if (data.currentDJ != null) {
+                                                                chatMessage('/me @' + data.currentDJ.username + ' your song is not embeddable, you have been skipped.');
+                                                                bot.moderateForceSkip();
+                                                            } else {
+                                                                chatMessage('/me Skipping unembeddable song, but no dj. :dansgame:');
+                                                                bot.moderateForceSkip();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
                                 });
 
                                 if (config.wootSongs == 'ALL') {
@@ -970,6 +961,34 @@ function runBot(error, auth) {
             if (room_locked) {
                 bot.moderateLockBooth(false, false);
             }
+        }
+    }
+
+    // Writes current room state to outfile so it can be used for the web
+    function write_room_state(permalink)
+    {
+        if (config.roomStateFile) {
+            var JSONstats = {}
+
+            JSONstats.media = bot.getMedia();
+            JSONstats.permalink = permalink;
+            JSONstats.dj = bot.getDJ();
+            //JSONstats.waitlist = real_waitlist();
+            //JSONstats.users = bot.getUsers();
+            //JSONstats.staff = bot.getStaff();
+            console.info('[TEST]', 'Writing json stats with permalink ' + JSONstats.permalink);
+
+            fs.writeFile(
+                    config.roomStateFile,
+                    JSON.stringify(JSONstats, null, 2),
+                    function (err) {
+                        if (err) {
+                            logger.error(err);
+                            return console.log(err);
+                        }
+                    }
+                    );
+
         }
     }
 }
