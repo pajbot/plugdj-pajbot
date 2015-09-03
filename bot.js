@@ -161,12 +161,14 @@ function runBot(error, auth) {
 
                                 logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
 
+                                User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
+
                                 if (settings['lockdown'] && data.from.role === 0) {
                                     bot.moderateDeleteChat(data.id);
+                                    return;
                                 }
 
                                 handleCommand(data);
-                                User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
                             }
 
                             message_history.push(data.id);
