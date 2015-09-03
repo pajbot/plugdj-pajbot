@@ -80,12 +80,13 @@ module.exports = function (options) {
         'motd': 'u wot m8?',
         'motd_interval': 10,
         'dctimer': 20 * 60,
-        'maxlength': 330,
+        'maxlength': 300,
         'lockdown': false,
         'cleverbot': false,
         'lockskippos': 3,
         'bouncerplus': false,
-        'skipunavailable': true
+        'skipunavailable': true,
+		'maxlength_buffer': 10
     };
     setting_names = {
         'autoskip': 'Autoskip',
