@@ -511,7 +511,8 @@ function runBot(error, auth) {
                                 */
 
                                 // Only police this if there aren't any mods around
-                                if (settings['timeguard'] && data.media.duration > settings['maxlength' + 'maxlength_buffer']) {
+                                var combined_max_length = settings['maxlength'] + settings['maxlength_buffer'];
+                                if (settings['timeguard'] && data.media.duration > combined_max_length) {
                                     logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
                                     chatMessage('Sorry @' + data.currentDJ.username + ', this song is over our room\'s maximum song length (' + sec_to_str(settings['maxlength']) + ').');
                                     bot.moderateForceSkip();
