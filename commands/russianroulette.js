@@ -48,7 +48,7 @@ exports.handler = function (data) {
                     var user = _.findWhere(users, {username: winner});
                     if (user !== undefined) {
                         var current_position = bot.getWaitListPosition(user.id);
-					    if (position === -1) {
+                        if (position === -1) {
                             chatMessage(':mrdestructoid::bulletgun::tfw::gocsplat: BANG! @' + winner + ' got shot at position ' + current_position + ' !');
                         } else {
                             chatMessage('You survived the russian roulette @' + winner + ' :pogchamp:! You get moved to position ' + position + '.');
@@ -57,7 +57,7 @@ exports.handler = function (data) {
                         if (current_position == position) {
                             chatMessage('No value here, comrades! From ' + current_position + ' to ' + position + ' :mlgrussia:');
                         }
-						
+
                         move_user(user.id, position);
                     } else {
                         chatMessage('/me user who won roulette isn\'t even here :4head:');
