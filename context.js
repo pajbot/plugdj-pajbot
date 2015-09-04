@@ -86,7 +86,7 @@ module.exports = function (options) {
         'lockskippos': 3,
         'bouncerplus': false,
         'skipunavailable': true,
-        'maxlength_buffer': 10
+        'maxlength_buffer': 10,
     };
     setting_names = {
         'autoskip': 'Autoskip',
@@ -99,7 +99,7 @@ module.exports = function (options) {
         'cleverbot': 'Cleverbot',
         'lockskippos': 'Lock skip position',
         'bouncerplus': 'Bouncer+',
-        'skipunavailable': 'Skip unavailable songs'
+        'skipunavailable': 'Skip unavailable songs',
         'maxlength_buffer': 'Max length buffer',
     };
     message_history = FixedArray(900);
