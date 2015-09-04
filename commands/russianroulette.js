@@ -44,16 +44,15 @@ exports.handler = function (data) {
                         position = -1;
                     }
 
-                    if (position === -1) {
-                        chatMessage('BAM! You\'re dead @' + winner + '! :elegiggle:');
-                    } else {
-                        chatMessage('You survived the russian roulette @' + winner + ' :pogchamp:! You get moved to position ' + position + '.');
-                    }
-
                     var users = bot.getUsers();
                     var user = _.findWhere(users, {username: winner});
                     if (user !== undefined) {
                         var current_position = bot.getWaitListPosition(user.id);
+					    if (position === -1) {
+                            chatMessage(':mrdestructoid::bulletgun::tfw::gocsplat: BANG! @' + winner + ' got shot at position ' + current_position + ' !');
+                        } else {
+                            chatMessage('You survived the russian roulette @' + winner + ' :pogchamp:! You get moved to position ' + position + '.');
+                        }
                         logger.info('[RUSSIANROULETTE]', data.from.username + ' roulette ended with ' + bot.russian_roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
                         if (current_position == position) {
                             chatMessage('No value here, comrades! From ' + current_position + ' to ' + position + ' :mlgrussia:');
