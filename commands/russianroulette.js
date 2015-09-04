@@ -49,7 +49,7 @@ exports.handler = function (data) {
                     if (user !== undefined) {
                         var current_position = bot.getWaitListPosition(user.id);
                         if (position === -1) {
-                            chatMessage(':mrdestructoid::bulletgun::tfw::gocsplat: BANG! @' + winner + ' got shot at position ' + current_position + ' !');
+                            chatMessage(':mrdestructoid::bulletgun::tfw::quinsplat: BANG! @' + winner + ' got shot at position ' + current_position + '!');
                         } else {
                             chatMessage('You survived the russian roulette @' + winner + ' :pogchamp:! You get moved to position ' + position + '.');
                         }
