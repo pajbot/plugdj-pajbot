@@ -940,6 +940,9 @@ function runBot(error, auth) {
             if (motd_i >= settings['motd_interval'] && settings['motd_interval'] != 0) {
                 logger.info('[MOTD]', 'run motd');
                 motd_i = 0;
+                if (settings['maxlength'] != 300) {
+                    chatMessage('/me ' + settings['motd'] + '(Current max song length is ' + sec_to_str(settings['maxlength']) + ')');
+                } else
                 chatMessage('/me ' + settings['motd']);
             } else {
                 logger.info('[MOTD]', 'motd is supposed to be run every ' + settings['motd_interval'] + ' song.');
