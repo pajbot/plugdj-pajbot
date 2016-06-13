@@ -12,6 +12,17 @@ exports.handler = function (data) {
     var params = _.rest(input);
     if (params.length < 1) {
         modMessage(data, 'Current max song length: ' + sec_to_str(settings['maxlength']) + '.');
+	}
+    else if (params[0].indexOf(':') != -1){
+        var time_with_colon = params[0].split(':');
+        var new_minutes = time_with_colon[0];
+        var new_seconds = time_with_colon[1];
+		
+        if (!isNaN(new_minutes) && !isNaN(new_seconds)) {
+			var new_length = Math.floor(new_minutes * 60) + Math.floor(new_seconds);
+            set_setting('maxlength', new_length, data);
+            modMessage(data, 'Max song length set to ' + sec_to_str(settings['maxlength']) + '.');
+        }
     } else {
         var new_length = parseFloat(params);
         if (!isNaN(new_length)) {
