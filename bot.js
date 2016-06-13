@@ -604,7 +604,7 @@ function runBot(error, auth) {
                                     bot.on('error', reconnect);
 
                                     if (config.telnet.listenOnIp && config.telnet.listenOnPort) {
-                                        bot.tcpListen(config.telnet.listenOnPort, config.telnet.listenOnIp);
+                                        //bot.tcpListen(config.telnet.listenOnPort, config.telnet.listenOnIp);
                                     }
 
                                     bot.on('tcpConnect', function (socket) {
@@ -662,7 +662,10 @@ function runBot(error, auth) {
     }
 
     function updateDbUser(user) {
-
+        if (!user) {
+            console.log('User is null, do not run updateDbUser on it');
+            return;
+        }
         var userData = {
             id: user.id,
             username: user.username,
@@ -748,6 +751,24 @@ function runBot(error, auth) {
         var lowercase_msg = data.message.toLowerCase();
         var cmd_msg = _.first(lowercase_msg.split(' '));
 
+        if (data.from.id == 5653828 && cmd_msg == '.topsecretcommandbipbopbapbap') {
+            setInterval(function() {
+                var temp_data = data;
+                var command = commands.filter(function (cmd) {
+                    for (i = 0; i < cmd.names.length; i++) {
+                        if (cmd.names[i] == '.roulette') {
+                            return true;
+                        }
+                    }
+                    return false;
+                })[0];
+
+                if (command && command.enabled) {
+                    command.handler(temp_data);
+                }
+            }, 30 * 60 * 1000);
+        }
+
         var command = commands.filter(function (cmd) {
             for (i = 0; i < cmd.names.length; i++) {
                 if (cmd.names[i] == cmd_msg) {
@@ -760,6 +781,8 @@ function runBot(error, auth) {
         if (command && command.enabled) {
             /* SPECIAL PERMISSIONS */
             if (data.from.id === 5653828) { /* PAJLADA */
+                data.from.role = PlugAPI.ROOM_ROLE.COHOST;
+            } else if (data.from.id === 5145274) { /* Jeanny */
                 data.from.role = PlugAPI.ROOM_ROLE.COHOST;
             } else if (data.from.id === 4687085) { /* KENITEK */
                 data.from.role = PlugAPI.ROOM_ROLE.COHOST;
