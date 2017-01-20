@@ -25,7 +25,7 @@ exports.handler = function (data) {
 				modMessage(data, 'Max song length set to ' + sec_to_str(settings['maxlength']) + '.');
 			}
 			else {
-				modMessage(data, 'You can't set the max song length below 5 minutes. :omgscoots:');
+				modMessage(data, 'You can\'t set the max song length below 5 minutes. :omgscoots:');
 			}
 	} else {
 		var new_length = parseFloat(params);
