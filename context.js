@@ -51,15 +51,8 @@ module.exports = function (options) {
     // This is useful so commands that don't import PlugAPI can easily check room role values
     ROOM_ROLE = PlugAPI.ROOM_ROLE;
 
-    PERMISSIONS = {
-        NONE: 0,
-        RDJ: 1000,
-        BOUNCER: 2000,
-        BOUNCER_PLUS: 2500,
-        MANAGER: 3000,
-        COHOST: 4000,
-        HOST: 5000
-    }
+    PERMISSIONS = PlugAPI.ROOM_ROLE;
+    PERMISSIONS.BOUNCER_PLUS = Math.ceil((PlugAPI.ROOM_ROLE.BOUNCER + PlugAPI.ROOM_ROLE.MANAGER) / 2.0);
 
     responses = []
     settings = {
