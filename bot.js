@@ -95,6 +95,7 @@ function runBot(error, auth) {
                 console.info(bot);
 
                 console.info('Connecting to ' + config.roomName);
+                bot.deleteAllChat = true;
                 bot.connect(config.roomName);
 
                 bot.on('roomJoin', function (data) {
