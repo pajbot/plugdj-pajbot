@@ -48,14 +48,8 @@ module.exports = function (options) {
         this[model] = sequelize.import(__dirname + '/models/' + model);
     });
 
-    ROOM_ROLE = {
-        NONE: 0,
-        RESIDENTDJ: 1000,
-        BOUNCER: 2000,
-        MANAGER: 3000,
-        COHOST: 4000,
-        HOST: 5000
-    };
+    // This is useful so commands that don't import PlugAPI can easily check room role values
+    ROOM_ROLE = PlugAPI.ROOM_ROLE;
 
     PERMISSIONS = {
         NONE: 0,
