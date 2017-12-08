@@ -793,6 +793,8 @@ function runBot(error, auth) {
                     data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
                 } else if (data.from.id === 4466061) { /* -Vaxom */
                     data.from.role = PlugAPI.ROOM_ROLE.MANAGER;
+                } else if (data.from.id === 4125221) { /* Evolution57 */
+                    data.from.role = PlugAPI.ROOM_ROLE.COHOST;
                 }
             } else if (data.from.id === 4205958) { /* jedi-hamster :elegiggle: */
                 data.from.role = PlugAPI.ROOM_ROLE.NONE;
