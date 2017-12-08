@@ -5,10 +5,10 @@ exports.matchStart = true;
 exports.handler = function (data) {
     function checkEchoNest(valueToCorrect) {
         request('http://developer.echonest.com/api/v4/song/search?api_key=' + config.apiKeys.echoNest + '&format=json&results=1&combined=' + S(valueToCorrect).escapeHTML().stripPunctuation().s, function (error, response, body) {
-            logger.info('echonest body', body);
+            console.info('echonest body', body);
             if (error) {
                 bot.sendChat('An error occurred while connecting to EchoNest.');
-                logger.error('EchoNest error', error);
+                console.error('EchoNest error', error);
             } else {
                 response = JSON.parse(body).response;
 
@@ -51,7 +51,7 @@ exports.handler = function (data) {
         //    function (error) {
         //        if (error) {
         //            bot.sendChat('An error occurred.');
-        //            logger.error('Error while updating song ' + bot.getMedia().id, error);
+        //            console.error('Error while updating song ' + bot.getMedia().id, error);
         //        } else {
         //            bot.sendChat('Author updated.')
         //        }
@@ -64,7 +64,7 @@ exports.handler = function (data) {
         //    function (error) {
         //        if (error) {
         //            bot.sendChat('An error occurred.');
-        //            logger.error('Error while updating song ' + bot.getMedia().id, error);
+        //            console.error('Error while updating song ' + bot.getMedia().id, error);
         //        } else {
         //            bot.sendChat('Title updated.')
         //        }
@@ -76,12 +76,12 @@ exports.handler = function (data) {
         // first, search db
         //db.get('SELECT author, title FROM SONGS WHERE id = ?', [bot.getMedia().id],
         //    function (error, row) {
-        //        logger.info('db response: ', row);
+        //        console.info('db response: ', row);
         //        if (row != null) {
         //            bot.sendChat('Database values: Artist: "' + row['author'] + '". Title: "' + row['title'] + '". Use .fixsong check if this looks wrong.');
         //        } else {
         //            // check echonest
-        //            logger.info('checking echonest');
+        //            console.info('checking echonest');
         //            checkEchoNest(bot.getMedia().author + ' ' + bot.getMedia().title);
         //        }
         //    });

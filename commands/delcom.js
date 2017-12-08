@@ -39,6 +39,6 @@ exports.handler = function (data) {
             modMessage(data, 'The command .'+aliases.split('|')[0] + ' doesn\'t exist!');
         }
     }).catch(function (err) {
-        logger.error('Error occurred', err);
+        console.error('Error occurred', err);
     });
 };

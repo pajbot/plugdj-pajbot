@@ -24,14 +24,14 @@ exports.handler = function (data) {
 
     if (swap_cd >= time_diff) {
         /* A swap was run recently */
-        logger.info('A swap was recently made, chill out!');
-        logger.info(swap_cd);
-        logger.info(time_diff);
-        logger.info(last_swap);
+        console.info('A swap was recently made, chill out!');
+        console.info(swap_cd);
+        console.info(time_diff);
+        console.info(last_swap);
         return false;
     }
 
-    logger.info(command);
+    console.info(command);
 
     switch (command) {
         case 'swaprequest':
@@ -43,7 +43,7 @@ exports.handler = function (data) {
                     if (data.from.id in swap_last_perform_users) {
                         var user_diff = cur_time - swap_last_perform_users[data.from.id];
                         if (swap_perform_user_cd >= user_diff) {
-                            logger.info(data.from.username + ' has already performed a swap in the last ' + swap_perform_user_cd + ' seconds, aborting.');
+                            console.info(data.from.username + ' has already performed a swap in the last ' + swap_perform_user_cd + ' seconds, aborting.');
                             modMessage(data, 'You have already performed a swap in the last ' + sec_to_str(swap_perform_user_cd) + '.');
                             return {cd: 1, cd_user: 60};
                         }
@@ -52,7 +52,7 @@ exports.handler = function (data) {
                     if (data.from.id in swap_last_request_users) {
                         var user_diff = cur_time - swap_last_request_users[data.from.id];
                         if (swap_request_user_cd >= user_diff) {
-                            logger.info(data.from.username + ' has already requested a swap in the last ' + swap_request_user_cd + ' seconds, aborting.');
+                            console.info(data.from.username + ' has already requested a swap in the last ' + swap_request_user_cd + ' seconds, aborting.');
                             return {cd: 1, cd_user: 10};
                         }
                     }
@@ -61,7 +61,7 @@ exports.handler = function (data) {
                     var partner_position = bot.getWaitListPosition(user.id);
 
                     if (current_position === -1 && partner_position === -1) {
-                        logger.info('At least one of you must be in the waitlist to swap!.');
+                        console.info('At least one of you must be in the waitlist to swap!.');
                         modMessage(data, 'You or ' + user.username + ' must be in the waitlist to swap.');
                         /* Someone needs to have a spot in list to swap. */
                         return {cd: 2, cd_user: 10};
@@ -74,13 +74,13 @@ exports.handler = function (data) {
                     }
 
                     if (user.id === data.from.id) {
-                        logger.info('You can\'t swap with yourself...');
+                        console.info('You can\'t swap with yourself...');
                         /* wtf are you doing swapping yourself man */
                         return false;
                     }
 
                     if (swap_request) {
-                        logger.info('There\'s already a swap request active.');
+                        console.info('There\'s already a swap request active.');
                         return false;
                     }
 
@@ -109,7 +109,7 @@ exports.handler = function (data) {
                 clearTimeout(swap_request.timeout);
                 swap_request = false;
             } else {
-                logger.info('There is no swap request for you active.');
+                console.info('There is no swap request for you active.');
             }
             break;
 
@@ -129,7 +129,7 @@ exports.handler = function (data) {
                     swap_request = false;
                 }, 1000);
             } else {
-                logger.info('There is no swap request active for you.');
+                console.info('There is no swap request active for you.');
             }
             break;
     }

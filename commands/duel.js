@@ -22,14 +22,14 @@ exports.handler = function (data) {
 
     if (duel_cd >= time_diff) {
         /* A duel was run recently */
-        logger.info('A duel was run recently bro, sry!');
-        logger.info(duel_cd);
-        logger.info(time_diff);
-        logger.info(last_duel);
+        console.info('A duel was run recently bro, sry!');
+        console.info(duel_cd);
+        console.info(time_diff);
+        console.info(last_duel);
         return false;
     }
 
-    logger.info(command);
+    console.info(command);
 
     switch (command) {
         case 'duel':
@@ -42,7 +42,7 @@ exports.handler = function (data) {
                     }
 
                     if (duel_request_user_cd >= time_diff_user) {
-                        logger.info(data.from.username + ' has already requested a duel in the last ' + duel_request_user_cd + ' seconds, aborting.');
+                        console.info(data.from.username + ' has already requested a duel in the last ' + duel_request_user_cd + ' seconds, aborting.');
                         return {cd: 1, cd_user: 10};
                     }
 
@@ -51,7 +51,7 @@ exports.handler = function (data) {
                     var room_length = real_waitlist_length();
                     var min_position = room_length - 5;
                     if (current_position === -1 || duelee_position === -1) {
-                        logger.info('You must be in the waitlist to duel someone!.');
+                        console.info('You must be in the waitlist to duel someone!.');
                         modMessage(data, 'You and ' + user.username + ' must be in the waitlist to duel.');
                         /* You must be in the waitlist to duel someone. */
                         return {cd: 2, cd_user: 10};
@@ -61,20 +61,20 @@ exports.handler = function (data) {
                         return {cd: 2, cd_user: 10};
                     } else {
                         if (current_position > min_position || duelee_position > min_position) {
-                            logger.info('Both participants must be above position ' + min_position + ' to duel eachother.');
+                            console.info('Both participants must be above position ' + min_position + ' to duel eachother.');
                             modMessage(data, 'Both participants must be above position ' + min_position + ' to duel eachother.');
                             return {cd: 2, cd_user: 10};
                         }
                     }
 
                     if (user.id === data.from.id) {
-                        logger.info('You can\'t duel yourself...');
+                        console.info('You can\'t duel yourself...');
                         /* wtf are you doing dueling yourself man */
                         return false;
                     }
 
                     if (duel_request) {
-                        logger.info('There\'s already a duel request active.');
+                        console.info('There\'s already a duel request active.');
                         return false;
                     }
 
@@ -102,7 +102,7 @@ exports.handler = function (data) {
                 clearTimeout(duel_request.timeout);
                 duel_request = false;
             } else {
-                logger.info('There is no duel request for you active.');
+                console.info('There is no duel request for you active.');
             }
             break;
 
@@ -150,10 +150,10 @@ exports.handler = function (data) {
                         }
                     }
 
-                    logger.info('winner pos: ' + winner_pos);
-                    logger.info('loser pos: ' + loser_pos);
-                    logger.info('[DUEL]', winner.username + ' won duel.');
-                    logger.info('[DUEL]', loser.username + ' lost duel.');
+                    console.info('winner pos: ' + winner_pos);
+                    console.info('loser pos: ' + loser_pos);
+                    console.info('[DUEL]', winner.username + ' won duel.');
+                    console.info('[DUEL]', loser.username + ' lost duel.');
 
                     /* If the winner is further in the waitlist than the loser, or if the loser is not in the waitlist, or if the loser is currently playing */
                     if (winner_pos > 0 && (winner_pos-5 < loser_pos || loser_pos === -1 || loser_pos === 0)) {
@@ -161,7 +161,7 @@ exports.handler = function (data) {
 
                         /* HANDLE WINNER */
                         var new_pos = _.max([winner_pos-5, 1]);
-                        logger.info('new_pos: ' + new_pos);
+                        console.info('new_pos: ' + new_pos);
                         move_user(winner.id, new_pos);
 
                         /* HANDLE LOSER */
@@ -176,7 +176,7 @@ exports.handler = function (data) {
 
                         /* HANDLE WINNER */
                         var new_pos = _.max([loser_pos, 1]);
-                        logger.info('new_pos: ' + new_pos);
+                        console.info('new_pos: ' + new_pos);
                         move_user(winner.id, new_pos);
 
                         /* HANDLE LOSER */
@@ -188,7 +188,7 @@ exports.handler = function (data) {
                     }
                 }, 2500);
             } else {
-                logger.info('There is no duel request active for you.');
+                console.info('There is no duel request active for you.');
             }
             break;
     }

@@ -50,13 +50,13 @@ exports.handler = function (data) {
                         }
                         if (currentPosition > 1 && currentPosition > position) {
                             bot.moderateMoveDJ(user.id, position);
-                            logger.info('[LOTTO] Moving ' + user.username + ' to position: ' + position);
+                            console.info('[LOTTO] Moving ' + user.username + ' to position: ' + position);
                         }
                     }
                 }
                 else {
                     bot.sendChat(":thumbsdown: No one is eligible to win the contest.");
-                    logger.info('[LOTTO] No one is eligible to win the contest.');
+                    console.info('[LOTTO] No one is eligible to win the contest.');
                 }
             });
         }, mins * 60 * 1000);

@@ -12,7 +12,7 @@ exports.handler = function (data) {
             user = _.findWhere(bot.getUsers(), {username: usernameFormatted});
             if (user && bot.getWaitListPosition(user.id) === -1) {
                 bot.moderateAddDJ(user.id, function () {
-                    logger.info('[ADD] ' + data.from.username + ' added ' + usernameFormatted + ' to waitlist.');
+                    console.info('[ADD] ' + data.from.username + ' added ' + usernameFormatted + ' to waitlist.');
                 });
             }
         }

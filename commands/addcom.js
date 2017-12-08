@@ -49,6 +49,6 @@ exports.handler = function (data) {
         }
         load_responses();
     }).catch(function (err) {
-        logger.error('Error occurred', err);
+        console.error('Error occurred', err);
     });
 };

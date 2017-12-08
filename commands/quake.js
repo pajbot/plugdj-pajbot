@@ -8,7 +8,7 @@ exports.cd_manager = 10;
 exports.handler = function (data) {
     request('http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson', function (error, response, body) {
         if (error) {
-            logger.error('Error with the quake api: ' + error);
+            console.error('Error with the quake api: ' + error);
             return;
         }
         var quakes = JSON.parse(body).features.slice(0, 3);

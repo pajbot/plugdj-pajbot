@@ -22,7 +22,7 @@ exports.handler = function (data) {
         } else {
             bot.moderateUnbanUser(row.id, function() {
                 chatMessage('/me [@'+data.from.username+'] Unbanned ' + row.username + '.');
-                logger.info('[UNBAN] ' + row.username + ' was unbanned by ' + data.from.username);
+                console.info('[UNBAN] ' + row.username + ' was unbanned by ' + data.from.username);
                 var userData = {
                     type: 'unban',
                     details: 'Unbanned by ' + data.from.username,

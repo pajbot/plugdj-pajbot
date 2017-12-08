@@ -63,7 +63,7 @@ exports.handler = function (data) {
 
         var r = bot.moderateBanUser(user.id, null, real_dur, function() {
             modMessage(data, 'Banned ' + usernameFormatted + ' ' + duration_string + '.');
-            logger.info('[BAN] ' + usernameFormatted + ' was banned by ' + data.from.username + ' ' + duration_string);
+            console.info('[BAN] ' + usernameFormatted + ' was banned by ' + data.from.username + ' ' + duration_string);
             var userData = {
                 type: 'ban',
                 details: 'Banned by ' + data.from.username + ' ' + duration_string,

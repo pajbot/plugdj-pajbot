@@ -35,7 +35,7 @@ exports.handler = function (data) {
             roulette_timer = setTimeout(function () {
                 bot.running_roulette = false;
                 if (bot.roulette_users.length > 0) {
-                    logger.info(bot.roulette_users);
+                    console.info(bot.roulette_users);
                     var winner_index = Crypto_rand.randInt(0, bot.roulette_users.length-1);
                     var winner = bot.roulette_users[winner_index];
                     var position = Crypto_rand.randInt(1, real_waitlist_length());
@@ -45,7 +45,7 @@ exports.handler = function (data) {
                     var user = _.findWhere(users, {username: winner});
                     if (user !== undefined) {
                         var current_position = bot.getWaitListPosition(user.id);
-                        logger.info('[ROULETTE]', data.from.username + ' roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
+                        console.info('[ROULETTE]', data.from.username + ' roulette ended with ' + bot.roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
                         if (current_position == position) {
                             chatMessage('nice value, from ' + current_position + ' to ' + position + ' :trumpw:');
                         }

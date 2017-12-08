@@ -25,7 +25,7 @@ exports.handler = function (data) {
     }
 
     var pos = bot.getWaitListPosition(user.id);
-    logger.info('[POS]', 'User position: ' + pos);
+    console.info('[POS]', 'User position: ' + pos);
     if (pos < 0) {
         if (user.id == data.from.id) {
             modMessage(data, 'You\'re not in the waitlist.');

@@ -13,14 +13,14 @@ exports.handler = function (data) {
         return;
     }
 
-    logger.info('"' + get_param_username(data.message) + '"');
+    console.info('"' + get_param_username(data.message) + '"');
 
     username = params.join(' ');
-    logger.info('"' + username + '"');
-    logger.info(params);
-    logger.info(S(username));
-    logger.info(S(username).chompLeft('@'));
-    logger.info(S(username).chompLeft('@').s);
+    console.info('"' + username + '"');
+    console.info(params);
+    console.info(S(username));
+    console.info(S(username).chompLeft('@'));
+    console.info(S(username).chompLeft('@').s);
     usernameFormatted = S(username).chompLeft('@').s;
 
     user = _.findWhere(bot.getUsers(), {username: usernameFormatted});

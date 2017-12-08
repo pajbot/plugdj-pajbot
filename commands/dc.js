@@ -25,17 +25,17 @@ exports.handler = function (data) {
     }
     User.find(user.id).on('success', function (dbUser) {
         var position = bot.getWaitListPosition(user.id);
-        logger.info('seconds since last seen: ' + secondsSince(dbUser.last_leave));
-        logger.info('user current position: ' + position);
-        logger.info('position in database: ' + dbUser.waitlist_position);
+        console.info('seconds since last seen: ' + secondsSince(dbUser.last_leave));
+        console.info('user current position: ' + position);
+        console.info('position in database: ' + dbUser.waitlist_position);
         if (dbUser.waitlist_position > -1) {
-            logger.info('move is a yes because db waitlist_position > -1');
+            console.info('move is a yes because db waitlist_position > -1');
         }
         if (secondsSince(dbUser.last_leave) <= settings['dctimer']) {
-            logger.info('move is a yes because secondssince <= dctimer');
+            console.info('move is a yes because secondssince <= dctimer');
         }
         if (position === -1 || (position > -1 && position > dbUser.waitlist_position)) {
-            logger.info('move is a yes current position is either -1 or the user is in queue and that position is further down than his dc position.');
+            console.info('move is a yes current position is either -1 or the user is in queue and that position is further down than his dc position.');
         }
 
         if (isNaN(secondsSince(dbUser.last_leave))) {

@@ -8,7 +8,7 @@ exports.cd_manager = 0;
 exports.min_role = PERMISSIONS.BOUNCER;
 exports.handler = function (data) {
     parse_command_params(data.message, CPARAM.USERNAME, CPARAM.INT).then(function(cdata) {
-        logger.info(cdata);
+        console.info(cdata);
         var mute_duration = 15;
         var valid_durations = [15, 30, 45];
         if (cdata.params[1] !== undefined && cdata.params[1] && valid_durations.indexOf(cdata.params[1]) !== -1) {

@@ -22,7 +22,7 @@ exports.handler = function (data) {
         } else {
             bot.moderateUnmuteUser(row.id, function() {
                 chatMessage('/me [@'+data.from.username+'] Unmuted ' + row.username + '.');
-                logger.info('[UNMUTE] ' + row.username + ' was unmuted by ' + data.from.username);
+                console.info('[UNMUTE] ' + row.username + ' was unmuted by ' + data.from.username);
                 var userData = {
                     type: 'unmute',
                     details: 'Unmuted by ' + data.from.username,

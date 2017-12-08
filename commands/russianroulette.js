@@ -35,7 +35,7 @@ exports.handler = function (data) {
             roulette_timer = setTimeout(function () {
                 bot.running_russian_roulette = false;
                 if (bot.russian_roulette_users.length > 0) {
-                    logger.info(bot.russian_roulette_users);
+                    console.info(bot.russian_roulette_users);
                     var winner_index = Crypto_rand.randInt(0, bot.russian_roulette_users.length-1);
                     var winner = bot.russian_roulette_users[winner_index];
                     var position = Crypto_rand.randInt(1, real_waitlist_length());
@@ -53,7 +53,7 @@ exports.handler = function (data) {
                         } else {
                             chatMessage('You survived the russian roulette @' + winner + ' :pogchamp:! You get moved to position ' + position + '.');
                         }
-                        logger.info('[RUSSIANROULETTE]', data.from.username + ' roulette ended with ' + bot.russian_roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
+                        console.info('[RUSSIANROULETTE]', data.from.username + ' roulette ended with ' + bot.russian_roulette_users.length + ' participants. @' + winner + ' from ' + current_position + ' to position ' + position + '.');
                         if (current_position == position) {
                             chatMessage('No value here, comrades! From ' + current_position + ' to ' + position + ' :mlgrussia:');
                         }

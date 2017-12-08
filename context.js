@@ -10,18 +10,12 @@ module.exports = function (options) {
     config = options.config;
 
     bot = undefined;
-    logger = PlugAPI.CreateLogger('Bot');
     fs = require('fs');
 
     var Cleverbot = require('cleverbot-node');
     cleverbot = new Cleverbot;
 
-    if (config.verboseLogging) {
-        logLevel = logger.info;
-    }
-    else {
-        logLevel = false;
-    }
+    logLevel = false;
 
     if (config.db.dialect === 'sqlite') {
         sequelize = new Sequelize(null, null, null, {
@@ -41,10 +35,10 @@ module.exports = function (options) {
 
     sequelize.authenticate().complete(function (err) {
         if (err) {
-            logger.error('Unable to connect to the database:', err);
+            console.error('Unable to connect to the database:', err);
         }
         else {
-            logger.success('Connected to ' + config.db.dialect + ' database');
+            console.info('Connected to ' + config.db.dialect + ' database');
         }
     });
 
@@ -56,21 +50,21 @@ module.exports = function (options) {
 
     ROOM_ROLE = {
         NONE: 0,
-        RESIDENTDJ: 1,
-        BOUNCER: 2,
-        MANAGER: 3,
-        COHOST: 4,
-        HOST: 5
+        RESIDENTDJ: 1000,
+        BOUNCER: 2000,
+        MANAGER: 3000,
+        COHOST: 4000,
+        HOST: 5000
     };
 
     PERMISSIONS = {
         NONE: 0,
-        RDJ: 1,
-        BOUNCER: 2,
-        BOUNCER_PLUS: 2.5,
-        MANAGER: 3,
-        COHOST: 4,
-        HOST: 5
+        RDJ: 1000,
+        BOUNCER: 2000,
+        BOUNCER_PLUS: 2500,
+        MANAGER: 3000,
+        COHOST: 4000,
+        HOST: 5000
     }
 
     responses = []
@@ -320,7 +314,7 @@ module.exports = function (options) {
         var current_position = bot.getWaitListPosition(md.user_id);
         var in_queue = false;
 
-        logger.info('[MQUEUE1]', 'Adding ' + user_id + ' to the move queue, position ' + new_position + '. (' + room_length + ')');
+        console.info('[MQUEUE1]', 'Adding ' + user_id + ' to the move queue, position ' + new_position + '. (' + room_length + ')');
 
         _.each(move_queue, function(_md) {
             if (_md.user_id === user_id) {
@@ -331,7 +325,7 @@ module.exports = function (options) {
 
         if (in_queue) {
             var user = bot.getUser(user_id);
-            logger.info('[MQUEUE1]', user.username + ' is in the queue already, changing desired position to ' + new_position + '.');
+            console.info('[MQUEUE1]', user.username + ' is in the queue already, changing desired position to ' + new_position + '.');
             chatMessage('/me ' + user.username + ' is already in the queue, changing desired position to ' + new_position + '.');
             return;
         }
@@ -339,11 +333,11 @@ module.exports = function (options) {
         if (current_position !== -1 && current_position !== 0) {
             /* If the user is already in the waitlist,
              * we can perform the operation immediately */
-            logger.info('[MQUEUE1]', 'Performing move for ' + user_id + ' to ' + new_position + ' immediately.');
+            console.info('[MQUEUE1]', 'Performing move for ' + user_id + ' to ' + new_position + ' immediately.');
             process_move_event(md);
         } else {
             /* Otherwise, add the user to the move queue */
-            logger.info('[MQUEUE1]', 'Added ' + user_id + ' to the move queue, position ' + new_position + '.');
+            console.info('[MQUEUE1]', 'Added ' + user_id + ' to the move queue, position ' + new_position + '.');
             move_queue_push(md);
         }
     }
@@ -367,9 +361,9 @@ module.exports = function (options) {
         move_queue = _.without(move_queue, md);
 
         if (move_queue.length == 0) {
-            logger.info('[MQUEUE]', 'Unlocking booth. (move_queue_remove)');
+            console.info('[MQUEUE]', 'Unlocking booth. (move_queue_remove)');
             bot.moderateLockBooth(false, false, function() {
-                logger.info('[MQUEUE]', 'Successfully unlocked booth. (move_queue_remove)');
+                console.info('[MQUEUE]', 'Successfully unlocked booth. (move_queue_remove)');
             });
         }
     }
@@ -392,7 +386,7 @@ module.exports = function (options) {
 
         /* We're trying to move the user to the same position, just assume we're done! */
         if (current_position === new_position) {
-            logger.info('[MQUEUE]', 'Trying to move ' + user.username + ' from ' + current_position + ' to ' + new_position + ', skipping.');
+            console.info('[MQUEUE]', 'Trying to move ' + user.username + ' from ' + current_position + ' to ' + new_position + ', skipping.');
             move_queue_remove(md);
             return false;
         }
@@ -400,9 +394,9 @@ module.exports = function (options) {
         /* If the requested position is -1 we assume
          * the person should be removed from the wait list. */
         if (new_position === -1) {
-            logger.info('[MQUEUE]', 'Removing ' + user.username + ' from the waitlist.');
+            console.info('[MQUEUE]', 'Removing ' + user.username + ' from the waitlist.');
             bot.moderateRemoveDJ(md.user_id, function() {
-                logger.info('[MQUEUE]', 'Successfully removed ' + user.username + ' from the waitlist.');
+                console.info('[MQUEUE]', 'Successfully removed ' + user.username + ' from the waitlist.');
                 User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
                 move_queue_remove(md);
             });
@@ -410,7 +404,7 @@ module.exports = function (options) {
         }
 
         if (current_position === 0) {
-            logger.info('[MQUEUE]', user.username + ' is currently playing...');
+            console.info('[MQUEUE]', user.username + ' is currently playing...');
             if (move_queue.length > 1) {
                 var cur_md = move_queue.shift();
                 move_queue.push(cur_md);
@@ -422,41 +416,41 @@ module.exports = function (options) {
             /* The user is not in queue, for us to move this person,
              * we need to have a free spot in the wait list. */
             if (room_length !== 50) {
-                logger.info('[MQUEUE]', 'Adding ' + user.username + ' to the queue. (1)');
+                console.info('[MQUEUE]', 'Adding ' + user.username + ' to the queue. (1)');
                 add_to_waitlist_history[user.id] = true;
                 bot.moderateAddDJ(md.user_id, function () {
                     add_to_waitlist_history[user.id] = true;
                     setTimeout(function() {
                         add_to_waitlist_history[user.id] = false;
                     }, 1000);
-                    logger.info('[MQUEUE]', 'Successfully added ' + user.username + ' to the queue! (1)');
+                    console.info('[MQUEUE]', 'Successfully added ' + user.username + ' to the queue! (1)');
 
-                    logger.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
+                    console.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
                     setTimeout(function() {
                         bot.moderateMoveDJ(md.user_id, new_position, function() {
                             move_queue_remove(md);
 
                             User.update({waitlist_position: new_position}, {where: {id: md.user_id}});
-                            logger.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
+                            console.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (1)');
 
                             if (move_queue.length == 0) {
                                 /* The queue is empty, we can unlock the waitlist! */
-                                logger.info('[MQUEUE]', 'Unlocking booth. (1)');
+                                console.info('[MQUEUE]', 'Unlocking booth. (1)');
                                 bot.moderateLockBooth(false, false, function() {
-                                    logger.info('[MQUEUE]', 'Successfully unlocked booth. (1)');
+                                    console.info('[MQUEUE]', 'Successfully unlocked booth. (1)');
                                 });
                             } else {
-                                logger.info('[MQUEUE]', 'Move queue is not empty, not unlocking booth. (1)');
-                                logger.info(move_queue);
+                                console.info('[MQUEUE]', 'Move queue is not empty, not unlocking booth. (1)');
+                                console.info(move_queue);
                             }
                         });
                     }, 250);
                 });
             }
         } else {
-            logger.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
+            console.info('[MQUEUE]', 'Moving ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
             bot.moderateMoveDJ(md.user_id, new_position, function() {
-                logger.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
+                console.info('[MQUEUE]', 'Successfully moved ' + user.username + ' from ' + current_position + ' to ' + new_position + '. (2)');
 
                 move_queue_remove(md);
 
@@ -470,13 +464,13 @@ module.exports = function (options) {
 
     chatMessage = function(message, timeout, add_to_queue) {
         if (timeout === undefined) {
-            timeout = 0;
+            timeout = -1;
         }
         if (add_to_queue === undefined) {
             add_to_queue = true;
         }
         if (message_out_history.length < 4) {
-            logger.info('[MSG]', 'Sending chat message: ' + message);
+            console.info('[MSG]', 'Sending chat message: ' + message);
             bot.sendChat(message, timeout);
 
             message_out_history.push(1);
@@ -487,7 +481,7 @@ module.exports = function (options) {
 
             return true;
         } else if (add_to_queue === true) {
-            logger.info('[MSG]', 'Chat history is full, queueing up ' + message);
+            console.info('[MSG]', 'Chat history is full, queueing up ' + message);
             message_queue.push({'message': message, 'timeout': timeout});
         } else {
 
@@ -498,12 +492,12 @@ module.exports = function (options) {
 
     setInterval(function() {
         if (message_queue.length > 0) {
-            logger.info('[MSG]', 'There\'s a message in the queue. (' + message_queue.length + ')');
+            console.info('[MSG]', 'There\'s a message in the queue. (' + message_queue.length + ')');
             var msg = message_queue[0];
 
             if (chatMessage(msg.message, msg.timeout, false) === true) {
                 message_queue.shift();
-                logger.info('[MSG]', 'Sent message from queue! New queue length: ' + message_queue.length);
+                console.info('[MSG]', 'Sent message from queue! New queue length: ' + message_queue.length);
             }
         }
     }, 250);
@@ -544,7 +538,7 @@ module.exports = function (options) {
 
                 default:
                     return settings[id];
-                    //logger.error('setting_value is not implemented for ' + type);
+                    //console.error('setting_value is not implemented for ' + type);
                     break;
             }
         }
@@ -660,12 +654,12 @@ module.exports = function (options) {
                         break;
 
                     default:
-                        logger.error('Unhandled type: ' + type);
+                        console.error('Unhandled type: ' + type);
                         break;
                 }
             }
         } else {
-            logger.error(id + ' is not a valid key in settings.');
+            console.error(id + ' is not a valid key in settings.');
         }
     }
 
@@ -844,7 +838,7 @@ module.exports = function (options) {
                 case CPARAM.FLOAT:
                     var d = rest.pop();
                     var value = parseFloat(d);
-                    logger.info(value);
+                    console.info(value);
                     if (isNaN(value)) {
                         rest.push(d);
                     } else {
@@ -855,7 +849,7 @@ module.exports = function (options) {
                 case CPARAM.INT:
                     var d = rest.pop();
                     var value = parseInt(d);
-                    logger.info(value);
+                    console.info(value);
                     if (isNaN(value)) {
                         rest.push(d);
                     } else {
@@ -868,7 +862,7 @@ module.exports = function (options) {
                         var reststr = rest.join(' ');
                         var at_pos = reststr.lastIndexOf('@');
                         if (at_pos == -1 && i-1 == 0) {
-                            logger.info('Fallbacking to getting username without @');
+                            console.info('Fallbacking to getting username without @');
                             at_pos = -1;
                         }
                         var username = reststr.substr(at_pos+1);
@@ -912,7 +906,7 @@ module.exports = function (options) {
                 var json_data = JSON.parse(body);
                 callback(json_data);
             } catch (e) {
-                logger.error('Error caught while trying to parse soundcloud data: ' + e);
+                console.error('Error caught while trying to parse soundcloud data: ' + e);
             }
         });
     }
@@ -928,12 +922,12 @@ module.exports = function (options) {
         for (var user in users) {
             var wl_pos = bot.getWaitListPosition(users[user].id);
             if (wl_pos > 0) {
-                logger.info(wl_pos + ' - ' + users[user].username);
+                console.info(wl_pos + ' - ' + users[user].username);
                 waitlist[wl_pos] = users[user];
             }
         }
 
-        //logger.info(waitlist);
+        //console.info(waitlist);
 
         return waitlist;
         */

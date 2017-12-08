@@ -21,17 +21,17 @@ var waitlist_length = 10000000;
 
 function runBot(error, auth) {
     if (error) {
-        logger.error("[INIT] An error occurred: " + err);
+        console.error("[INIT] An error occurred: " + err);
         return;
     }
 
     initializeModules(auth);
 
-    logger.info('Getting settings...');
+    console.error('Getting settings...');
     sequelize.query('SELECT `id`, `type`, `value` FROM `settings`',
             { type: Sequelize.QueryTypes.SELECT })
         .then(function(rows) {
-            logger.info('got settings!');
+            console.info('got settings!');
             var fetched_settings = [];
             _.each(rows, function(row) {
                 var value = row['value'];
@@ -72,7 +72,7 @@ function runBot(error, auth) {
             }
         })
         .then(function() {
-            logger.info('[YOUTUBE]', 'Authenticating with youtube...');
+            console.info('[YOUTUBE]', 'Authenticating with youtube...');
             Youtube.authenticate({
                 type: "oauth",
                 refresh_token: config.apiKeys.youtube.refresh_token,
@@ -80,26 +80,26 @@ function runBot(error, auth) {
                 client_secret: config.apiKeys.youtube.client_secret,
                 redirect_url: config.apiKeys.youtube.redirect_url,
             });
-            logger.info('[YOUTUBE]', 'Authenticated!');
+            console.info('[YOUTUBE]', 'Authenticated!');
         })
         .then(function() {
-            logger.info('Initializing bot...');
+            console.info('Initializing bot...');
             bot = new PlugAPI(auth, function(err, bot) {
                 console.log(err);
                 console.log(bot);
                 if (err) {
-                    logger.error('Something went wrong...');
+                    console.error('Something went wrong...');
                     return;
                 }
 
-                logger.info(bot);
+                console.info(bot);
 
-                logger.info('Connecting to ' + config.roomName);
+                console.info('Connecting to ' + config.roomName);
                 bot.connect(config.roomName);
 
                 bot.on('roomJoin', function (data) {
 
-                    logger.success('[INIT] Joined room: ' + data);
+                    console.info('[INIT] Joined room: ' + data);
 
                     if (config.responses.botConnect !== "") {
                         chatMessage(config.responses.botConnect);
@@ -118,10 +118,10 @@ function runBot(error, auth) {
                 bot.on('chatDelete', function(data) {
                     var username = 'PAJBOT';
                     if (data.mi === 6281653) {
-                        logger.info('[CHATD]', 'PAJBOT deleted ' + data.c);
+                        console.info('[CHATD]', 'PAJBOT deleted ' + data.c);
                     } else {
                         User.find(data.mi).on('success', function (db_user) {
-                            logger.info('[CHATD]', db_user.username + ' deleted ' + data.c);
+                            console.info('[CHATD]', db_user.username + ' deleted ' + data.c);
                         });
                     }
                 });
@@ -134,7 +134,7 @@ function runBot(error, auth) {
                         case 'p': duration = 'permanently'; break;
                         default: duration = '?? ('+data.d+')'; break;
                                      }
-                                     logger.info('[BAN]', data.m + ' ' + duration + ' banned ' + data.t);
+                                     console.info('[BAN]', data.m + ' ' + duration + ' banned ' + data.t);
                                      });
 
                         bot.on('modSkip', function (data) {
@@ -153,13 +153,13 @@ function runBot(error, auth) {
 
                         bot.on('chat', function (data) {
                             if (config.verboseLogging) {
-                                logger.info('[CHAT]', JSON.stringify(data, null, 2));
+                                console.info('[CHAT]', JSON.stringify(data, null, 2));
                             }
 
                             if (data.from !== undefined && data.from !== null) {
                                 data.message = data.message.trim();
 
-                                logger.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
+                                console.info('[CHAT]', '[' + data.id + '] ' + data.from.username + ': ' + data.message);
 
                                 User.update({last_active: new Date(), last_seen: new Date()}, {where: {id: data.from.id}});
 
@@ -176,7 +176,7 @@ function runBot(error, auth) {
 
                         bot.on('userJoin', function (data) {
                             if (config.verboseLogging) {
-                                logger.info('[JOIN]', JSON.stringify(data, null, 2));
+                                console.info('[JOIN]', JSON.stringify(data, null, 2));
                             }
 
                             var newUser = false;
@@ -192,16 +192,16 @@ function runBot(error, auth) {
 
                                     if (data.username == config.superAdmin && config.responses.welcome.superAdmin != null) {
                                         message = config.responses.welcome.superAdmin.replace('{username}', data.username);
-                                        logger.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
+                                        console.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
                                     }
                                     else if (dbUser == null) {
                                         message = config.responses.welcome.newUser.replace('{username}', data.username);
                                         newUser = true;
-                                        logger.info('[JOIN]', data.username + ' is a first-time visitor to the room!');
+                                        console.info('[JOIN]', data.username + ' is a first-time visitor to the room!');
                                     }
                                     else {
                                         message = config.responses.welcome.oldUser.replace('{username}', data.username);
-                                        logger.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
+                                        console.info('[JOIN]', data.username + ' last seen ' + timeSince(dbUser.last_seen));
                                     }
 
                                 // Greet with the theme if it's not the default
@@ -238,38 +238,38 @@ function runBot(error, auth) {
                         })
 
                         bot.on('userLeave', function (data) {
-                            logger.info('[LEAVE]', 'User left: ' + data.username);
+                            console.info('[LEAVE]', 'User left: ' + data.username);
                             var position = bot.getWaitListPosition(data.id);
                             User.update({last_seen: new Date(), last_leave: new Date()}, {where: {id: data.id}});
                         });
 
                         bot.on('userUpdate', function (data) {
                             if (config.verboseLogging) {
-                                logger.info('[EVENT] USER_UPDATE', data);
+                                console.info('[EVENT] USER_UPDATE', data);
                             }
                         });
 
                         bot.on('grab', function (data) {
                             var user = _.findWhere(bot.getUsers(), {id: data});
                             if (user) {
-                                logger.info('[GRAB]', user.username + ' grabbed this song');
+                                console.info('[GRAB]', user.username + ' grabbed this song');
                             }
                         });
 
                         bot.on('vote', function (data) {
                             var user = _.findWhere(bot.getUsers(), {id: data.i});
                             if (user && data.v === -1) {
-                                //logger.info('[MEH]', user.username);
+                                //console.info('[MEH]', user.username);
                             } else if (user && data.v === 1) {
-                                //logger.info('[WOOT]', user.username);
+                                //console.info('[WOOT]', user.username);
                             } else if (user) {
-                                logger.info('[VOTE]', user.username + ': ' + data.v + ' ???? XXX');
+                                console.info('[VOTE]', user.username + ': ' + data.v + ' ???? XXX');
                             }
                         });
 
                         bot.on('advance', function (data) {
                             if (config.verboseLogging) {
-                                logger.success('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
+                                console.info('[EVENT] ADVANCE ', JSON.stringify(data, null, 2));
                             }
 
                             motd_advance();
@@ -280,7 +280,7 @@ function runBot(error, auth) {
 
                             Promise.map(bot.getWaitList(), function (dj) {
                                 var position = bot.getWaitListPosition(dj.id);
-                                logger.info('[WLIST]', position + ' - ' + dj.username);
+                                console.info('[WLIST]', position + ' - ' + dj.username);
                             });
 
                             // Write previous play data to DB
@@ -299,9 +299,9 @@ function runBot(error, auth) {
                             if (data.media != null) {
 
                                 if (data.currentDJ != null) {
-                                    logger.success('********************************************************************');
-                                    logger.success('[UPTIME]', 'Bot online ' + timeSince(startupTimestamp, true));
-                                    logger.success('[SONG]', data.currentDJ.username + ' played: ' + data.media.author + ' - ' + data.media.title);
+                                    console.info('********************************************************************');
+                                    console.info('[UPTIME]', 'Bot online ' + timeSince(startupTimestamp, true));
+                                    console.info('[SONG]', data.currentDJ.username + ' played: ' + data.media.author + ' - ' + data.media.title);
                                     User.update({waitlist_position: -1}, {where: {id: data.currentDJ.id}});
                                 }
 
@@ -316,7 +316,7 @@ function runBot(error, auth) {
                                     if (bot.getMedia() && bot.getMedia().cid == data.media.cid) {
                                         if (settings['autoskip']) {
                                             bot.moderateForceSkip();
-                                            logger.info('[AUTOSKIP]', 'Song was autoskipped.');
+                                            console.info('[AUTOSKIP]', 'Song was autoskipped.');
                                         }
                                     }
                                 }, (data.media.duration + 3) * 1000);
@@ -343,7 +343,7 @@ function runBot(error, auth) {
                                         }
                                     }
                                     if (data.media.format == 2) {
-                                        logger.info(data.media.cid);
+                                        console.info(data.media.cid);
                                         soundcloud_get_track(data.media.cid, function (json_data) {
                                             if (song.permalink === null || song.permalink === undefined) {
                                                 songData.permalink = json_data.permalink_url;
@@ -351,9 +351,9 @@ function runBot(error, auth) {
                                                 write_room_state(songData.permalink);
                                             }
                                             if (settings['skipunavailable']) {
-                                                logger.info(json_data);
+                                                console.info(json_data);
                                                 if (!json_data.streamable) {
-                                                    logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
+                                                    console.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available/embeddable.');
                                                     if (data.currentDJ != null) {
                                                         chatMessage('/me @' + data.currentDJ.username + ' your song is not available or embeddable, you have been skipped.');
                                                         bot.moderateForceSkip();
@@ -371,11 +371,11 @@ function runBot(error, auth) {
                                             "id": data.media.cid,
                                         }, function (err, api_data) {
                                             if (api_data) {
-                                                logger.info(api_data);
+                                                console.info(api_data);
                                                 if (api_data.items.length === 0) {
                                                     /* The video is not available. */
                                                     if (settings['skipunavailable']) {
-                                                        logger.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
+                                                        console.info('[AUTOSKIP]', 'Song was autoskipped because it\'s not available.');
                                                         if (data.currentDJ != null) {
                                                             chatMessage('/me @' + data.currentDJ.username + ' your song is not available, you have been skipped.');
                                                             bot.moderateForceSkip();
@@ -417,7 +417,7 @@ function runBot(error, auth) {
                                     }).on('success', function (row) {
                                         if (row !== null) {
                                             if (row.response != '') {
-                                                logger.info('[SONGRESPONSE]', 'Sending response: ' + row.response);
+                                                console.info('[SONGRESPONSE]', 'Sending response: ' + row.response);
                                                 chatMessage(row.response);
                                             }
                                             if (row.rate === 1) {
@@ -452,9 +452,9 @@ function runBot(error, auth) {
                                             var position = bot.getWaitListPosition(dj.id);
                                             if (dbUser !== null) {
                                                 if (secondsSince(dbUser.last_active) >= maxIdleTime && moment.utc().isAfter(moment.utc(startupTimestamp).add(config.activeDJTimeoutMins, 'minutes'))) {
-                                                    logger.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                                                    console.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
                                                     if (dbUser.Karmas.length > 0) {
-                                                        logger.warning('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
+                                                        console.warning('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
                                                         bot.moderateRemoveDJ(dj.id);
                                                         chatMessage('@' + dbUser.username + ' ' + config.responses.activeDJRemoveMessage);
                                                         var userData = {
@@ -481,7 +481,7 @@ function runBot(error, auth) {
                                                     if (dj.role > 1) {
                                                         roomHasActiveMods = true;
                                                     }
-                                                    logger.info('[ACTIVE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                                                    console.info('[ACTIVE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
                                                 }
                                             }
                                         });
@@ -497,7 +497,7 @@ function runBot(error, auth) {
                                 /*
                                    Song.find({where: {id: data.media.id, cid: data.media.cid, is_banned: true}}).on('success', function (row) {
                                 // need to only do this if results!
-                                logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
+                                console.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
                                 chatMessage('Sorry @' + data.currentDJ.username + ', this song has been blacklisted (NSFW video or Out of Range) in our song database.');
                                 bot.moderateForceSkip();
                                 var userData = {
@@ -513,7 +513,7 @@ function runBot(error, auth) {
                                 // Only police this if there aren't any mods around
                                 var combined_max_length = settings['maxlength'] + settings['maxlength_buffer'];
                                 if (settings['timeguard'] && data.media.duration > combined_max_length) {
-                                    logger.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
+                                    console.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
                                     chatMessage('Sorry @' + data.currentDJ.username + ', this song is over our room\'s maximum song length (' + sec_to_str(settings['maxlength']) + ').');
                                     bot.moderateForceSkip();
                                     var userData = {
@@ -535,12 +535,12 @@ function runBot(error, auth) {
 
                                     bot.on('djListUpdate', function (data) {
                                         if (config.verboseLogging) {
-                                            logger.success('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
+                                            console.info('[EVENT] DJ_LIST_UPDATE', JSON.stringify(data, null, 2));
                                         }
 
-                                        logger.info('[TEST]', 'Waitlist length: ' + waitlist_length);
-                                        logger.info('[TEST]', 'Data length: ' + data.length);
-                                        //logger.info(data);
+                                        console.info('[TEST]', 'Waitlist length: ' + waitlist_length);
+                                        console.info('[TEST]', 'Data length: ' + data.length);
+                                        //console.info(data);
 
                                         if (!data) {
                                             /* Got some strange data in djListUpdate... */
@@ -551,31 +551,31 @@ function runBot(error, auth) {
                                             // Someone joined the waitlist!
                                             var last_user = data[data.length - 1];
                                             if (last_user) {
-                                                logger.info('[TEST]', last_user.username + ' just joined the waitlist!');
-                                                logger.info('[TEST]', 'Movement queue length: ' + move_queue.length);
+                                                console.info('[TEST]', last_user.username + ' just joined the waitlist!');
+                                                console.info('[TEST]', 'Movement queue length: ' + move_queue.length);
                                                 if (move_queue.length > 0) {
                                                     // Is there someone waiting to be moved?
                                                     if (add_to_waitlist_history[last_user.id] !== true) {
                                                         // Is the person who last joined in the "add to waitlist" history? aka did bot just add them?
                                                         if (move_queue[0].user_id !== last_user.id) {
                                                             // Is the person who last joined the person who was supposed to get in anyway?
-                                                            logger.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
+                                                            console.info('[RDJPROT]', last_user.username + ' just joined a locked list.');
 
                                                             setTimeout(function() {
-                                                                logger.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
+                                                                console.info('[RDJPROT]', 'Removing ' + last_user.username + ' from the waitlist.');
                                                                 bot.moderateRemoveDJ(last_user.id, function() {
-                                                                    logger.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
+                                                                    console.info('[RDJPROT]', 'Successfully removed ' + last_user.username + ' from the waitlist, add person in queue!');
                                                                     process_move_queue();
                                                                 });
                                                             }, 100);
                                                         } else {
-                                                            logger.info('[TEST]', last_user.username + ' joined, and he is not supposed to get in.');
+                                                            console.info('[TEST]', last_user.username + ' joined, and he is not supposed to get in.');
                                                         }
                                                     } else {
-                                                        logger.info('[TEST]', last_user.username + ' joined, and we did not add him ourselves.');
+                                                        console.info('[TEST]', last_user.username + ' joined, and we did not add him ourselves.');
                                                     }
                                                 } else {
-                                                    logger.info('[TEST]', last_user.username + ' joined, but there is no one in the waitlist anyway.');
+                                                    console.info('[TEST]', last_user.username + ' joined, but there is no one in the waitlist anyway.');
                                                 }
 
                                                 // original if-case
@@ -593,11 +593,11 @@ function runBot(error, auth) {
                                     });
 
                                     bot.on('modAddWaitList', function(data) {
-                                        logger.info('add waitlist', data);
+                                        console.info('add waitlist', data);
                                     });
 
                                     bot.on('modAddDJ', function(data) {
-                                        logger.info('add dj', data);
+                                        console.info('add dj', data);
                                     });
 
                                     bot.on('close', reconnect);
@@ -608,12 +608,12 @@ function runBot(error, auth) {
                                     }
 
                                     bot.on('tcpConnect', function (socket) {
-                                        logger.info('[TCP] Connected!');
+                                        console.info('[TCP] Connected!');
                                     });
 
                                     bot.on('tcpMessage', function (socket, msg) {
                                         if (typeof msg !== "undefined" && msg.length > 2) {
-                                            logger.info('[TCP] ' + msg);
+                                            console.info('[TCP] ' + msg);
                                             // Convert into same format as incoming chat messages through the UI
                                             var data = {
                                                 message: msg,
@@ -702,7 +702,7 @@ function runBot(error, auth) {
 
             dbUser.updateAttributes(userData);
         }).catch(function (err) {
-            logger.error('Error occurred', err);
+            console.error('Error occurred', err);
         });
 
         //convertAPIUserID(user, function () {});
@@ -712,7 +712,7 @@ function runBot(error, auth) {
     function convertAPIUserID(user, callback) {
         //db.get('SELECT userid FROM USERS WHERE username = ?', [user.username], function (error, row) {
         //    if (row != null && row.userid.length > 10) {
-        //        logger.warning('Converting userid for ' + user.username + ': ' + row.userid + ' => ' + user.id);
+        //        console.warning('Converting userid for ' + user.username + ': ' + row.userid + ' => ' + user.id);
         //        //db.run('UPDATE PLAYS SET userid = ? WHERE userid = ?', [user.id, row.userid]);
         //        //db.run('UPDATE USERS SET userid = ? WHERE userid = ?', [user.id, row.userid], function () {
         //        //    callback(true);
@@ -725,7 +725,7 @@ function runBot(error, auth) {
     }
 
     function reconnect() {
-        logger.info('Reconnect called!!!!!!!!');
+        console.info('Reconnect called!!!!!!!!');
         bot.connect(config.roomName);
     }
 
@@ -810,21 +810,21 @@ function runBot(error, auth) {
 
             if (data.from.role >= PlugAPI.ROOM_ROLE.MANAGER) {
                 if (command.cd_manager >= time_diff) {
-                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (manager+) ' + time_diff);
+                    console.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (manager+) ' + time_diff);
                     can_run_command = false;
                 }
             } else {
                 if (command.cd_all >= time_diff) {
-                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (cd_all) ' + time_diff);
+                    console.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (cd_all) ' + time_diff);
                     can_run_command = false;
                 } else if (command.cd_user >= time_diff_user) {
-                    logger.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (cd_user) ' + time_diff_user);
+                    console.info('[ANTISPAM]', data.from.username + ' cannot run the command, cuz of antispam (cd_user) ' + time_diff_user);
                     can_run_command = false;
                 }
             }
 
             if (config.verboseLogging) {
-                logger.info('[COMMAND]', JSON.stringify(data, null, 2));
+                console.info('[COMMAND]', JSON.stringify(data, null, 2));
             }
 
             if (config.removeCommands && command.remove_command !== false) {
@@ -842,7 +842,7 @@ function runBot(error, auth) {
                         command.last_run_users[data.from.username] = cur_time;
                     }
                 } else {
-                    logger.info(data.from.username + ' does not have access to run the \'' + _.first(data.message.split(' ')) + '\' command.');
+                    console.info(data.from.username + ' does not have access to run the \'' + _.first(data.message.split(' ')) + '\' command. (MinRole: ' + command.min_role + ', UserRole: ' + data.from.role + ')');
                 }
             }
         } else if (settings['cleverbot'] && data.message.indexOf('@' + bot.getUser().username) > -1) {
@@ -900,7 +900,7 @@ function runBot(error, auth) {
         media = bot.getMedia();
         // @FIXME - don't use the room. construct.
         //request('http://developer.echonest.com/api/v4/song/search?api_key=' + config.apiKeys.echoNest + '&format=json&results=1&combined=' + S(valueToCorrect).escapeHTML().stripPunctuation().s, function (error, response, body) {
-        //    logger.info('echonest body', body);
+        //    console.info('echonest body', body);
         //    if (error) {
         //        chatMessage('An error occurred while connecting to EchoNest.');
         //        bot.error('EchoNest error', error);
@@ -913,7 +913,7 @@ function runBot(error, auth) {
         //        };
         //
         //        // log
-        //        logger.info('[EchoNest] Original: "' + media.author + '" - "' + media.title + '". Suggestion: "' + room.media.suggested.author + '" - "' + room.media.suggested.title);
+        //        console.info('[EchoNest] Original: "' + media.author + '" - "' + media.title + '". Suggestion: "' + room.media.suggested.author + '" - "' + room.media.suggested.title);
         //
         //        if (media.author != room.media.suggested.author || media.title != room.media.suggested.title) {
         //            chatMessage('Hey, the metadata for this song looks wrong! Suggested Artist: "' + room.media.suggested.author + '". Title: "' + room.media.suggested.title + '". Type ".fixsong yes" to use the suggested tags.');
@@ -926,9 +926,9 @@ function runBot(error, auth) {
         cleverMessage = data.message.replace('@' + bot.getUser().username, '').trim();
         cleverbot.write(cleverMessage, function (response) {
             if (config.verboseLogging) {
-                logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
+                console.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
             }
-            logger.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
+            console.info('[CLEVERBOT]', JSON.stringify(response, null, 2));
             var message = response.message;
             var matches = message.match(/\|([a-fA-F0-9]{4})/g);
             _.each(matches, function(match) {
@@ -978,7 +978,7 @@ function runBot(error, auth) {
     function process_move_queue()
     {
         if (move_queue.length > 0) {
-            logger.info('[MQUEUE]', 'There\'s someone in the move queue!');
+            console.info('[MQUEUE]', 'There\'s someone in the move queue!');
 
             /* Fetch the first user from the queue */
             var md = move_queue[0];
@@ -1010,7 +1010,7 @@ function runBot(error, auth) {
                     JSON.stringify(JSONstats, null, 2),
                     function (err) {
                         if (err) {
-                            logger.error(err);
+                            console.error(err);
                             return console.log(err);
                         }
                     }

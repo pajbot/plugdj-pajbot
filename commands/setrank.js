@@ -47,7 +47,7 @@ exports.handler = function (data) {
                 */
                 bot.moderateSetRole(row.id, rank, function() {
                     modMessage(data, row.username + ' was set to rank ' + rank);
-                    logger.info('[SETRANK] ' + row.username + ' was set to rank ' + rank + ' by ' + data.from.username);
+                    console.info('[SETRANK] ' + row.username + ' was set to rank ' + rank + ' by ' + data.from.username);
                 });
             }
         });

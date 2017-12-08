@@ -10,7 +10,7 @@ exports.handler = function (data) {
     var media = bot.getMedia();
     var dj = bot.getDJ();
 
-    logger.info('[LOCKSKIP] ' + data.from.username + ' lockskipped ' + dj.username);
+    console.info('[LOCKSKIP] ' + data.from.username + ' lockskipped ' + dj.username);
 
     var userData = {
         type: 'lockskip',

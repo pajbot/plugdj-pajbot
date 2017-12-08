@@ -14,7 +14,7 @@ exports.handler = function (data) {
 
             User.update({last_active: new Date(), last_seen: new Date()}, {where: {username: usernameFormatted}});
             bot.sendChat("/me reset the idle timer for " + usernameFormatted);
-            logger.info('[IDLE]', data.from.username + ' reset the idle timer for ' + usernameFormatted);
+            console.info('[IDLE]', data.from.username + ' reset the idle timer for ' + usernameFormatted);
 
 
         }
@@ -30,12 +30,12 @@ exports.handler = function (data) {
                     var position = bot.getWaitListPosition(dj.id);
                     if (dbUser !== null) {
                         if (secondsSince(dbUser.last_active) >= maxIdleTime && moment.utc().isAfter(moment.utc(startupTimestamp).add(config.activeDJTimeoutMins, 'minutes'))) {
-                            logger.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                            console.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
                             idleDJs.push(dbUser.username);
 
                         }
                         else {
-                            logger.info('[ACTIVE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                            console.info('[ACTIVE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
                         }
                     }
                 });

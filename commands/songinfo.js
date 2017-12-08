@@ -21,19 +21,19 @@ function do_history(data, format, cid, songs_ago)
         },
         order: 'updated_at DESC'
     }).on('success', function (rows) {
-        logger.info(rows);
+        console.info(rows);
         if (rows && rows.length > 0) {
             var song_ids = [];
             _.each(rows, function (row) {
                 song_ids.push(row.id);
             });
-            logger.info(song_ids);
+            console.info(song_ids);
 
             Play.findAll({
                 where: { song_id: song_ids },
                 order: 'updated_at DESC'
             }).on('success', function (rows) {
-                logger.info(rows);
+                console.info(rows);
                 if (format == 1) {
                     var prefix = 'This song';
                     if (songs_ago >= 0) {
@@ -90,14 +90,14 @@ exports.handler = function (data) {
     }
 
     if (offset !== false) {
-        logger.info('offset: ' + offset);
+        console.info('offset: ' + offset);
         sequelize.query('SELECT `plays`.`id`, `songs`.`format`, `songs`.`cid`, `songs`.`author`, `songs`.`title` FROM `plays` INNER JOIN `songs` ON `songs`.`id`=`plays`.`song_id` ORDER BY `plays`.`id` DESC LIMIT '+offset+',1',
                 { type: Sequelize.QueryTypes.SELECT })
             .then(function(rows) {
-                logger.info(rows);
+                console.info(rows);
                 if (rows != null && rows.length == 1) {
                     var row = rows[0];
-                    logger.info(row);
+                    console.info(row);
                     cid = row['cid'];
                     format = row['format'];
                 }
