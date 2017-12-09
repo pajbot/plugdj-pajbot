@@ -74,11 +74,8 @@ function runBot(error, auth) {
         .then(function() {
             console.info('[YOUTUBE]', 'Authenticating with youtube...');
             Youtube.authenticate({
-                type: "oauth",
-                refresh_token: config.apiKeys.youtube.refresh_token,
-                client_id: config.apiKeys.youtube.client_id,
-                client_secret: config.apiKeys.youtube.client_secret,
-                redirect_url: config.apiKeys.youtube.redirect_url,
+                type: "key",
+                key: config.apiKeys.youtube
             });
             console.info('[YOUTUBE]', 'Authenticated!');
         })
