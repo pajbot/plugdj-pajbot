@@ -5,6 +5,7 @@ module.exports = function (sequelize, Sequelize) {
         value: {type: Sequelize.TEXT, allowNull: false}
     }, {
         underscored: true,
-        tableName: 'settings'
+        tableName: 'settings',
+        timestamps: false
     });
 }
