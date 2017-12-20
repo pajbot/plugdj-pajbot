@@ -251,7 +251,12 @@ module.exports = function (options) {
         // Load commands
         try {
             fs.readdirSync(path.resolve(__dirname, 'commands')).forEach(function (file) {
-                var command = require(path.resolve(__dirname, 'commands/' + file));
+                var filePath = path.resolve(__dirname, 'commands/' + file);
+                if (!filePath.endsWith('.js')) {
+                    console.log('Ignoring ' + filePath);
+                    return;
+                }
+                var command = require(filePath);
 
                 var new_names = [];
 
