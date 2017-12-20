@@ -2,7 +2,12 @@
     "name": "BeavisBot",
     "description": "A customizable plug.dj room bot",
     "version": "2.0.0",
-    "keywords": ["turntable.fm", "turntable", "plug.dj", "plug"],
+    "keywords": [
+        "turntable.fm",
+        "turntable",
+        "plug.dj",
+        "plug"
+    ],
     "repository": {
         "type": "git",
         "url": "git://github.com/AvatarKava/BeavisBot.git"
