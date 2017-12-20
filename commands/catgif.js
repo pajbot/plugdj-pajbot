@@ -1,4 +1,4 @@
-exports.names = ['catfact'];
+exports.names = ['catgif'];
 exports.hidden = true;
 exports.enabled = true;
 exports.matchStart = false;
@@ -7,9 +7,9 @@ exports.cd_user = 30;
 exports.cd_manager = 10;
 exports.min_role = PERMISSIONS.RDJ;
 exports.handler = function (data) {
-        request('https://catfact.ninja/fact', function (error, response, body) {
+        request('http://thecatapi.com/api/images/get?type=gif', function (error, response, body) {
             try {
-                chatMessage(JSON.parse(body).fact + ' :smartcat:');
+                chatMessage(response.request.uri.href);
             } catch (e) {
                 console.log(e);
             }
