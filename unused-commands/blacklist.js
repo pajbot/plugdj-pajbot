@@ -7,7 +7,7 @@ exports.handler = function (data) {
 
         media = bot.getMedia();
 
-        console.warning('[BLACKLIST] ' + data.from.username + ' blacklisted ' + media.title);
+        console.warn('[BLACKLIST] ' + data.from.username + ' blacklisted ' + media.title);
 
         var userData = {
             type: 'blacklist',

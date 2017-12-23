@@ -450,9 +450,9 @@ function runBot(error, auth) {
                                             var position = bot.getWaitListPosition(dj.id);
                                             if (dbUser !== null) {
                                                 if (secondsSince(dbUser.last_active) >= maxIdleTime && moment.utc().isAfter(moment.utc(startupTimestamp).add(config.activeDJTimeoutMins, 'minutes'))) {
-                                                    console.warning('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
+                                                    console.warn('[IDLE]', position + '. ' + dbUser.username + ' last active ' + timeSince(dbUser.last_active));
                                                     if (dbUser.Karmas.length > 0) {
-                                                        console.warning('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
+                                                        console.warn('[IDLE]', dbUser.username + ' was last warned ' + timeSince(dbUser.Karmas[0].created_at));
                                                         bot.moderateRemoveDJ(dj.id);
                                                         chatMessage('@' + dbUser.username + ' ' + config.responses.activeDJRemoveMessage);
                                                         var userData = {
@@ -495,7 +495,7 @@ function runBot(error, auth) {
                                 /*
                                    Song.find({where: {id: data.media.id, cid: data.media.cid, is_banned: true}}).on('success', function (row) {
                                 // need to only do this if results!
-                                console.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
+                                console.warn('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a blacklisted song: ' + data.media.author + ' - ' + data.media.title + ' (id: ' + data.media.id + ')');
                                 chatMessage('Sorry @' + data.currentDJ.username + ', this song has been blacklisted (NSFW video or Out of Range) in our song database.');
                                 bot.moderateForceSkip();
                                 var userData = {
@@ -511,7 +511,7 @@ function runBot(error, auth) {
                                 // Only police this if there aren't any mods around
                                 var combined_max_length = settings['maxlength'] + settings['maxlength_buffer'];
                                 if (settings['timeguard'] && data.media.duration > combined_max_length) {
-                                    console.warning('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
+                                    console.warn('[SKIP] Skipped ' + data.currentDJ.username + ' spinning a song of ' + data.media.duration + ' seconds');
                                     chatMessage('Sorry @' + data.currentDJ.username + ', this song is over our room\'s maximum song length (' + sec_to_str(settings['maxlength']) + ').');
                                     bot.moderateForceSkip();
                                     var userData = {
@@ -710,7 +710,7 @@ function runBot(error, auth) {
     function convertAPIUserID(user, callback) {
         //db.get('SELECT userid FROM USERS WHERE username = ?', [user.username], function (error, row) {
         //    if (row != null && row.userid.length > 10) {
-        //        console.warning('Converting userid for ' + user.username + ': ' + row.userid + ' => ' + user.id);
+        //        console.warn('Converting userid for ' + user.username + ': ' + row.userid + ' => ' + user.id);
         //        //db.run('UPDATE PLAYS SET userid = ? WHERE userid = ?', [user.id, row.userid]);
         //        //db.run('UPDATE USERS SET userid = ? WHERE userid = ?', [user.id, row.userid], function () {
         //        //    callback(true);

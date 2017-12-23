@@ -9,7 +9,7 @@ exports.min_role = PERMISSIONS.BOUNCER;
 exports.handler = function (data) {
     media = bot.getMedia();
 
-    console.warning('[SKIP] ' + data.from.username + ' skipped ' + bot.getDJ().username);
+    console.warn('[SKIP] ' + data.from.username + ' skipped ' + bot.getDJ().username);
 
     if (data.from.id !== bot.getDJ().id) {
         var userData = {
